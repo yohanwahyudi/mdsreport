@@ -1,0 +1,25 @@
+<html>
+<head>
+	
+</head>
+    <body>
+    
+    
+    	<p style="font-family:calibri,serif;">Dear All,</p><br />
+
+        <div style="font-family:calibri,serif;">
+            <b>Your weekly/ monthly Report is not running because </b>:
+        </div>
+        <br />
+        
+        <div style="font-family:calibri,serif;">
+            ${errorMsg}
+        </div>
+    
+    	<br />
+        <br />
+        
+        <span><p style="font-family:calibri,serif;">Regards, </p></span><br />
+        <span><p style="font-family:calibri,serif;">SLA Manager</p></span><br /><br />
+    </body>
+</html>

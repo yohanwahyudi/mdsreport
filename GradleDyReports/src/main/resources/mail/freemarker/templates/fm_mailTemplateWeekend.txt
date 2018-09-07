@@ -1,0 +1,82 @@
+<html>
+<head>
+	
+</head>
+    <body>
+        Dear All,<br /><br />
+
+        <div>
+            below are daily monitoring for today's incident which is <b>approaching deadline/pending</b>:
+        </div>
+        <br />
+        
+        <div style="overflow-x:auto;">
+        <table style="width:800;font-family:cambria; border-collapse: collapse;">
+        <tr style="font-size:11; text-align:left; border:1px solid; background-color: #f2bd2b; color:#ffffff">
+        	<th style="border:1px solid black; padding: 4px;">Remarks</th>
+        	<th style="border:1px solid black; padding: 4px;">Ticket No</th>
+        	<th style="border:1px solid black; padding: 4px;">Title</th>
+        	<th style="border:1px solid black; padding: 4px;">Status</th>
+        	<th style="border:1px solid black; padding: 4px;">Start Date</th>
+        	<th style="border:1px solid black; padding: 4px;">Priority</th>
+        	<th style="border:1px solid black; padding: 4px;">Dead Line</th>
+        	<th style="border:1px solid black; padding: 4px;">Agent Name</th>
+        	<th style="border:1px solid black; padding: 4px;">Pending Reason*</th>
+        </tr>
+        
+        <#if deadline?has_content>
+        	<#assign deadlineSize=deadline?size>
+		        <#list deadline as deadline>
+		        	<#if deadline?index == 0>
+		        		<tr style="color: #cd0000; font-size:10; text-align:left; padding: 4px; border:1px solid;">
+			        		<td rowspan=${deadlineSize} style="border:1px solid black; padding: 4px;"><b>TTR warning</b></td>
+				        	<td style="border:1px solid black; padding: 4px;">${deadline.ref}</td>
+				        	<td style="border:1px solid black; padding: 4px;">${deadline.title}</td>
+				        	<td style="border:1px solid black; padding: 4px;">${deadline.status}</td>
+				        	<td style="border:1px solid black; padding: 4px;">${deadline.start_date} ${deadline.start_time} </td>
+				        	<td style="border:1px solid black; padding: 4px;">${deadline.priority}</td>
+				        	<td style="border:1px solid black; padding: 4px;">${deadline.ttr_deadline}</td>
+				        	<td style="border:1px solid black; padding: 4px;">${deadline.agent_fullname}</td>
+				        	<td style="border:1px solid black; padding: 4px;">${deadline.pending_reason}</td>
+		        		</tr>		        	
+		        	<#else>
+		        		<tr style="color: #cd0000; font-size:10; text-align:left; padding: 4px; border:1px solid;">
+				        	<td style="border:1px solid black; padding: 4px;">${deadline.ref}</td>
+				        	<td style="border:1px solid black; padding: 4px;">${deadline.title}</td>
+				        	<td style="border:1px solid black; padding: 4px;">${deadline.status}</td>
+				        	<td style="border:1px solid black; padding: 4px;">${deadline.start_date} ${deadline.start_time} </td>
+				        	<td style="border:1px solid black; padding: 4px;">${deadline.priority}</td>
+				        	<td style="border:1px solid black; padding: 4px;">${deadline.ttr_deadline}</td>
+				        	<td style="border:1px solid black; padding: 4px;">${deadline.agent_fullname}</td>
+				        	<td style="border:1px solid black; padding: 4px;">${deadline.pending_reason}</td>
+		        		</tr>			        		
+		        	</#if>
+		        	
+				</#list>
+		</#if>
+		
+		<#if pending?has_content>
+			<#list pending as pending>
+	        	<tr style="font-size:10; text-align:left; padding: 4px; border:1px solid;">
+		        	<td style="border:1px solid; padding: 4px;">${pending.ref}</td>
+		        	<td style="border:1px solid; padding: 4px;">${pending.title}</td>
+		        	<td style="border:1px solid; padding: 4px;">${pending.status}</td>
+		        	<td style="border:1px solid; padding: 4px;">${pending.start_date} ${pending.start_time}</td>
+		        	<td style="border:1px solid; padding: 4px;">${pending.priority}</td>
+		        	<td style="border:1px solid; padding: 4px;">${pending.ttr_deadline}</td>
+		        	<td style="border:1px solid; padding: 4px;">${pending.agent_fullname}</td>
+		        	<td style="border:1px solid; padding: 4px;">${pending.pending_reason}</td>
+	        	</tr>
+			</#list>	
+		</#if>	
+			
+        </table>
+        </div>
+        
+        <br />
+        <br />
+        
+        <span>Regards, </span><br /><br />
+        <span>SLA Manager</span><br /><br />
+    </body>
+</html>

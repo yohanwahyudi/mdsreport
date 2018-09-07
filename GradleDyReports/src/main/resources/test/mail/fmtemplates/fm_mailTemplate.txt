@@ -1,0 +1,16 @@
+<html>
+
+    <body>
+        <h3>Dear ${order1.customerInfo.name}, thank you for placing order.</h3>
+
+        <div>
+            Your order id is : ${order1.orderId}.
+        </div>
+        
+        <#list listString1 as str>
+        	${str}
+        </#list>
+        
+        <span>Sent using FreeMarker Template</span>
+    </body>
+</html>
