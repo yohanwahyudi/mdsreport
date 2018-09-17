@@ -19,12 +19,12 @@ public class PopulateIncidentTest {
 			
 		AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(AppConfig.class);
 		
-//		PopulateIncident populate = ctx.getBean(PopulateIncident.class);
-		PopulateServiceDesk populateSd = ctx.getBean(PopulateServiceDesk.class);
+		PopulateIncident populate = ctx.getBean(PopulateIncident.class);
+//		PopulateServiceDesk populateSd = ctx.getBean(PopulateServiceDesk.class);
 		
 //		try {
-//			populate.populate();
-			populateSd.populate();
+			populate.populate();
+//			populateSd.populate();
 //		} catch (Exception e) {
 //			throw e;
 //		}

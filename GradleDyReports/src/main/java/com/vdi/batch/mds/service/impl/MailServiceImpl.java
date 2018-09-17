@@ -198,6 +198,43 @@ public class MailServiceImpl implements MailService{
 
 	}
 	
+	@Override
+	public void sendEmail(Map<String, Object> mapObject, String template, List<FileSystemResource> file, String subject) {
+
+		MimeMessage message = mailSender.createMimeMessage();
+
+		String[] toEmailArr = appConfig.getMdsReportEmailTo();
+		try {
+
+			logger.info("Sending email......");
+			
+			MimeMessageHelper helper = new MimeMessageHelper(message, true);
+			helper.setFrom(new InternetAddress(appConfig.getMailFrom(), "SLA Team"));
+			helper.setTo(toEmailArr);
+			helper.setSubject(subject);
+			
+			for(FileSystemResource fsr : file) {
+				helper.addAttachment(fsr.getFilename(), fsr);
+				logger.info("file attachment: "+fsr.getPath()+"/"+fsr.getFilename());
+			}
+			
+			String text = getTemplateContentMdsDaily(mapObject, template);
+			
+			logger.info("email body: " +text);
+			
+			helper.setText(text, true);
+			mailSender.send(message);
+			
+			logger.info("Message has been sent......");
+			
+		} catch (MessagingException e) {
+			throw new MailParseException(e);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
 	public String getTemplateContentMdsDaily(Map<String, Object> object, String template) {
 		StringBuffer content = new StringBuffer();
 		try {

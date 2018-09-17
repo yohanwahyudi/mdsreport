@@ -73,6 +73,8 @@ public final class AppConfig {
 	private final String[] servicedeskPerson;
 
 	private final String servicedeskOtherTeam;
+	private final int mdsSlaThreshold;
+	private final String mdsReportPath;
 
 	@Autowired
 	public AppConfig(Environment env) {
@@ -111,6 +113,8 @@ public final class AppConfig {
 		this.servicedeskPerson = env.getRequiredProperty(PropertyNames.MDS_SERVICEDESK_REPORT_PERSON, String[].class);
 		this.servicedeskOtherTeam = env.getRequiredProperty(PropertyNames.MDS_SERVICEDESK_REPORT_OTHERTEAM,
 				String.class);
+		this.mdsSlaThreshold = env.getRequiredProperty(PropertyNames.MDS_SLA_THRESHOLD, Integer.class);
+		this.mdsReportPath = env.getRequiredProperty(PropertyNames.MDS_REPORT_PATH, String.class);
 	}
 
 	@Bean("mailSender")
@@ -330,6 +334,14 @@ public final class AppConfig {
 
 	public String[] getMdsReportEmailTo() {
 		return mdsReportEmailTo;
+	}
+
+	public int getMdsSlaThreshold() {
+		return mdsSlaThreshold;
+	}
+
+	public String getMdsReportPath() {
+		return mdsReportPath;
 	}
 
 }

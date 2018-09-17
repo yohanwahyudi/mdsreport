@@ -6,7 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.vdi.batch.mds.helper.weekly.PopulateSupportAgent;
+import com.vdi.batch.mds.helper.PopulateSupportAgent;
 import com.vdi.configuration.AppConfig;
 import com.vdi.tools.ParseCSVService;
 import com.vdi.tools.impl.ParseCSVServiceImpl;

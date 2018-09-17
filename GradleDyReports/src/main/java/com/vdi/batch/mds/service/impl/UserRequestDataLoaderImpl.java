@@ -146,7 +146,7 @@ public class UserRequestDataLoaderImpl implements ItopMDSDataLoaderService {
 			allStagingList.add(staging);
 
 		}
-		logger.debug("All Incident url Daily list size: " + allStagingList.size());
+		logger.debug("All UR url Daily list size: " + allStagingList.size());
 
 		return allStagingList;
 	}

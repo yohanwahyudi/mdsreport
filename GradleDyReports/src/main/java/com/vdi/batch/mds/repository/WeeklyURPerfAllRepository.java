@@ -21,8 +21,8 @@ public interface WeeklyURPerfAllRepository extends CrudRepository<PerformanceOve
 			"and month(urequest_startdate)= :month "+
 			"and week(urequest_startdate,3)= :week "+
 			"and scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned' "+
-			"and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
-					"or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
+			//"and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
+			//		"or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
 			"and scalar_user like 'EXT%' "+
 			";", nativeQuery=true)
 	public int getTicketCount(@Param("week") int week, @Param("month") int month);
@@ -35,8 +35,8 @@ public interface WeeklyURPerfAllRepository extends CrudRepository<PerformanceOve
 			"and week(urequest_startdate,3)= :week "+
 			"and scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned' "+
 			"and urequest_slattopassed='no'  "+
-			"and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
-					"or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
+			//"and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
+			//		"or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
 			"and scalar_user like 'EXT%' "+
 			";", nativeQuery=true)
 	public int getAchievedTicketCount( @Param("week") int week, @Param("month") int month);
@@ -49,8 +49,8 @@ public interface WeeklyURPerfAllRepository extends CrudRepository<PerformanceOve
 			"and week(urequest_startdate,3)= :week "+
 			"and scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned' "+
 			"and urequest_slattopassed='yes'  "+
-			"and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
-					"or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
+			//"and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
+			//		"or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
 			"and scalar_user like 'EXT%' "+
 			";", nativeQuery=true)
 	public int getMissedTicketCount( @Param("week") int week, @Param("month") int month);

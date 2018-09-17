@@ -11,6 +11,7 @@ public interface MailService {
 	public void sendEmail();
 	public void sendEmail(Map<String,Object> mapObject, String template);
 	public void sendEmail(Map<String,Object> mapObject, String template, FileSystemResource file, String subject);
+	public void sendEmail(Map<String,Object> mapObject, String template, List<FileSystemResource> file, String subject);
 	public void sendEmail(Map<String,Object> mapObject, String template, String[] to, String subject);
 
 }

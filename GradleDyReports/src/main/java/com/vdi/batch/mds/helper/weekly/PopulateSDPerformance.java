@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import com.vdi.batch.mds.repository.dao.PerfAgentDAOService;
 import com.vdi.batch.mds.repository.dao.PerfAllDAOService;
-import com.vdi.batch.mds.repository.dao.TempValueService;
 import com.vdi.model.performance.PerformanceAgent;
 import com.vdi.model.performance.PerformanceOverall;
 import com.vdi.tools.TimeStatic;
@@ -31,43 +30,26 @@ public class PopulateSDPerformance {
 	@Qualifier("weeklySDPerfAgentDAO")
 	private PerfAgentDAOService agentDAO;
 
-	private TempValueService tempValue;
-
 	private int currentMonth;
-	private int lastSavedMonth;
 	private int currentWeekYear;
-
-	private final String LAST_MONTH = "LAST_MONTH";
 
 	private final Logger logger = LogManager.getLogger(PopulateSDPerformance.class);
 
-	@Autowired
-	public PopulateSDPerformance(TempValueService tempValueService) {
-
+	public PopulateSDPerformance() {
 		this.currentMonth = TimeStatic.currentMonth;
 		this.currentWeekYear = TimeStatic.currentWeekYear; 
-				
-		this.tempValue = tempValueService;
-
-		this.lastSavedMonth = Integer.parseInt(tempValue.getTempValueByName(LAST_MONTH).getValue());
 	}
 
 	public void populatePerformance() {
-
 		int prevWeekYear = currentWeekYear - 1;
 
-		allDAO.insertPerformance(getPerformanceOverall(prevWeekYear, lastSavedMonth));
-		agentDAO.insertPerformance(getPerformanceAgentList(prevWeekYear, lastSavedMonth));
-
-		if (overlapMonth(lastSavedMonth)) {
-			logger.debug("overlap month");
-
-			allDAO.insertPerformance(getPerformanceOverall(prevWeekYear, currentMonth));
-			agentDAO.insertPerformance(getPerformanceAgentList(prevWeekYear, currentMonth));
-
-//			tempValue.updateTempValue(String.valueOf(currentMonth), LAST_MONTH);
-		}
-
+		allDAO.insertPerformance(getPerformanceOverall(prevWeekYear, currentMonth));
+		agentDAO.insertPerformance(getPerformanceAgentList(prevWeekYear, currentMonth));
+	}
+	
+	public void populatePerformance(int week, int month) {
+		allDAO.insertPerformance(getPerformanceOverall(week, month));
+		agentDAO.insertPerformance(getPerformanceAgentList(week, month));
 	}
 
 	@SuppressWarnings("unused")
@@ -201,14 +183,6 @@ public class PopulateSDPerformance {
 		}
 		
 		return achievement;
-	}
-
-	private Boolean overlapMonth(int lastSavedMonth) {
-		if (currentMonth == lastSavedMonth) {
-			return Boolean.FALSE;
-		} else {
-			return Boolean.TRUE;
-		}
 	}
 
 }

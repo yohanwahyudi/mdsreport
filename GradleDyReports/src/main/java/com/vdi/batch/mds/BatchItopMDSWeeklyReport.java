@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.scheduling.quartz.QuartzJobBean;
@@ -34,32 +35,45 @@ import net.sf.jasperreports.engine.JasperPrint;
 
 public class BatchItopMDSWeeklyReport extends QuartzJobBean {
 
+	@Autowired
+	private AppConfig appConfig;
+	
 	private final String period = PropertyNames.CONSTANT_REPORT_PERIOD_WEEKLY;
 	private final Logger logger = LogManager.getLogger(BatchItopMDSWeeklyReport.class);
+	
 	private AnnotationConfigApplicationContext ctx;
 
 	private Integer currentYearInt = TimeStatic.currentYear;
 	private Integer prevWeekMonth = TimeStatic.currentWeekMonth - 1;
 	private String currentMonthStr = TimeStatic.currentMonthStr;
+	private Integer currentWeekMonth = TimeStatic.currentWeekMonth;
+	
+//	private final String test = appConfig.getMdsReportPath();
 
 	@Override
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
+		
+//		logger.debug("final test: "+test);
+		
 		logger.info("Batch itop mds weekly report started.......");
-
 		ctx = new AnnotationConfigApplicationContext(AppConfig.class);
 
-		String path = File.separator + "data" + File.separator + "mdsitop" + File.separator + "target" + File.separator
-				+ "reports" + File.separator;
-		String fileName = "VDI_ITOP_Performance_Week" + (TimeStatic.currentWeekMonth - 1) + "_"
-				+ TimeStatic.currentMonthStr + ".pdf";
+		String path = appConfig.getMdsReportPath();
 
-		ReportService rpt = ctx.getBean("itopPerformanceReport", ReportService.class);
+		if (currentWeekMonth == 1) {
+			String fileName = getFileName(prevWeekMonth, currentMonthStr);
 
-		populatePerformance(ctx);
-		createReport(rpt, path, fileName);
-		sendEmail(rpt, path, fileName);
+			ReportService rpt = ctx.getBean("itopPerformanceReport", ReportService.class);
 
-		logger.info("Batch itop mds weekly report finished......");
+			populatePerformance(ctx);
+			createReport(rpt, path, fileName);
+			sendEmail(rpt, path, fileName);
+
+		} else {
+			logger.info("First day of Week, weekly report is in the monthly batch");
+		}
+
+		logger.debug("Batch itop mds weekly report finished......");
 
 	}
 
@@ -92,7 +106,7 @@ public class BatchItopMDSWeeklyReport extends QuartzJobBean {
 
 			Map<String, Object> mapObject = getMapObject(rpt.getPerformanceReport(period));
 
-			File file = new File(path+fileName);
+			File file = new File(path + fileName);
 			FileSystemResource fileResource = new FileSystemResource(file);
 
 			String subject = "Performance VDI For MDS Based on ITOP ";
@@ -135,6 +149,13 @@ public class BatchItopMDSWeeklyReport extends QuartzJobBean {
 		mapObject.put("assigned", assigned);
 
 		return mapObject;
+	}
+
+	private String getFileName(int week, String month) {
+
+		String fileName = "VDI_ITOP_Performance_Week" + week + "_" + month + ".pdf";
+
+		return fileName;
 	}
 
 }

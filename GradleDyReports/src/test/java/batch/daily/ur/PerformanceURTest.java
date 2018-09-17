@@ -15,6 +15,8 @@ public class PerformanceURTest {
 		
 		com.vdi.batch.mds.helper.weekly.PopulateURPerformance weekly = ctx.getBean("populateURPerformanceWeekly", com.vdi.batch.mds.helper.weekly.PopulateURPerformance.class);
 		weekly.populatePerformance();
+		
+		System.out.println("finished...");
 	}
 
 }

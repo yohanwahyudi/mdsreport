@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import com.vdi.batch.mds.repository.dao.PerfAgentDAOService;
 import com.vdi.batch.mds.repository.dao.PerfAllDAOService;
 import com.vdi.batch.mds.repository.dao.PerfTeamDAOService;
-import com.vdi.batch.mds.repository.dao.TempValueService;
 import com.vdi.model.performance.PerformanceAgent;
 import com.vdi.model.performance.PerformanceOverall;
 import com.vdi.model.performance.PerformanceTeam;
@@ -36,49 +35,35 @@ public class PopulatePerformance {
 	@Autowired
 	@Qualifier("weeklyPerfAgentDAO")
 	private PerfAgentDAOService agentDAO;
-	
-	private TempValueService tempValue;
 
 	private int currentMonth;
-	private int lastSavedMonth;
 	private int currentWeek;
-
-	private final String LAST_MONTH = "LAST_MONTH";
 
 	private final Logger logger = LogManager.getLogger(PopulatePerformance.class);
 
-	@Autowired
-	public PopulatePerformance(TempValueService tempValueService) {
+	public PopulatePerformance() {
 		this.currentMonth=TimeStatic.currentMonth;
 		this.currentWeek=TimeStatic.currentWeekYear;
-		this.tempValue=tempValueService;
-		
-		lastSavedMonth = Integer.parseInt(tempValue.getTempValueByName(LAST_MONTH).getValue());
 	}
 	
 	public void populatePerformance() {
+		int previousWeek = currentWeek-1;
 		
-		int week = currentWeek-1;
-		
-		allDAO.insertPerformance(getPerformanceOverall(week, lastSavedMonth));
-		teamDAO.insertPerformance(getPerformanceTeamList(week, lastSavedMonth));
-		agentDAO.insertPerformance(getPerformanceAgentList(week, lastSavedMonth));
-		
-		if(overlapMonth(lastSavedMonth)) {
-			logger.debug("overlap month");
-			
-			allDAO.insertPerformance(getPerformanceOverall(week, currentMonth));
-			teamDAO.insertPerformance(getPerformanceTeamList(week, currentMonth));
-			agentDAO.insertPerformance(getPerformanceAgentList(week, currentMonth));
-		}
-		
-		
+		allDAO.insertPerformance(getPerformanceOverall(previousWeek, currentMonth));
+		teamDAO.insertPerformance(getPerformanceTeamList(previousWeek, currentMonth));
+		agentDAO.insertPerformance(getPerformanceAgentList(previousWeek, currentMonth));
+	}
+	
+	public void populatePerformance(int week, int month) {
+		allDAO.insertPerformance(getPerformanceOverall(week, month));
+		teamDAO.insertPerformance(getPerformanceTeamList(week, month));
+		agentDAO.insertPerformance(getPerformanceAgentList(week, month));
 	}
 
 	@SuppressWarnings("unused")
 	public PerformanceOverall getPerformanceOverall(int week, int month) {
 
-		logger.debug("all week: "+week + "month: "+month);
+		logger.info("all week: "+week + "month: "+month);
 		
 		int ticketCount = allDAO.getTicketCount(week, month);
 		int achievedCount = allDAO.getAchievedTicketCount(week, month);
@@ -86,9 +71,9 @@ public class PopulatePerformance {
 		float achievement = (getAchievementTicket(new BigDecimal(achievedCount), new BigDecimal(ticketCount)))
 				.floatValue();
 		
-		logger.debug("all "+"ticketCount: "+ticketCount);
-		logger.debug("all "+"achievedCount: "+achievedCount);
-		logger.debug("all "+"missedCount: "+missedCount);
+		logger.info("all "+"ticketCount: "+ticketCount);
+		logger.info("all "+"achievedCount: "+achievedCount);
+		logger.info("all "+"missedCount: "+missedCount);
 
 		PerformanceOverall poUseThis = new PerformanceOverall();
 		PerformanceOverall poExisting = allDAO.getPerformance(week+1, month);
@@ -118,7 +103,7 @@ public class PopulatePerformance {
 
 	public List<PerformanceTeam> getPerformanceTeamList(int week, int month) {
 
-		logger.debug("team week: "+week + "month: "+month);
+		logger.info("team week: "+week + "month: "+month);
 		
 		// get new ticket
 		List<Object[]> newObjList = new ArrayList<Object[]>();
@@ -127,7 +112,7 @@ public class PopulatePerformance {
 		Map<String, PerformanceTeam> newPerfMap = new HashMap<String, PerformanceTeam>();
 		List<PerformanceTeam> newPerfList = new ArrayList<PerformanceTeam>();
 
-		logger.debug("object length: " +newObjList.size());
+		logger.info("object length: " +newObjList.size());
 		
 		for (Object[] object : newObjList) {
 
@@ -189,7 +174,7 @@ public class PopulatePerformance {
 
 	public List<PerformanceAgent> getPerformanceAgentList(int week, int month) {
 
-		logger.debug("agent week: "+week + "month: "+month);
+		logger.info("agent week: "+week + "month: "+month);
 		
 		// get new ticket
 		List<Object[]> newObjList = new ArrayList<Object[]>();
@@ -198,7 +183,7 @@ public class PopulatePerformance {
 		Map<String, PerformanceAgent> newPerfMap = new HashMap<String, PerformanceAgent>();
 		List<PerformanceAgent> newPerfList = new ArrayList<PerformanceAgent>();
 		
-		logger.debug("object agent list: "+newObjList.size());
+		logger.info("object agent list: "+newObjList.size());
 
 		for (Object[] object : newObjList) {
 
@@ -227,7 +212,7 @@ public class PopulatePerformance {
 			perfAgent.setCategory("sa");
 			perfAgent.setAchievement(achievement);
 
-			logger.debug("agent: " + agentName + " division: " + division);
+			logger.info("agent: " + agentName + " division: " + division);
 
 			newPerfList.add(perfAgent);
 			newPerfMap.put(agentName, perfAgent);
@@ -283,14 +268,6 @@ public class PopulatePerformance {
 		}
 
 		return achievement;
-	}
-	
-	private Boolean overlapMonth(int lastSavedMonth) {
-		if (currentMonth == lastSavedMonth) {
-			return Boolean.FALSE;
-		} else {
-			return Boolean.TRUE;
-		}
 	}
 
 }
