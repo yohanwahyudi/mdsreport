@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 
 import com.vdi.batch.mds.repository.dao.PerfAgentDAOService;
 import com.vdi.batch.mds.repository.dao.PerfAllDAOService;
-import com.vdi.batch.mds.repository.dao.TempValueService;
 import com.vdi.model.performance.PerformanceAgent;
 import com.vdi.model.performance.PerformanceOverall;
+import com.vdi.tools.TimeStatic;
 
 @Component("populateSDPerformanceMonthly")
 public class PopulateSDPerformance {
@@ -27,15 +27,14 @@ public class PopulateSDPerformance {
 	@Autowired
 	@Qualifier("monthlySDPerfAgentDAO")
 	private PerfAgentDAOService agentDAO;
-
-	private Integer lastSavedMonth;
-
-	private final String LAST_MONTH = "LAST_MONTH";
 	
-	@Autowired
-	public PopulateSDPerformance(TempValueService tempValueService) {
+	private Integer currentMonth;
+	private Integer prevMonth;
 	
-		lastSavedMonth = Integer.parseInt(tempValueService.getTempValueByName(LAST_MONTH).getValue());
+	public PopulateSDPerformance() {
+		
+		this.currentMonth = TimeStatic.currentMonth;
+		this.prevMonth = currentMonth-1;
 		
 	}
 
@@ -63,7 +62,7 @@ public class PopulateSDPerformance {
 			poUseThis.setAchievement(achievement);
 			poUseThis.setPeriod("monthly");
 			poUseThis.setCategory("sd");
-			poUseThis.setMonth(lastSavedMonth.shortValue());
+			poUseThis.setMonth(prevMonth.shortValue());
 		} else {
 			poExisting.setTotalTicket(ticketCount);
 			poExisting.setTotalAchieved(achievedCount);
@@ -104,7 +103,7 @@ public class PopulateSDPerformance {
 			perfAgent.setTotalTicket(totalTicket);
 			perfAgent.setPeriod("monthly");
 			perfAgent.setCategory("sd");
-			perfAgent.setMonth(lastSavedMonth.shortValue());
+			perfAgent.setMonth(prevMonth.shortValue());
 			perfAgent.setAchievement(achievement);
 
 			newPerfList.add(perfAgent);

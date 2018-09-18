@@ -19,13 +19,13 @@ public class PerfTest2 {
 		PopulatePerformance populatePerfWeekly = ctx.getBean("populatePerformanceWeekly",PopulatePerformance.class);
 //		com.vdi.batch.mds.helper.monthly.PopulatePerformance saMonthly = ctx.getBean("populatePerformanceMonthly",com.vdi.batch.mds.helper.monthly.PopulatePerformance.class);
 //		
-//		PopulateSDPerformance sdWeekly = ctx.getBean("populateSDPerformanceWeekly",PopulateSDPerformance.class);
+		PopulateSDPerformance sdWeekly = ctx.getBean("populateSDPerformanceWeekly",PopulateSDPerformance.class);
 //		com.vdi.batch.mds.helper.monthly.PopulateSDPerformance sdMonthly = ctx.getBean("populateSDPerformanceMonthly",com.vdi.batch.mds.helper.monthly.PopulateSDPerformance.class);
 		
 		logger.debug("begin");
 		populatePerfWeekly.populatePerformance();
 //		saMonthly.populatePerformance();
-//		sdWeekly.populatePerformance();
+		sdWeekly.populatePerformance();
 		
 //		sdMonthly.populatePerformance();
 		

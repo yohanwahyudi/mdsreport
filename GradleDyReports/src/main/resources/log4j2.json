@@ -426,7 +426,7 @@
 						"ref": "File-Appender"
 					}
 				],
-				"level": "debug"
+				"level": "info"
 			}
 		}
 	}

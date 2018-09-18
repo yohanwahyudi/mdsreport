@@ -14,10 +14,10 @@ import org.springframework.stereotype.Component;
 import com.vdi.batch.mds.repository.dao.PerfAgentDAOService;
 import com.vdi.batch.mds.repository.dao.PerfAllDAOService;
 import com.vdi.batch.mds.repository.dao.PerfTeamDAOService;
-import com.vdi.batch.mds.repository.dao.TempValueService;
 import com.vdi.model.performance.PerformanceAgent;
 import com.vdi.model.performance.PerformanceOverall;
 import com.vdi.model.performance.PerformanceTeam;
+import com.vdi.tools.TimeStatic;
 
 @Component("populatePerformanceMonthly")
 public class PopulatePerformance {
@@ -33,17 +33,17 @@ public class PopulatePerformance {
 	@Autowired
 	@Qualifier("monthlyPerfAgentDAO")
 	private PerfAgentDAOService agentDAO;
-
-	private Integer lastSavedMonth;
 	
-	private final String LAST_MONTH = "LAST_MONTH";
+	private Integer currentMonth;
+	private Integer prevMonth;
 	
-	@Autowired
-	public PopulatePerformance(TempValueService tempValueService) {
-		lastSavedMonth = Integer.parseInt(tempValueService.getTempValueByName(LAST_MONTH).getValue());
+	public PopulatePerformance() {
+		
+		this.currentMonth = TimeStatic.currentMonth;
+		this.prevMonth = currentMonth-1;
+		
 	}
 	
-//	@Autowired
 	public void populatePerformance() {
 		allDAO.insertPerformance(getPerformanceOverall());
 		teamDAO.insertPerformance(getPerformanceTeamList());
@@ -69,7 +69,7 @@ public class PopulatePerformance {
 			poUseThis.setAchievement(achievement);
 			poUseThis.setPeriod("monthly");
 			poUseThis.setCategory("sa");
-			poUseThis.setMonth(lastSavedMonth.shortValue());
+			poUseThis.setMonth(prevMonth.shortValue());
 		} else {
 			poExisting.setTotalTicket(ticketCount);
 			poExisting.setTotalAchieved(achievedCount);
@@ -108,7 +108,7 @@ public class PopulatePerformance {
 			perfTeam.setTotalMissed(missedCount);
 			perfTeam.setPeriod("monthly");
 			perfTeam.setCategory("sa");
-			perfTeam.setMonth(lastSavedMonth.shortValue());
+			perfTeam.setMonth(prevMonth.shortValue());
 			perfTeam.setAchievement(achievement);
 
 			newPerfList.add(perfTeam);
@@ -181,7 +181,7 @@ public class PopulatePerformance {
 			perfAgent.setTotalTicket(totalTicket);
 			perfAgent.setPeriod(period);
 			perfAgent.setCategory("sa");
-			perfAgent.setMonth(lastSavedMonth.shortValue());
+			perfAgent.setMonth(prevMonth.shortValue());
 			perfAgent.setAchievement(achievement);
 
 			newPerfList.add(perfAgent);

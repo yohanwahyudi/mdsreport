@@ -209,7 +209,7 @@ public class TemplateBuildersReport {
 				.setWidth(new Integer(52)).setStyle(style.getArialDetailSummaryStyle())
 				.setHeaderStyle(style.getArialHeaderSummaryStyle()).build();
 		AbstractColumn columnAchievement = ColumnBuilder.getNew()
-				.setColumnProperty("achievement", Float.class.getName()).setTitle("Achievement (%)")
+				.setColumnProperty("achievement", Float.class.getName()).setTitle("Achievement(%)")
 				.setWidth(new Integer(80)).setStyle(style.getArialDetailSummaryStyle())
 				.setHeaderStyle(style.getArialHeaderSummaryStyle()).build();
 
@@ -252,7 +252,7 @@ public class TemplateBuildersReport {
 				.setTitle("Total").setWidth(new Integer(50)).setStyle(style.getArialDetailAgentStyle())
 				.setHeaderStyle(style.getArialHeaderSummaryStyle()).build();
 		AbstractColumn columnAchievement = ColumnBuilder.getNew()
-				.setColumnProperty("achievement", Float.class.getName()).setTitle("Achievement")
+				.setColumnProperty("achievement", Float.class.getName()).setTitle("Achievement(%)")
 				.setWidth(new Integer(70)).setStyle(style.getArialDetailAgentStyle())
 				.setHeaderStyle(style.getArialHeaderSummaryStyle()).build();
 
@@ -517,7 +517,7 @@ public class TemplateBuildersReport {
 				.setTitle("Total").setWidth(new Integer(50)).setStyle(style.getArialDetailAgentStyle())
 				.setHeaderStyle(style.getArialHeaderSummaryStyle()).build();
 		AbstractColumn columnAchievement = ColumnBuilder.getNew()
-				.setColumnProperty("achievement", Float.class.getName()).setTitle("Achievement")
+				.setColumnProperty("achievement", Float.class.getName()).setTitle("Achievement(%)")
 				.setWidth(new Integer(70)).setStyle(style.getArialDetailAgentStyle())
 				.setHeaderStyle(style.getArialHeaderSummaryStyle()).build();
 
