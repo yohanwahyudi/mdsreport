@@ -45,7 +45,7 @@ public class IOToolsServiceImpl implements IOToolsService{
 	@Autowired	
 	public IOToolsServiceImpl(AppConfig appConfig) {
 		
-		logger.debug("enter cons IOTools");
+		logger.info("enter cons IOTools");
 		
 		this.file = appConfig.getMdsFileSource();
 		this.timeout = appConfig.getHttpTimeout();

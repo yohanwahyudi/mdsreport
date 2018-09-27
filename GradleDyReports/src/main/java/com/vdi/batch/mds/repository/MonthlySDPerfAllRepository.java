@@ -7,7 +7,7 @@ import com.vdi.model.performance.PerformanceOverall;
 
 public interface MonthlySDPerfAllRepository extends CrudRepository<PerformanceOverall, Long>{
 	
-	@Query(value="select n" + 
+	@Query(value="select " + 
 			"	count(incident_ref) " + 
 			"from staging_servicedesk " + 
 			"where month(incident_startdate)=month(curdate())-1 and year(incident_startdate)=year(curdate());", nativeQuery=true)

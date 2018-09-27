@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -15,10 +17,12 @@ import com.vdi.batch.mds.repository.dao.PerfAgentDAOService;
 import com.vdi.batch.mds.repository.dao.PerfAllDAOService;
 import com.vdi.model.performance.PerformanceAgent;
 import com.vdi.model.performance.PerformanceOverall;
-import com.vdi.tools.TimeStatic;
+import com.vdi.tools.TimeTools;
 
 @Component("populateURPerformanceMonthly")
 public class PopulateURPerformance {
+	
+	private final Logger logger = LogManager.getLogger(PopulateURPerformance.class);
 	
 	@Autowired
 	@Qualifier("monthlyURPerfAllDAO")
@@ -28,17 +32,24 @@ public class PopulateURPerformance {
 	@Qualifier("monthlyURPerfAgentDAO")
 	private PerfAgentDAOService agentDAO;
 	
+	@Autowired
+	private TimeTools timeTools;
+	
 	private Integer currentMonth;
 	private Integer prevMonth;
 	
 	public PopulateURPerformance() {
-		this.currentMonth = TimeStatic.currentMonth;
-		this.prevMonth = currentMonth-1;
+		
 	}
 	
 	public void populatePerformance() {
+		logger.info("Start populate performance ur monthly...");
+		this.currentMonth = timeTools.getCurrentMonth();
+		this.prevMonth = currentMonth-1;
+		
 		allDAO.insertPerformance(getPerformanceOverall());
 		agentDAO.insertPerformance(getPerformanceAgentList());
+		logger.info("Finish populate performance ur monthly...");
 	}
 
 	public PerformanceOverall getPerformanceOverall() {

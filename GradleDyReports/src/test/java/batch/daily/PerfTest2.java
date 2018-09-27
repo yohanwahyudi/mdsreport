@@ -30,6 +30,7 @@ public class PerfTest2 {
 //		sdMonthly.populatePerformance();
 		
 		logger.debug("finished");
+		logger.info("finished");
 		
 	}
 

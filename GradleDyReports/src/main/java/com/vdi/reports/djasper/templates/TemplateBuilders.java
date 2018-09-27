@@ -5,8 +5,6 @@ import java.awt.Color;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
-import com.vdi.tools.TimeStatic;
-
 import ar.com.fdvs.dj.domain.AutoText;
 import ar.com.fdvs.dj.domain.DynamicReport;
 import ar.com.fdvs.dj.domain.Style;
@@ -227,7 +225,7 @@ public class TemplateBuilders {
 		DynamicReportBuilder drb = new DynamicReportBuilder();
 		drb.setTitleStyle(style.getStandardTitleStyle()).setTitle("VDI SUPPORT AGENT PERFORMANCE BASED ON iTop ")
 				.setSubtitleStyle(style.getStandardSubTitleStyle())
-				.setSubtitle("WEEK " + TimeStatic.currentWeekMonth + " " + TimeStatic.currentYear).setLeftMargin(30)
+//				.setSubtitle("WEEK " + TimeStatic.currentWeekMonth + " " + TimeStatic.currentYear).setLeftMargin(30)
 				.setRightMargin(30).setTopMargin(30).setBottomMargin(30)
 				.setPageSizeAndOrientation(Page.Page_A4_Landscape()).setUseFullPageWidth(true)// .setWhenNoDataAllSectionNoDetail()
 				.addAutoText(AutoText.AUTOTEXT_PAGE_X_OF_Y, AutoText.POSITION_FOOTER, AutoText.ALIGMENT_LEFT);

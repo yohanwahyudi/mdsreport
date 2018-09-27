@@ -17,7 +17,7 @@ import com.vdi.batch.mds.repository.dao.PerfAgentDAOService;
 import com.vdi.batch.mds.repository.dao.PerfAllDAOService;
 import com.vdi.model.performance.PerformanceAgent;
 import com.vdi.model.performance.PerformanceOverall;
-import com.vdi.tools.TimeStatic;
+import com.vdi.tools.TimeTools;
 
 @Component("populateSDPerformanceWeekly")
 public class PopulateSDPerformance {
@@ -29,6 +29,9 @@ public class PopulateSDPerformance {
 	@Autowired
 	@Qualifier("weeklySDPerfAgentDAO")
 	private PerfAgentDAOService agentDAO;
+	
+	@Autowired
+	private TimeTools timeTools;
 
 	private int currentMonth;
 	private int currentWeekYear;
@@ -36,40 +39,55 @@ public class PopulateSDPerformance {
 	private final Logger logger = LogManager.getLogger(PopulateSDPerformance.class);
 
 	public PopulateSDPerformance() {
-		this.currentMonth = TimeStatic.currentMonth;
-		this.currentWeekYear = TimeStatic.currentWeekYear; 
+		
 	}
 
 	public void populatePerformance() {
+		this.currentMonth = timeTools.getCurrentMonth();
+		this.currentWeekYear = timeTools.getCurrentWeekYear(); 
 		int prevWeekYear = currentWeekYear - 1;
 
 		allDAO.insertPerformance(getPerformanceOverall(prevWeekYear, currentMonth));
 		agentDAO.insertPerformance(getPerformanceAgentList(prevWeekYear, currentMonth));
 	}
 	
-	public void populatePerformance(int week, int month) {
+	public void populatePerformance(int week, int month) {	
+		this.currentMonth = timeTools.getCurrentMonth();
+		this.currentWeekYear = timeTools.getCurrentWeekYear();
+		int prevWeekYear = currentWeekYear - 1;
+		
 		allDAO.insertPerformance(getPerformanceOverall(week, month));
 		agentDAO.insertPerformance(getPerformanceAgentList(week, month));
 	}
 
 	@SuppressWarnings("unused")
 	public PerformanceOverall getPerformanceOverall(int week, int month) {
-
-		logger.debug("week: " + week + " month: " + month);
+		logger.info("SD Overall");
+		logger.info("week: " + week + " month: " + month);
 		
 		int ticketCount = allDAO.getTicketCount(week, month);
 		int achievedCount = allDAO.getAchievedTicketCount(week, month);
 		int missedCount = allDAO.getMissedTicketCount(week, month);
 		float achievement = 0;
 
-		logger.debug(ticketCount);
-		logger.debug(achievedCount);
-		logger.debug(missedCount);
+		logger.info(ticketCount);
+		logger.info(achievedCount);
+		logger.info(missedCount);
 
 		achievement = (getAchievementTicket(new BigDecimal(achievedCount), new BigDecimal(ticketCount))).floatValue();
 
+		// check existing performance
+		int weekCheck = currentWeekYear;
+		int monthCheck = month;
+		if (currentMonth != month) {
+			weekCheck = currentWeekYear;
+			monthCheck = currentMonth-1;
+		}
+
+		logger.info("weekcheck:" + weekCheck + "monthcheck:" + monthCheck);
+		
 		PerformanceOverall poUseThis = new PerformanceOverall();
-		PerformanceOverall poExisting = allDAO.getPerformance(currentWeekYear, month);
+		PerformanceOverall poExisting = allDAO.getPerformance(weekCheck, monthCheck);
 		if (poExisting == null) {
 			poUseThis.setTotalTicket(ticketCount);
 			poUseThis.setTotalAchieved(achievedCount);
@@ -96,9 +114,9 @@ public class PopulateSDPerformance {
 
 	public List<PerformanceAgent> getPerformanceAgentList(int week, int month) {
 
-		logger.debug("getPerformanceAgent");
-		logger.debug("week: " + week);
-		logger.debug("month: " + month);
+		logger.info("getPerformanceAgent");
+		logger.info("week: " + week);
+		logger.info("month: " + month);
 		
 		// get new ticket
 		List<Object[]> newObjList = new ArrayList<Object[]>();
@@ -128,13 +146,24 @@ public class PopulateSDPerformance {
 			perfAgent.setPeriod("weekly");
 			perfAgent.setCategory("sd");
 			perfAgent.setAchievement(achievement);
+			
+			logger.info("agent: "+agentName);
+			logger.info("all: "+totalTicket);
 
 			newPerfList.add(perfAgent);
 			newPerfMap.put(agentName, perfAgent);
 		}
 
 		// compare with existing ticket
-		List<PerformanceAgent> existingList = agentDAO.getPerformance(currentWeekYear, month);
+		// check existing performance
+		int weekCheck = currentWeekYear;
+		int monthCheck = month;
+		if (currentMonth != month) {
+			weekCheck = currentWeekYear;
+			monthCheck = currentMonth-1;
+		}
+
+		List<PerformanceAgent> existingList = agentDAO.getPerformance(weekCheck, monthCheck);
 		List<PerformanceAgent> useThisList = new ArrayList<PerformanceAgent>();
 		if (existingList.size() < 1) {
 			useThisList = newPerfList;

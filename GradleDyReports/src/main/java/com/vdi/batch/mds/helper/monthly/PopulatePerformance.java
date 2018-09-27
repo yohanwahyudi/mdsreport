@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -17,10 +19,12 @@ import com.vdi.batch.mds.repository.dao.PerfTeamDAOService;
 import com.vdi.model.performance.PerformanceAgent;
 import com.vdi.model.performance.PerformanceOverall;
 import com.vdi.model.performance.PerformanceTeam;
-import com.vdi.tools.TimeStatic;
+import com.vdi.tools.TimeTools;
 
 @Component("populatePerformanceMonthly")
 public class PopulatePerformance {
+	
+	private final Logger logger = LogManager.getLogger(PopulatePerformance.class);
 	
 	@Autowired
 	@Qualifier("monthlyPerfAllDAO")
@@ -34,25 +38,32 @@ public class PopulatePerformance {
 	@Qualifier("monthlyPerfAgentDAO")
 	private PerfAgentDAOService agentDAO;
 	
+	@Autowired
+	private TimeTools timeTools;
+	
 	private Integer currentMonth;
 	private Integer prevMonth;
 	
 	public PopulatePerformance() {
 		
-		this.currentMonth = TimeStatic.currentMonth;
-		this.prevMonth = currentMonth-1;
-		
 	}
 	
 	public void populatePerformance() {
+		
+		logger.info("Start populate performance monthly...");
+		
+		this.currentMonth = timeTools.getCurrentMonth();
+		this.prevMonth = currentMonth-1;
+		
 		allDAO.insertPerformance(getPerformanceOverall());
 		teamDAO.insertPerformance(getPerformanceTeamList());
 		agentDAO.insertPerformance(getPerformanceAgentList());		
 		
+		logger.info("Finished populate performance monthly...");
 	}
 
 	@SuppressWarnings("unused")
-	public PerformanceOverall getPerformanceOverall() {
+	private PerformanceOverall getPerformanceOverall() {
 
 		int ticketCount = allDAO.getTicketCount();
 		int achievedCount = allDAO.getAchievedTicketCount();
@@ -83,7 +94,7 @@ public class PopulatePerformance {
 
 	}
 
-	public List<PerformanceTeam> getPerformanceTeamList() {
+	private List<PerformanceTeam> getPerformanceTeamList() {
 
 		// get new ticket
 		List<Object[]> newObjList = new ArrayList<Object[]>();
@@ -149,7 +160,7 @@ public class PopulatePerformance {
 		return useThisList;
 	}
 
-	public List<PerformanceAgent> getPerformanceAgentList() {
+	private List<PerformanceAgent> getPerformanceAgentList() {
 
 		// get new ticket
 		List<Object[]> newObjList = new ArrayList<Object[]>();
@@ -223,7 +234,7 @@ public class PopulatePerformance {
 		return useThisList;
 	}
 
-	public BigDecimal getAchievementTicket(BigDecimal ticketAchieved, BigDecimal ticketTotal) {
+	private BigDecimal getAchievementTicket(BigDecimal ticketAchieved, BigDecimal ticketTotal) {
 
 		BigDecimal achievement = new BigDecimal(0);
 		

@@ -10,7 +10,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.scheduling.quartz.QuartzJobBean;
@@ -28,52 +27,58 @@ import com.vdi.reports.ReportExporter;
 import com.vdi.reports.djasper.model.MasterReport;
 import com.vdi.reports.djasper.model.SummaryReport;
 import com.vdi.reports.djasper.service.ReportService;
-import com.vdi.tools.TimeStatic;
+import com.vdi.tools.TimeTools;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 
 public class BatchItopMDSWeeklyReport extends QuartzJobBean {
-
-	@Autowired
-	private AppConfig appConfig;
 	
 	private final String period = PropertyNames.CONSTANT_REPORT_PERIOD_WEEKLY;
 	private final Logger logger = LogManager.getLogger(BatchItopMDSWeeklyReport.class);
 	
 	private AnnotationConfigApplicationContext ctx;
 
-	private Integer currentYearInt = TimeStatic.currentYear;
-	private Integer prevWeekMonth = TimeStatic.currentWeekMonth - 1;
-	private String currentMonthStr = TimeStatic.currentMonthStr;
-	private Integer currentWeekMonth = TimeStatic.currentWeekMonth;
+	private Integer currentYearInt;
+	private Integer prevWeekMonth;
+	private String currentMonthStr;
+	private Integer currentWeekMonth;
 	
 //	private final String test = appConfig.getMdsReportPath();
+	
+	public BatchItopMDSWeeklyReport() {
+		
+	}
 
 	@Override
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
 		
-//		logger.debug("final test: "+test);
-		
 		logger.info("Batch itop mds weekly report started.......");
 		ctx = new AnnotationConfigApplicationContext(AppConfig.class);
+		
+		TimeTools timeTools = ctx.getBean(TimeTools.class);		
+		this.currentWeekMonth = timeTools.getCurrentWeekMonth();
+		this.prevWeekMonth = timeTools.getCurrentWeekMonth() - 1;
+		this.currentMonthStr = timeTools.getCurrentMonthString();
+		this.currentYearInt = timeTools.getCurrentYear();
+		
 
+		AppConfig appConfig = ctx.getBean(AppConfig.class);
 		String path = appConfig.getMdsReportPath();
 
 		if (currentWeekMonth == 1) {
+			logger.info("First day of Week, weekly report is in the monthly batch");
+		} else {
 			String fileName = getFileName(prevWeekMonth, currentMonthStr);
 
 			ReportService rpt = ctx.getBean("itopPerformanceReport", ReportService.class);
 
 			populatePerformance(ctx);
 			createReport(rpt, path, fileName);
-			sendEmail(rpt, path, fileName);
-
-		} else {
-			logger.info("First day of Week, weekly report is in the monthly batch");
+			sendEmail(rpt, path, fileName);			
 		}
 
-		logger.debug("Batch itop mds weekly report finished......");
+		logger.info("Batch itop mds weekly report finished......");
 
 	}
 

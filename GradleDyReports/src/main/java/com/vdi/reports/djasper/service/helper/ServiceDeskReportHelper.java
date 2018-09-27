@@ -24,7 +24,7 @@ import com.vdi.model.staging.StagingServiceDesk;
 import com.vdi.model.staging.StagingUserRequest;
 import com.vdi.reports.djasper.model.MasterReport;
 import com.vdi.reports.djasper.model.SummaryReport;
-import com.vdi.tools.TimeStatic;
+import com.vdi.tools.TimeTools;
 
 @Component("serviceDeskReportHelper")
 public class ServiceDeskReportHelper {
@@ -61,15 +61,17 @@ public class ServiceDeskReportHelper {
 	@Autowired
 	@Qualifier("stagingUserRequestDAO")
 	private StagingUserRequestDAOService urReport;
+	
+	@Autowired
+	private TimeTools timeTools;
 
 	@Autowired
 	private AppConfig appConfig;
 
-	private final int currentMonth = TimeStatic.currentMonth;
-	private final int currentWeek = TimeStatic.currentWeekYear;
-
-	private final int prevMonth = currentMonth - 1;
-	private final int prevWeek = currentWeek - 1;
+	private int currentMonth; 
+	private int currentWeek; 
+	private int prevMonth; 
+	private int prevWeek; 
 
 	private MasterReport weeklyReport;
 	private MasterReport monthlyReport;
@@ -84,8 +86,13 @@ public class ServiceDeskReportHelper {
 	}
 
 	private void setWeeklyReport() {
+		
+		this.currentMonth = timeTools.getCurrentMonth();
+		this.currentWeek = timeTools.getCurrentWeekYear();
+		this.prevMonth = currentMonth - 1;
+		this.prevWeek = currentWeek - 1;
+		
 		weeklyReport = new MasterReport();
-
 		weeklyReport.setOverallAchievementList(getOverallWeeklyAchievement());
 		weeklyReport.setServiceDeskAchievementList(getServiceDeskWeeklyAchievement());
 		weeklyReport.setPerformanceServiceDeskAgentList(getSdAgentWeeklyPerformance());
@@ -98,11 +105,36 @@ public class ServiceDeskReportHelper {
 
 		return weeklyReport;
 	}
+	
+private void setWeeklyReport(int month) {
+		
+		this.currentMonth = month;
+		this.currentWeek = timeTools.getCurrentWeekYear();
+		this.prevMonth = currentMonth - 1;
+		this.prevWeek = currentWeek - 1;
+		
+		weeklyReport = new MasterReport();
+		weeklyReport.setOverallAchievementList(getOverallWeeklyAchievement());
+		weeklyReport.setServiceDeskAchievementList(getServiceDeskWeeklyAchievement());
+		weeklyReport.setPerformanceServiceDeskAgentList(getSdAgentWeeklyPerformance());
+		weeklyReport.setServiceDeskIncidentList(getSdWeeklyReport().getServiceDeskIncidentList());
+		weeklyReport.setUserRequestTicketList(getUrWeeklyReport().getUserRequestTicketList());
+	}
+
+	public MasterReport getWeeklyReport(int month) {
+		setWeeklyReport(month);
+
+		return weeklyReport;
+	}
 
 	private void setMonthlyReport() {
 
+		this.currentMonth = timeTools.getCurrentMonth();
+		this.currentWeek = timeTools.getCurrentWeekYear();
+		this.prevMonth = currentMonth - 1;
+		this.prevWeek = currentWeek - 1;
+		
 		monthlyReport = new MasterReport();
-
 		monthlyReport.setOverallAchievementList(getOverallMonthlyAchievement());
 		monthlyReport.setServiceDeskAchievementList(getServiceDeskMonthlyAchievement());
 		monthlyReport.setPerformanceServiceDeskAgentList(getSdAgentMonthlyPerformance());
@@ -444,7 +476,9 @@ public class ServiceDeskReportHelper {
 	}
 
 	private MasterReport getSdWeeklyReport() {
-
+		logger.info("getsdweeklyreport..");
+		logger.info("currentWeek:"+currentWeek+" currentMonth:"+currentMonth);
+		
 		PerformanceOverall perfAll = allWeeklyPerformance.getPerformance(currentWeek, currentMonth);
 		Integer totalTicket = perfAll.getTotalTicket();
 		Integer totalAchieved = perfAll.getTotalAchieved();

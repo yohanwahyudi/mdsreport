@@ -19,11 +19,11 @@ import com.vdi.model.performance.PerformanceOverall;
 import com.vdi.model.performance.PerformanceTeam;
 import com.vdi.reports.djasper.model.MasterReport;
 import com.vdi.reports.djasper.model.SummaryReport;
-import com.vdi.tools.TimeStatic;
+import com.vdi.tools.TimeTools;
 
 @Component("supportAgentReportHelper")
 public class SupportAgentReportHelper {
-	
+
 	@Autowired
 	@Qualifier("weeklyPerfAllDAO")
 	private PerfAllDAOService allWeeklyPerformance;
@@ -43,48 +43,55 @@ public class SupportAgentReportHelper {
 	@Autowired
 	@Qualifier("monthlyPerfAgentDAO")
 	private PerfAgentDAOService agentMonthlyPerformance;
-	
+
 	@Autowired
 	@Qualifier("incidentReportDAO")
 	private IncidentReportDAOService saIncidentReport;
-	
-	private final int currentMonth = TimeStatic.currentMonth;
-	private final int currentWeek = TimeStatic.currentWeekYear;
-	
-	private final int prevMonth = currentMonth - 1;
-	private final int prevWeek = currentWeek -1;
-	
+
+	@Autowired
+	private TimeTools timeTools;
+
 	private MasterReport weeklyReport;
 	private MasterReport monthlyReport;
-	
+
+	private int currentMonth;
+	private int currentWeek;
+	private int prevMonth;
+	private int prevWeek;
+
 	private final Logger logger = LogManager.getLogger(SupportAgentReportHelper.class);
-	
+
 	public SupportAgentReportHelper() {
-		
-	}	
-	
-	private void setWeeklyReport(){
-		
+
+	}
+
+	private void setWeeklyReport() {
+
+		this.currentMonth = timeTools.getCurrentMonth();
+		this.currentWeek = timeTools.getCurrentWeekYear();
+		this.prevMonth = currentMonth - 1;
+		this.prevWeek = currentWeek - 1;
+
 		PerformanceOverall perfAll = allWeeklyPerformance.getPerformance(currentWeek, currentMonth);
 		Integer totalTicket = perfAll.getTotalTicket();
 		Integer totalAchieved = perfAll.getTotalAchieved();
 		Integer totalMissed = perfAll.getTotalMissed();
 		Float achievement = perfAll.getAchievement();
-		
+
 		List<SummaryReport> summaryList = new ArrayList<SummaryReport>();
 		summaryList.add(new SummaryReport("Ticket Total", totalTicket.toString()));
 		summaryList.add(new SummaryReport("Ticket Achieved", totalAchieved.toString()));
 		summaryList.add(new SummaryReport("Ticket Missed", totalMissed.toString()));
-		summaryList.add(new SummaryReport("Achievement", achievement.toString()+"%"));
-		
+		summaryList.add(new SummaryReport("Achievement", achievement.toString() + "%"));
+
 		List<PerformanceTeam> performanceTeamList = teamWeeklyPerformance.getPerformance(currentWeek, currentMonth);
 		List<PerformanceAgent> performanceAgentList = agentWeeklyPerformance.getPerformance(currentWeek, currentMonth);
-		
+
 		List<Incident> supportAgentPendingList = saIncidentReport.getPendingIncidentByWeek(currentMonth, prevWeek);
 		List<Incident> supportAgentAssignList = saIncidentReport.getAssignedIncidentByWeek(currentMonth, prevWeek);
 		List<Incident> supportAgentMissedList = saIncidentReport.getMissedIncidentByWeek(currentMonth, prevWeek);
 		List<Incident> supportAgentIncidentList = saIncidentReport.getAllIncidentByWeek(currentMonth, prevWeek);
-		
+
 		MasterReport report = new MasterReport();
 		report.setOverallAchievementList(summaryList);
 		report.setPerformanceTeamList(performanceTeamList);
@@ -93,41 +100,93 @@ public class SupportAgentReportHelper {
 		report.setSupportAgentAssignList(supportAgentAssignList);
 		report.setSupportAgentMissedList(supportAgentMissedList);
 		report.setSupportAgentIncidentList(supportAgentIncidentList);
-		
+
 		this.weeklyReport = report;
-		
+
 	}
-	
+
+	private void setWeeklyReport(int month) {
+
+		this.currentMonth = month;
+		this.currentWeek = timeTools.getCurrentWeekYear();
+		this.prevMonth = currentMonth - 1;
+		this.prevWeek = currentWeek - 1;
+
+		PerformanceOverall perfAll = allWeeklyPerformance.getPerformance(currentWeek, currentMonth);
+		Integer totalTicket = perfAll.getTotalTicket();
+		Integer totalAchieved = perfAll.getTotalAchieved();
+		Integer totalMissed = perfAll.getTotalMissed();
+		Float achievement = perfAll.getAchievement();
+
+		List<SummaryReport> summaryList = new ArrayList<SummaryReport>();
+		summaryList.add(new SummaryReport("Ticket Total", totalTicket.toString()));
+		summaryList.add(new SummaryReport("Ticket Achieved", totalAchieved.toString()));
+		summaryList.add(new SummaryReport("Ticket Missed", totalMissed.toString()));
+		summaryList.add(new SummaryReport("Achievement", achievement.toString() + "%"));
+
+		List<PerformanceTeam> performanceTeamList = teamWeeklyPerformance.getPerformance(currentWeek, currentMonth);
+		List<PerformanceAgent> performanceAgentList = agentWeeklyPerformance.getPerformance(currentWeek, currentMonth);
+
+		List<Incident> supportAgentPendingList = saIncidentReport.getPendingIncidentByWeek(currentMonth, prevWeek);
+		List<Incident> supportAgentAssignList = saIncidentReport.getAssignedIncidentByWeek(currentMonth, prevWeek);
+		List<Incident> supportAgentMissedList = saIncidentReport.getMissedIncidentByWeek(currentMonth, prevWeek);
+		List<Incident> supportAgentIncidentList = saIncidentReport.getAllIncidentByWeek(currentMonth, prevWeek);
+
+		MasterReport report = new MasterReport();
+		report.setOverallAchievementList(summaryList);
+		report.setPerformanceTeamList(performanceTeamList);
+		report.setPerformanceSuportAgentList(performanceAgentList);
+		report.setSupportAgentPendingList(supportAgentPendingList);
+		report.setSupportAgentAssignList(supportAgentAssignList);
+		report.setSupportAgentMissedList(supportAgentMissedList);
+		report.setSupportAgentIncidentList(supportAgentIncidentList);
+
+		this.weeklyReport = report;
+
+	}
+
 	public MasterReport getWeeklyReport() {
-		
+
 		setWeeklyReport();
-		
+
 		return this.weeklyReport;
 	}
-	
+
+	public MasterReport getWeeklyReport(int month) {
+
+		setWeeklyReport(month);
+
+		return this.weeklyReport;
+	}
+
 	private void setMonthlyReport() {
-		
+
+		this.currentMonth = timeTools.getCurrentMonth();
+		this.currentWeek = timeTools.getCurrentWeekYear();
+		this.prevMonth = currentMonth - 1;
+		this.prevWeek = currentWeek - 1;
+
 		List<SummaryReport> summaryList = new ArrayList<SummaryReport>();
 		PerformanceOverall perfAll = allMonthlyPerformance.getPerformance();
 		Integer totalTicket = perfAll.getTotalTicket();
 		Integer totalAchieved = perfAll.getTotalAchieved();
 		Integer totalMissed = perfAll.getTotalMissed();
-		Float achievement = perfAll.getAchievement();	
-		
+		Float achievement = perfAll.getAchievement();
+
 		summaryList.add(new SummaryReport("Ticket Total", totalTicket.toString()));
 		summaryList.add(new SummaryReport("Ticket Achieved", totalAchieved.toString()));
 		summaryList.add(new SummaryReport("Ticket Missed", totalMissed.toString()));
-		summaryList.add(new SummaryReport("Achievement", achievement.toString()+"%"));
-		
+		summaryList.add(new SummaryReport("Achievement", achievement.toString() + "%"));
+
 		List<PerformanceTeam> performanceTeamList = teamMonthlyPerformance.getPerformance();
 		List<PerformanceAgent> performanceAgentList = agentMonthlyPerformance.getPerformance();
-		
-		//incident
+
+		// incident
 		List<Incident> supportAgentMissedList = saIncidentReport.getMissedIncidentByMonth(prevMonth);
 		List<Incident> supportAgentPendingList = saIncidentReport.getPendingIncidentByMonth(prevMonth);
 		List<Incident> supportAgentAssignedList = saIncidentReport.getAssignedIncidentByMonth(prevMonth);
 		List<Incident> supportAgentIncidentList = saIncidentReport.getAllIncidentByMonth(prevMonth);
-		
+
 		MasterReport report = new MasterReport();
 		report.setOverallAchievementList(summaryList);
 		report.setPerformanceTeamList(performanceTeamList);
@@ -136,16 +195,16 @@ public class SupportAgentReportHelper {
 		report.setSupportAgentAssignList(supportAgentAssignedList);
 		report.setSupportAgentMissedList(supportAgentMissedList);
 		report.setSupportAgentIncidentList(supportAgentIncidentList);
-		
-		logger.debug("totalTicket: "+totalTicket);
-		
+
+		logger.debug("totalTicket: " + totalTicket);
+
 		this.monthlyReport = report;
 	}
-	
+
 	public MasterReport getMonthlyReport() {
-		
+
 		setMonthlyReport();
-		
+
 		return this.monthlyReport;
 	}
 

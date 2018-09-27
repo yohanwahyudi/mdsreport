@@ -11,14 +11,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
-import com.vdi.batch.mds.helper.weekly.PopulatePerformance;
-import com.vdi.batch.mds.helper.weekly.PopulateSDPerformance;
-import com.vdi.batch.mds.helper.weekly.PopulateURPerformance;
+import com.vdi.batch.mds.helper.monthly.PopulatePerformance;
+import com.vdi.batch.mds.helper.monthly.PopulateSDPerformance;
+import com.vdi.batch.mds.helper.monthly.PopulateURPerformance;
 import com.vdi.batch.mds.service.MailService;
 import com.vdi.configuration.AppConfig;
 import com.vdi.configuration.PropertyNames;
@@ -29,7 +29,7 @@ import com.vdi.reports.ReportExporter;
 import com.vdi.reports.djasper.model.MasterReport;
 import com.vdi.reports.djasper.model.SummaryReport;
 import com.vdi.reports.djasper.service.ReportService;
-import com.vdi.tools.TimeStatic;
+import com.vdi.tools.TimeTools;
 
 import net.sf.jasperreports.engine.JRException;
 
@@ -42,17 +42,19 @@ public class BatchItopMDSMonthlyReport extends QuartzJobBean {
 
 	private AnnotationConfigApplicationContext ctx;
 
-	@Autowired
-	private AppConfig appConfig;
-
-	private Integer currentWeekYear = TimeStatic.currentWeekYear;
-	private Integer currentWeekMonth = TimeStatic.currentWeekMonth;
-	private Integer previousMonth = TimeStatic.currentMonth-1;
-	private Integer currentYearInt = TimeStatic.currentYear;
+	private Integer currentWeekYear;
+	private Integer currentWeekMonth;
+	private Integer currentMonth;
+	private Integer previousMonth;
+	private Integer currentYearInt;
 	
-	private final String currentDateStr = TimeStatic.currentDateStr;
-	private final String currentMonthStr = TimeStatic.currentMonthStr;
-	private final String prevMonthStr = TimeStatic.prevMonthStr;
+	private String currentDateStr;
+	private String currentMonthStr;
+	private String prevMonthStr;
+	
+	public BatchItopMDSMonthlyReport() {
+		
+	}
 
 	@Override
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
@@ -60,12 +62,22 @@ public class BatchItopMDSMonthlyReport extends QuartzJobBean {
 		logger.info("Batch itop mds monthly report started.......");
 
 		ctx = new AnnotationConfigApplicationContext(AppConfig.class);
+		
+		TimeTools timeTools = ctx.getBean(TimeTools.class);		
+		this.currentWeekYear = timeTools.getCurrentWeekYear();
+		this.currentWeekMonth = timeTools.getCurrentWeekMonth();
+		this.currentMonth = timeTools.getCurrentMonth();
+		this.previousMonth = currentMonth-1;
+		this.currentYearInt = timeTools.getCurrentYear();
+		this.currentDateStr = timeTools.getCurrentDateStr();
+		this.currentMonthStr = timeTools.getCurrentMonthString();
+		this.prevMonthStr = timeTools.getPrevMonthString();
 
+		AppConfig appConfig = ctx.getBean(AppConfig.class);
 		String path = appConfig.getMdsReportPath();
 		String fileNameMonthly = getFileNameMonthly();
 
 		ReportService rpt = ctx.getBean("itopPerformanceReport", ReportService.class);
-
 		//populate performance monthly
 		populatePerformance(ctx);
 		createReport(rpt, path, fileNameMonthly, periodMonthly);
@@ -75,16 +87,25 @@ public class BatchItopMDSMonthlyReport extends QuartzJobBean {
 		Integer weeklyWeekMonth;
 		Integer weeklyWeekYear;
 		if(currentDateStr.equalsIgnoreCase(PropertyNames.DAY_STR_MONDAY)) {
+			logger.info("MONDAY.. ");
+			
 			weeklyWeekYear = currentWeekYear-1;
-			weeklyWeekMonth = currentWeekMonth-1;
+			weeklyWeekMonth = timeTools.getEndWeekOfMonth(currentYearInt, previousMonth);
 			filenameWeekly = getFileNameWeekly(weeklyWeekMonth);
 		} else {
+			logger.info("Else day.. ");
+			
 			weeklyWeekYear = currentWeekYear;
 			weeklyWeekMonth = currentWeekMonth;
 			filenameWeekly = getFileNameWeekly(weeklyWeekMonth);
 		}		
+		
+		ctx.close();		
+		ctx = new AnnotationConfigApplicationContext(AppConfig.class);
+		rpt = ctx.getBean("itopPerformanceReport", ReportService.class);
+		
 		populateWeeklyPerformance(ctx, weeklyWeekYear, previousMonth);
-		createReport(rpt, path, filenameWeekly, periodWeekly);		
+		createReport(rpt, path, filenameWeekly, periodWeekly, previousMonth, weeklyWeekMonth);		
 		
 		//send email
 		String[] fileNameArray= {fileNameMonthly, filenameWeekly};
@@ -104,12 +125,14 @@ public class BatchItopMDSMonthlyReport extends QuartzJobBean {
 	}
 
 	private void populateWeeklyPerformance(AnnotationConfigApplicationContext ctx, int week, int month) {
+		logger.info("batch week: "+week+"month: "+month);
+		
 		// populate weekly performance
-		PopulatePerformance weekly = ctx.getBean("populatePerformanceWeekly", PopulatePerformance.class);
+		com.vdi.batch.mds.helper.weekly.PopulatePerformance weekly = ctx.getBean("populatePerformanceWeekly", com.vdi.batch.mds.helper.weekly.PopulatePerformance.class);
 		weekly.populatePerformance(week, month);
-		PopulateSDPerformance weeklySD = ctx.getBean("populateSDPerformanceWeekly", PopulateSDPerformance.class);
+		com.vdi.batch.mds.helper.weekly.PopulateSDPerformance weeklySD = ctx.getBean("populateSDPerformanceWeekly", com.vdi.batch.mds.helper.weekly.PopulateSDPerformance.class);
 		weeklySD.populatePerformance(week, month);
-		PopulateURPerformance weeklyUR = ctx.getBean("populateURPerformanceWeekly", PopulateURPerformance.class);
+		com.vdi.batch.mds.helper.weekly.PopulateURPerformance weeklyUR = ctx.getBean("populateURPerformanceWeekly", com.vdi.batch.mds.helper.weekly.PopulateURPerformance.class);
 		weeklyUR.populatePerformance(week, month);
 	}
 
@@ -117,6 +140,19 @@ public class BatchItopMDSMonthlyReport extends QuartzJobBean {
 
 		try {
 			ReportExporter.exportReport(rpt.getReport(period), path + fileName);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (JRException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void createReport(ReportService rpt, String path, String fileName, String period, int month, int week) {
+
+		try {
+			ReportExporter.exportReport(rpt.getReport(period, month, week), path + fileName);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (JRException e) {
@@ -143,7 +179,7 @@ public class BatchItopMDSMonthlyReport extends QuartzJobBean {
 			String subjectPeriod = prevMonthStr + " " + currentYearInt;
 
 			MailService mailService = ctx.getBean("mailService", MailService.class);
-			mailService.sendEmail(mapObject, "fm_mailItopReportMDS.txt", fsrList, subject + subjectPeriod);
+			mailService.sendEmail(mapObject, "fm_mailItopReportMDSMonthly.txt", fsrList, subject + subjectPeriod);
 
 		} catch (Exception e) {
 			e.printStackTrace();

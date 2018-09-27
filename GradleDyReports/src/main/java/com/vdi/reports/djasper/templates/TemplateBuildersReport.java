@@ -391,7 +391,7 @@ public class TemplateBuildersReport {
 				.setTitle("Title").setWidth(new Integer(200)).setStyle(style.getArialDetailIncidentListStyle())
 				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
 		AbstractColumn columnStatus = ColumnBuilder.getNew().setColumnProperty("status", String.class.getName())
-				.setTitle("Status").setWidth(new Integer(30)).setStyle(style.getArialDetailIncidentListStyle())
+				.setTitle("Status").setWidth(new Integer(40)).setStyle(style.getArialDetailIncidentListStyle())
 				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
 		AbstractColumn columnAgent = ColumnBuilder.getNew().setColumnProperty("agent_fullname", String.class.getName())
 				.setTitle("Agent").setWidth(new Integer(150)).setStyle(style.getArialDetailIncidentListStyle())
@@ -546,7 +546,7 @@ public class TemplateBuildersReport {
 				.setTitle("Title").setWidth(new Integer(200)).setStyle(style.getArialDetailIncidentListStyle())
 				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
 		AbstractColumn columnStatus = ColumnBuilder.getNew().setColumnProperty("incident_status", String.class.getName())
-				.setTitle("Status").setWidth(new Integer(35)).setStyle(style.getArialDetailIncidentListStyle())
+				.setTitle("Status").setWidth(new Integer(40)).setStyle(style.getArialDetailIncidentListStyle())
 				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
 		AbstractColumn columnAgent = ColumnBuilder.getNew().setColumnProperty("incident_agent", String.class.getName())
 				.setTitle("Agent").setWidth(new Integer(150)).setStyle(style.getArialDetailIncidentListStyle())
@@ -585,13 +585,13 @@ public class TemplateBuildersReport {
 	private DynamicReport createUserRequestIncidentSub(TemplateStylesReport style) {
 
 		AbstractColumn columnRef = ColumnBuilder.getNew().setColumnProperty("scalar_urequestref", String.class.getName())
-				.setTitle("Ref").setWidth(new Integer(35)).setStyle(style.getArialDetailIncidentListStyle())
+				.setTitle("Ref").setWidth(new Integer(40)).setStyle(style.getArialDetailIncidentListStyle())
 				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
 		AbstractColumn columnTitle = ColumnBuilder.getNew().setColumnProperty("urequest_title", String.class.getName())
 				.setTitle("Title").setWidth(new Integer(200)).setStyle(style.getArialDetailIncidentListStyle())
 				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
 		AbstractColumn columnStatus = ColumnBuilder.getNew().setColumnProperty("urequest_status", String.class.getName())
-				.setTitle("Status").setWidth(new Integer(35)).setStyle(style.getArialDetailIncidentListStyle())
+				.setTitle("Status").setWidth(new Integer(40)).setStyle(style.getArialDetailIncidentListStyle())
 				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
 		AbstractColumn columnAgent = ColumnBuilder.getNew().setColumnProperty("urequest_agent", String.class.getName())
 				.setTitle("Agent").setWidth(new Integer(150)).setStyle(style.getArialDetailIncidentListStyle())

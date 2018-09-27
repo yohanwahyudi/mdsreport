@@ -22,6 +22,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import com.vdi.tools.TimeStatic;
+import com.vdi.tools.TimeTools;
 
 import static java.time.DayOfWeek.MONDAY;
 import static java.time.DayOfWeek.SUNDAY;
@@ -74,10 +75,10 @@ public class Test {
 		getlastweekofmonth();
 		getCurrentWeekMonth();
 		
-		System.out.println(TimeStatic.getCurrentWeekMonthIso(2018, 9));
-		System.out.println(TimeStatic.getCurrentWeekMonthIso(2018, 7,2));
-		System.out.println(TimeStatic.getIntToMonthString(8));
-		System.out.println(TimeStatic.currentDateStr);
+		TimeTools timeTools = new TimeTools();
+		
+		System.out.println("weekmonth: "+timeTools.getCurrentWeekMonth());
+		System.out.println(timeTools.getEndWeekOfMonth(2018, 8));
 	}
 
 	private static int getLastWeekOfMonth(int month, int year) {

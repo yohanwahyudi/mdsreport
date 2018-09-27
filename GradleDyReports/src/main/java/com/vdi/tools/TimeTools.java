@@ -10,39 +10,21 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
-import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class TimeStatic {
+import org.springframework.stereotype.Component;
 
-	public static final int currentWeekYear;
-	public static final int currentWeekMonth;
-	public static final int currentMonth;
-	public static final int currentYear;
+@Component("timeTools")
+public class TimeTools {
 
-	public static final String currentDateStr;
-	public static final String currentMonthStr;
-	public static final String prevMonthStr;
-
-	static {
-		currentWeekYear = getCurrentWeekYear();
-		currentWeekMonth = getCurrentWeekMonth();
-		currentMonth = getCurrentMonth();
-		currentYear = getCurrentYear();
-
-		currentDateStr = getCurrentDateStr();
-		currentMonthStr = getCurrentMonthString();
-		prevMonthStr = getPrevMonthString();
+	public TimeTools() {
+		
 	}
-
-	public TimeStatic() {
-
-	}
-
-	private static int getCurrentDate() {
+	
+	public int getCurrentDate() {
 
 		LocalDate localDate = LocalDate.now();
 		Date utilDate = Date.from(localDate.atStartOfDay(ZoneId.of(getZoneID().getId())).toInstant());
@@ -53,7 +35,7 @@ public class TimeStatic {
 
 	}
 	
-	private static String getCurrentDateStr() {
+	public String getCurrentDateStr() {
 
 		LocalDate localDate = LocalDate.now();
 		Date utilDate = Date.from(localDate.atStartOfDay(ZoneId.of(getZoneID().getId())).toInstant());
@@ -64,7 +46,7 @@ public class TimeStatic {
 
 	}
 
-	private static int getCurrentWeekYear() {
+	public int getCurrentWeekYear() {
 
 		LocalDate date = LocalDate.now();
 
@@ -73,7 +55,7 @@ public class TimeStatic {
 		return zoneDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
 	}
 
-	private static int getCurrentWeekMonth() {
+	public int getCurrentWeekMonth() {
 
 		LocalDate date = LocalDate.now();
 		date = date.with(DayOfWeek.MONDAY);
@@ -83,7 +65,7 @@ public class TimeStatic {
 
 	}
 
-	public static int getCurrentWeekMonthIso(int year, int month) {
+	public int getCurrentWeekMonthIso(int year, int month) {
 
 		DayOfWeek firstDayOfWeek = DayOfWeek.MONDAY;
 
@@ -102,7 +84,7 @@ public class TimeStatic {
 
 	}
 
-	public static int getCurrentWeekMonthIso(int year, int month, int date) {
+	public int getCurrentWeekMonthIso(int year, int month, int date) {
 
 		DayOfWeek firstDayOfWeek = DayOfWeek.MONDAY;
 
@@ -121,7 +103,7 @@ public class TimeStatic {
 
 	}
 
-	public static int getLastDateofMonth(int year, int month) {
+	public int getLastDateofMonth(int year, int month) {
 
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(year, month, 0);
@@ -131,7 +113,7 @@ public class TimeStatic {
 		return lastDate;
 	}
 
-	public static int getEndWeekOfMonth(int year, int month) {
+	public int getEndWeekOfMonth(int year, int month) {
 
 		DayOfWeek firstDayOfWeek = DayOfWeek.MONDAY;
 
@@ -150,14 +132,14 @@ public class TimeStatic {
 
 	}
 
-	private static int getCurrentMonth() {
+	public int getCurrentMonth() {
 
 		LocalDate date = LocalDate.now();
 
 		return date.getMonthValue();
 	}
 
-	private static String getCurrentMonthString() {
+	public String getCurrentMonthString() {
 
 		LocalDate localDate = LocalDate.now();
 		Date utilDate = Date.from(localDate.atStartOfDay(ZoneId.of(getZoneID().getId())).toInstant());
@@ -167,7 +149,7 @@ public class TimeStatic {
 		return sdf.format(utilDate);
 	}
 
-	private static String getPrevMonthString() {
+	public String getPrevMonthString() {
 
 		LocalDate localDate = LocalDate.now();
 		LocalDate earlier = localDate.minusMonths(1);
@@ -179,19 +161,20 @@ public class TimeStatic {
 		return sdf.format(utilDate);
 	}
 
-	public static String getIntToMonthString(int month) {
+	public String getIntToMonthString(int month) {
 
 		return new DateFormatSymbols().getMonths()[month - 1];
 
 	}
 
-	private static int getCurrentYear() {
+	public int getCurrentYear() {
 		LocalDate date = LocalDate.now();
 		return date.getYear();
 	}
 
-	private static ZoneId getZoneID() {
+	public ZoneId getZoneID() {
 		return ZoneId.of("GMT+7");
 	}
+
 
 }

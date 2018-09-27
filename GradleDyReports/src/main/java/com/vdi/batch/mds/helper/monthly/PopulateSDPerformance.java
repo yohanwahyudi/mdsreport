@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -15,11 +17,13 @@ import com.vdi.batch.mds.repository.dao.PerfAgentDAOService;
 import com.vdi.batch.mds.repository.dao.PerfAllDAOService;
 import com.vdi.model.performance.PerformanceAgent;
 import com.vdi.model.performance.PerformanceOverall;
-import com.vdi.tools.TimeStatic;
+import com.vdi.tools.TimeTools;
 
 @Component("populateSDPerformanceMonthly")
 public class PopulateSDPerformance {
 
+	private final Logger logger = LogManager.getLogger(PopulateSDPerformance.class);
+	
 	@Autowired
 	@Qualifier("monthlySDPerfAllDAO")
 	private PerfAllDAOService allDAO;
@@ -28,20 +32,27 @@ public class PopulateSDPerformance {
 	@Qualifier("monthlySDPerfAgentDAO")
 	private PerfAgentDAOService agentDAO;
 	
+	@Autowired
+	private TimeTools timeTools;
+	
 	private Integer currentMonth;
 	private Integer prevMonth;
 	
 	public PopulateSDPerformance() {
 		
-		this.currentMonth = TimeStatic.currentMonth;
-		this.prevMonth = currentMonth-1;
-		
 	}
 
 	
 	public void populatePerformance() {
+		logger.info("Start populate performance sd monthly...");
+		
+		this.currentMonth = timeTools.getCurrentMonth();
+		this.prevMonth = currentMonth-1;
+		
 		allDAO.insertPerformance(getPerformanceOverall());
-		agentDAO.insertPerformance(getPerformanceAgentList());		
+		agentDAO.insertPerformance(getPerformanceAgentList());	
+		
+		logger.info("Finish populate performance sd monthly...");
 		
 	}
 
@@ -50,9 +61,13 @@ public class PopulateSDPerformance {
 		int ticketCount = allDAO.getTicketCount();
 		int achievedCount = allDAO.getAchievedTicketCount();
 		int missedCount = allDAO.getMissedTicketCount();
+		
+		logger.info("all: "+ticketCount);
+		logger.info("achieved: "+achievedCount);
+		
 		float achievement = (getAchievementTicket(new BigDecimal(achievedCount), new BigDecimal(ticketCount)))
 				.floatValue();
-
+		
 		PerformanceOverall poUseThis = new PerformanceOverall();
 		PerformanceOverall poExisting = allDAO.getPerformance();
 		if (poExisting == null) {

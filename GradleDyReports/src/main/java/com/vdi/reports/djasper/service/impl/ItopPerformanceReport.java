@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.vdi.configuration.PropertyNames;
 import com.vdi.reports.djasper.model.MasterReport;
@@ -19,7 +19,7 @@ import com.vdi.reports.djasper.service.ReportService;
 import com.vdi.reports.djasper.service.helper.ServiceDeskReportHelper;
 import com.vdi.reports.djasper.service.helper.SupportAgentReportHelper;
 import com.vdi.reports.djasper.templates.TemplateBuildersReport;
-import com.vdi.tools.TimeStatic;
+import com.vdi.tools.TimeTools;
 
 import ar.com.fdvs.dj.core.DJConstants;
 import ar.com.fdvs.dj.core.DynamicJasperHelper;
@@ -33,7 +33,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
-@Component("itopPerformanceReport")
+@Service("itopPerformanceReport")
 public class ItopPerformanceReport implements ReportService {
 
 	@Autowired
@@ -46,28 +46,37 @@ public class ItopPerformanceReport implements ReportService {
 	@Autowired
 	private TemplateBuildersReport templateBuilders;
 	
+	@Autowired
+	private TimeTools timeTools;
+	
 	private int currentYear;
 	private String currentMonthStr;
 	private String prevMonthStr;
 	private int prevWeekMonth;
+	
+	private int weekInWeeklyMonthly;
 
 	private MasterReport weeklyReport;
 	private MasterReport monthlyReport;
+	
+	private Boolean isWeeklyinMonthlyReport;
 
 	protected final Map<String, Object> params = new HashMap<String, Object>();
 
 	private final Logger logger = LogManager.getLogger(ItopPerformanceReport.class);
 
 	public ItopPerformanceReport() {
+		
+		logger.info("enter cons ItopPerformanceReport");
 
 	}
 
 	public DynamicReport buildReport(String period) {
 		
-		currentYear = TimeStatic.currentYear;
-		currentMonthStr = TimeStatic.currentMonthStr;
-		prevMonthStr = TimeStatic.prevMonthStr;
-		prevWeekMonth = TimeStatic.currentWeekMonth - 1;
+		this.currentYear = timeTools.getCurrentYear();
+		this.currentMonthStr = timeTools.getCurrentMonthString();
+		this.prevMonthStr = timeTools.getPrevMonthString();
+		this.prevWeekMonth = timeTools.getCurrentWeekMonth()-1;
 		
 		DynamicReportBuilder master = templateBuilders.getMaster();
 		master.setTitle("VDI PERFORMANCE BASED ON iTop");
@@ -75,8 +84,18 @@ public class ItopPerformanceReport implements ReportService {
 		MasterReport masterReport = new MasterReport();
 
 		if (period.equalsIgnoreCase(PropertyNames.CONSTANT_REPORT_PERIOD_WEEKLY)) {
-			master.setSubtitle("WEEK " + prevWeekMonth + " - " + currentMonthStr.toUpperCase() + " " + currentYear);
-			masterReport = weeklyReport;
+			if(isWeeklyinMonthlyReport) {
+				
+				master.setSubtitle("WEEK " + weekInWeeklyMonthly + " - " + prevMonthStr.toUpperCase() + " " + currentYear);
+				masterReport = weeklyReport;
+				
+			} else {
+				
+				master.setSubtitle("WEEK " + prevWeekMonth + " - " + currentMonthStr.toUpperCase() + " " + currentYear);
+				masterReport = weeklyReport;
+				
+			}
+			
 		} else {
 			master.setSubtitle(prevMonthStr.toUpperCase() + " " + currentYear);
 			masterReport = monthlyReport;
@@ -140,6 +159,8 @@ public class ItopPerformanceReport implements ReportService {
 	@Override
 	public JasperPrint getReport(String period) throws JRException, Exception {
 
+		this.isWeeklyinMonthlyReport = Boolean.FALSE;
+		
 		JRDataSource ds = getDataSource(period);
 		JasperReport jr = DynamicJasperHelper.generateJasperReport(buildReport(period), new ClassicLayoutManager(),
 				params);
@@ -148,9 +169,28 @@ public class ItopPerformanceReport implements ReportService {
 		return jp;
 
 	}
+	
+	@Override
+	public JasperPrint getReport(String period, int month, int week) throws JRException, Exception {
 
-	public JRDataSource getDataSource(String period) throws Exception {
+		this.isWeeklyinMonthlyReport = Boolean.TRUE;
+		this.weekInWeeklyMonthly = week;
+		
+		JRDataSource ds = getDataSource(period, month);
+		JasperReport jr = DynamicJasperHelper.generateJasperReport(buildReport(period), new ClassicLayoutManager(),
+				params);
+		JasperPrint jp = JasperFillManager.fillReport(jr, params, ds);
+
+		return jp;
+
+	}
+
+	public JRDataSource getDataSource(String period) throws Exception {		
 		return new JRBeanCollectionDataSource(getPerformanceReport(period));
+	}
+	
+	public JRDataSource getDataSource(String period, int month) throws Exception {
+		return new JRBeanCollectionDataSource(getPerformanceReport(period, month));
 	}
 
 	private void setWeeklyReport() {
@@ -160,6 +200,43 @@ public class ItopPerformanceReport implements ReportService {
 		sdReport = sdReportHelper.getWeeklyReport();
 		MasterReport saReport = new MasterReport();
 		saReport = saReportHelper.getWeeklyReport();
+
+		List<SummaryReport> sdOverallReport = sdReport.getOverallAchievementList();
+		List<SummaryReport> saOverallReport = saReport.getOverallAchievementList();
+		List<SummaryReport> combineOverallReport = new ArrayList<SummaryReport>();
+		
+		for (int i = 0; i < sdOverallReport.size(); i++) {
+			String name = sdOverallReport.get(i).getName();
+			String value1 = sdOverallReport.get(i).getValue();
+			String value2 = saOverallReport.get(i).getValue();
+			combineOverallReport.add(new SummaryReport(name, value1, value2));
+		}
+//		weeklyReport.setOverallAchievementList(combineOverallReport);
+
+		//set value
+		MasterReport weeklyReport = new MasterReport();
+		weeklyReport.setOverallAchievementList(combineOverallReport);
+		weeklyReport.setServiceDeskAchievementList(sdReport.getServiceDeskAchievementList());
+		weeklyReport.setPerformanceTeamList(saReport.getPerformanceTeamList());
+		weeklyReport.setPerformanceServiceDeskAgentList(sdReport.getPerformanceServiceDeskAgentList());
+		weeklyReport.setPerformanceSuportAgentList(saReport.getPerformanceSuportAgentList());
+		weeklyReport.setSupportAgentMissedList(saReport.getSupportAgentMissedList());
+		weeklyReport.setSupportAgentPendingList(saReport.getSupportAgentPendingList());
+		weeklyReport.setSupportAgentAssignList(saReport.getSupportAgentAssignList());
+		weeklyReport.setServiceDeskIncidentList(sdReport.getServiceDeskIncidentList());
+		weeklyReport.setUserRequestTicketList(sdReport.getUserRequestTicketList());
+		weeklyReport.setSupportAgentIncidentList(saReport.getSupportAgentIncidentList());
+		
+		this.weeklyReport = weeklyReport;
+	}
+	
+	private void setWeeklyReport(int month) {
+
+		// block1 combine sd+sa overall performance
+		MasterReport sdReport = new MasterReport();
+		sdReport = sdReportHelper.getWeeklyReport(month);
+		MasterReport saReport = new MasterReport();
+		saReport = saReportHelper.getWeeklyReport(month);
 
 		List<SummaryReport> sdOverallReport = sdReport.getOverallAchievementList();
 		List<SummaryReport> saOverallReport = saReport.getOverallAchievementList();
@@ -236,11 +313,35 @@ public class ItopPerformanceReport implements ReportService {
 		this.monthlyReport = monthlyReport;
 	}
 
+	@Override
 	public List<MasterReport> getPerformanceReport(String period) throws Exception {
 
 		if (period.equalsIgnoreCase(PropertyNames.CONSTANT_REPORT_PERIOD_WEEKLY)) {
 
 			setWeeklyReport();
+			List<MasterReport> weeklyReportList = new ArrayList<MasterReport>();
+			weeklyReportList.add(weeklyReport);
+			return weeklyReportList;
+
+		} else if (period.equalsIgnoreCase(PropertyNames.CONSTANT_REPORT_PERIOD_MONTHLY)) {
+
+			setMonthlyReport();
+			List<MasterReport> monthlyReportList = new ArrayList<MasterReport>();
+			monthlyReportList.add(monthlyReport);
+
+			return monthlyReportList;
+
+		} else {
+			throw new Exception("option not valid");
+		}
+
+	}
+	
+	public List<MasterReport> getPerformanceReport(String period, int month) throws Exception {
+
+		if (period.equalsIgnoreCase(PropertyNames.CONSTANT_REPORT_PERIOD_WEEKLY)) {
+
+			setWeeklyReport(month);
 			List<MasterReport> weeklyReportList = new ArrayList<MasterReport>();
 			weeklyReportList.add(weeklyReport);
 			return weeklyReportList;
