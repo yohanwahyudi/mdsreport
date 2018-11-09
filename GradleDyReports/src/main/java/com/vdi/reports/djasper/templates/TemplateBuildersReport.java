@@ -548,7 +548,7 @@ public class TemplateBuildersReport {
 		AbstractColumn columnStatus = ColumnBuilder.getNew().setColumnProperty("incident_status", String.class.getName())
 				.setTitle("Status").setWidth(new Integer(40)).setStyle(style.getArialDetailIncidentListStyle())
 				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
-		AbstractColumn columnAgent = ColumnBuilder.getNew().setColumnProperty("incident_agent", String.class.getName())
+		AbstractColumn columnAgent = ColumnBuilder.getNew().setColumnProperty("scalar_user", String.class.getName())
 				.setTitle("Agent").setWidth(new Integer(150)).setStyle(style.getArialDetailIncidentListStyle())
 				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
 		AbstractColumn columnPriority = ColumnBuilder.getNew().setColumnProperty("incident_priority", String.class.getName())
@@ -593,7 +593,7 @@ public class TemplateBuildersReport {
 		AbstractColumn columnStatus = ColumnBuilder.getNew().setColumnProperty("urequest_status", String.class.getName())
 				.setTitle("Status").setWidth(new Integer(40)).setStyle(style.getArialDetailIncidentListStyle())
 				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
-		AbstractColumn columnAgent = ColumnBuilder.getNew().setColumnProperty("urequest_agent", String.class.getName())
+		AbstractColumn columnAgent = ColumnBuilder.getNew().setColumnProperty("scalar_user", String.class.getName())
 				.setTitle("Agent").setWidth(new Integer(150)).setStyle(style.getArialDetailIncidentListStyle())
 				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
 		AbstractColumn columnPriority = ColumnBuilder.getNew().setColumnProperty("urequest_priority", String.class.getName())

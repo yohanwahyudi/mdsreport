@@ -65,10 +65,8 @@ public class ItopPerformanceReport implements ReportService {
 
 	private final Logger logger = LogManager.getLogger(ItopPerformanceReport.class);
 
-	public ItopPerformanceReport() {
-		
+	public ItopPerformanceReport() {		
 		logger.info("enter cons ItopPerformanceReport");
-
 	}
 
 	public DynamicReport buildReport(String period) {
@@ -84,16 +82,12 @@ public class ItopPerformanceReport implements ReportService {
 		MasterReport masterReport = new MasterReport();
 
 		if (period.equalsIgnoreCase(PropertyNames.CONSTANT_REPORT_PERIOD_WEEKLY)) {
-			if(isWeeklyinMonthlyReport) {
-				
+			if(isWeeklyinMonthlyReport) {				
 				master.setSubtitle("WEEK " + weekInWeeklyMonthly + " - " + prevMonthStr.toUpperCase() + " " + currentYear);
-				masterReport = weeklyReport;
-				
-			} else {
-				
+				masterReport = weeklyReport;				
+			} else {				
 				master.setSubtitle("WEEK " + prevWeekMonth + " - " + currentMonthStr.toUpperCase() + " " + currentYear);
-				masterReport = weeklyReport;
-				
+				masterReport = weeklyReport;				
 			}
 			
 		} else {

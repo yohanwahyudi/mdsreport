@@ -1,6 +1,7 @@
 package com.vdi.configuration;
 
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -143,7 +144,7 @@ public final class AppConfig {
 		mailSender.setPassword("Visionet123");
 
 		Properties javaMailProperties = new Properties();
-		javaMailProperties.put("mail.debug", "true");
+//		javaMailProperties.put("mail.debug", "true");
 		javaMailProperties.put("mail.smtp.auth", "true");
 //		javaMailProperties.put("mail.smtp.starttls.enable", "true");
 		javaMailProperties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
@@ -170,12 +171,27 @@ public final class AppConfig {
 	 */
 	@Bean(destroyMethod = "close")
 	DataSource dataSource(Environment env) {
+		
 		HikariConfig dataSourceConfig = new HikariConfig();
 		dataSourceConfig.setDriverClassName(env.getRequiredProperty(PropertyNames.PROPERTY_NAME_DB_DRIVER_CLASS));
 		dataSourceConfig.setJdbcUrl(env.getRequiredProperty(PropertyNames.PROPERTY_NAME_DB_URL));
 		dataSourceConfig.setUsername(env.getRequiredProperty(PropertyNames.PROPERTY_NAME_DB_USER));
 		dataSourceConfig.setPassword(env.getRequiredProperty(PropertyNames.PROPERTY_NAME_DB_PASSWORD));
-
+		dataSourceConfig.setIdleTimeout(TimeUnit.SECONDS.toMillis(env.getRequiredProperty(PropertyNames.HIKARI_SETIDLETIMEOUT, Integer.class)));
+		dataSourceConfig.setMaximumPoolSize(env.getRequiredProperty(PropertyNames.HIKARI_SETMAXIMUMPOOLSIZE, Integer.class));
+		dataSourceConfig.setConnectionTimeout(TimeUnit.SECONDS.toMillis(env.getRequiredProperty(PropertyNames.HIKARI_SETCONNECTIONTIMEOUT, Integer.class)));
+		dataSourceConfig.setLeakDetectionThreshold(TimeUnit.SECONDS.toMillis(env.getRequiredProperty(PropertyNames.HIKARI_SETLEAKDETECTIONTHRESHOLD, Integer.class)));
+		dataSourceConfig.addDataSourceProperty(PropertyNames.HIKARI_CACHEPREPSTMTS, env.getRequiredProperty(PropertyNames.HIKARI_CACHEPREPSTMTS));
+		dataSourceConfig.addDataSourceProperty(PropertyNames.HIKARI_PREPSTMTCACHESIZE, env.getRequiredProperty(PropertyNames.HIKARI_PREPSTMTCACHESIZE));
+		dataSourceConfig.addDataSourceProperty(PropertyNames.HIKARI_PREPSTMTCACHESQLLIMIT, env.getRequiredProperty(PropertyNames.HIKARI_PREPSTMTCACHESQLLIMIT));		
+		dataSourceConfig.addDataSourceProperty(PropertyNames.HIKARI_USESERVERPREPSTMTS, env.getRequiredProperty(PropertyNames.HIKARI_USESERVERPREPSTMTS));
+		dataSourceConfig.addDataSourceProperty(PropertyNames.HIKARI_USELOCALSESSIONSTATE, env.getRequiredProperty(PropertyNames.HIKARI_USELOCALSESSIONSTATE));
+		dataSourceConfig.addDataSourceProperty(PropertyNames.HIKARI_REWRITEBATCHEDSTATEMENTS, env.getRequiredProperty(PropertyNames.HIKARI_REWRITEBATCHEDSTATEMENTS));		
+		dataSourceConfig.addDataSourceProperty(PropertyNames.HIKARI_CACHERESULTSETMETADATA, env.getRequiredProperty(PropertyNames.HIKARI_CACHERESULTSETMETADATA));
+		dataSourceConfig.addDataSourceProperty(PropertyNames.HIKARI_CACHESERVERCONFIGURATION, env.getRequiredProperty(PropertyNames.HIKARI_CACHESERVERCONFIGURATION));
+		dataSourceConfig.addDataSourceProperty(PropertyNames.HIKARI_ELIDESETAUTOCOMMITS, env.getRequiredProperty(PropertyNames.HIKARI_ELIDESETAUTOCOMMITS));
+		dataSourceConfig.addDataSourceProperty(PropertyNames.HIKARI_MAINTAINTIMESTATS, env.getRequiredProperty(PropertyNames.HIKARI_MAINTAINTIMESTATS));
+		
 		return new HikariDataSource(dataSourceConfig);
 	}
 

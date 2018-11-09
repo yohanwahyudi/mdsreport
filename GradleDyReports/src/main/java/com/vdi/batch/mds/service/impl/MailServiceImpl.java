@@ -168,7 +168,7 @@ public class MailServiceImpl implements MailService{
 	@Override
 	public void sendEmail(Map<String, Object> mapObject, String template, FileSystemResource file, String subject) {
 
-		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessage message = mailSenderDev.createMimeMessage();
 
 		String[] toEmailArr = appConfig.getMdsReportEmailTo();
 		try {
@@ -186,7 +186,7 @@ public class MailServiceImpl implements MailService{
 			logger.info("email body: " +text);
 			
 			helper.setText(text, true);
-			mailSender.send(message);
+			mailSenderDev.send(message);
 			
 			logger.info("Message has been sent......");
 			

@@ -57,7 +57,23 @@ public final class PropertyNames {
 	public static final String[] PROPERTY_NAME_ENTITY_PACKAGE = { "com.vdi.model" };
 	public static final String PROPERTY_NAME_HIBERNATE_ID_NEW_GENERATOR_MAPPINGS = "hibernate.id.new_generator_mappings";
 
-	// db tweak
+	//hikaricp config
+	public static final String HIKARI_CACHEPREPSTMTS="hikari.cacheprepstmts";
+	public static final String HIKARI_PREPSTMTCACHESIZE="hikari.prepstmtcachesize";
+	public static final String HIKARI_PREPSTMTCACHESQLLIMIT="hikari.prepstmtcachesqllimit";
+	public static final String HIKARI_USESERVERPREPSTMTS="hikari.useserverprepstmts";
+	public static final String HIKARI_USELOCALSESSIONSTATE="hikari.uselocalsessionstate";
+	public static final String HIKARI_REWRITEBATCHEDSTATEMENTS="hikari.rewritebatchedstatements";
+	public static final String HIKARI_CACHERESULTSETMETADATA="hikari.cacheresultsetmetadata";
+	public static final String HIKARI_CACHESERVERCONFIGURATION="hikari.cacheserverconfiguration";
+	public static final String HIKARI_ELIDESETAUTOCOMMITS="hikari.elidesetautocommits";
+	public static final String HIKARI_MAINTAINTIMESTATS="hikari.maintaintimestats";
+	public static final String HIKARI_SETCONNECTIONTIMEOUT="hikari.setconnectiontimeout";
+	public static final String HIKARI_SETLEAKDETECTIONTHRESHOLD="hikari.setleakdetectionthreshold";
+	public static final String HIKARI_SETIDLETIMEOUT="hikari.setidletimeout";
+	public static final String HIKARI_SETMAXIMUMPOOLSIZE="hikari.setmaximumpoolsize";
+	
+	// hibernate tweak
 	public static final String PROPERTY_NAME_HIBERNATE_JDBC_BATCH_SIZE = "hibernate.jdbc.batch_size";
 	public static final String PROPERTY_NAME_HIBERNATE_JDBC_BATCH_VERSIONED_DATA = "hibernate.jdbc.batch_versioned_data";
 	public static final String PROPERTY_NAME_HIBERNATE_ORDER_INSERTS = "hibernate.order_inserts";
