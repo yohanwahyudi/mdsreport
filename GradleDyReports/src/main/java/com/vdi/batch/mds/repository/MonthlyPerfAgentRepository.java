@@ -83,4 +83,6 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 	@Query(value="SELECT * FROM perf_agent WHERE month(created_dt)=month(curdate()) AND year(created_dt)=year(curdate()) AND period='monthly' AND category='sa';", nativeQuery=true)
 	public List<PerformanceAgent> getPerformanceThisWeek();
 	
+
+	
 }

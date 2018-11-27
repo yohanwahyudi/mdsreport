@@ -33,9 +33,9 @@ public class ReportTest {
 		//weeklySaIncidentReport
 //		ReportService rpt = ctx.getBean("weeklyIncidentSAReport", ReportService.class);		
 //		ReportService rpt = ctx.getBean("monthlyIncidentSAReport", ReportService.class);
-		ReportService rpt = ctx.getBean("weeklyIncidentSDReport", ReportService.class);
+//		ReportService rpt = ctx.getBean("weeklyIncidentSDReport", ReportService.class);
 //		ReportService rpt = ctx.getBean("monthlyIncidentSDReport", ReportService.class);
-//		ReportService rpt = ctx.getBean("weeklyTest", ReportService.class);
+		ReportService rpt = ctx.getBean("weeklyTest", ReportService.class);
 		
 		
 		ReportExporter.exportReport(rpt.getReport(), System.getProperty("user.dir") + "/target/reports/" 

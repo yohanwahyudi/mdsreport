@@ -67,6 +67,8 @@ public final class AppConfig {
 	private final String mdsHttpUrl;
 	private final String mdsHttpSdUrl;
 	private final String mdsHttpUrUrl;
+	private final String mdsHttpProblemUrl;
+	private final String mdsHttpChangeUrl;
 	private final String mdsCsvAgentDelimiters;
 	private final String mdsCsvAgentFile;
 
@@ -89,6 +91,8 @@ public final class AppConfig {
 		this.mdsHttpUrl = env.getRequiredProperty(PropertyNames.MDS_HTTP_URL, String.class);
 		this.mdsHttpSdUrl = env.getRequiredProperty(PropertyNames.MDS_HTTP_SD_URL, String.class);
 		this.mdsHttpUrUrl = env.getRequiredProperty(PropertyNames.MDS_HTTP_UR_URL, String.class);
+		this.mdsHttpProblemUrl = env.getRequiredProperty(PropertyNames.MDS_HTTP_PROBLEM_URL, String.class);
+		this.mdsHttpChangeUrl = env.getRequiredProperty(PropertyNames.MDS_HTTP_CHANGE_URL, String.class);
 		this.mailHost = env.getRequiredProperty(PropertyNames.MAIL_HOST, String.class);
 		this.mailPort = env.getRequiredProperty(PropertyNames.MAIL_PORT, Integer.class);
 		this.mailFrom = env.getRequiredProperty(PropertyNames.MAIL_FROM, String.class);
@@ -191,7 +195,7 @@ public final class AppConfig {
 		dataSourceConfig.addDataSourceProperty(PropertyNames.HIKARI_CACHESERVERCONFIGURATION, env.getRequiredProperty(PropertyNames.HIKARI_CACHESERVERCONFIGURATION));
 		dataSourceConfig.addDataSourceProperty(PropertyNames.HIKARI_ELIDESETAUTOCOMMITS, env.getRequiredProperty(PropertyNames.HIKARI_ELIDESETAUTOCOMMITS));
 		dataSourceConfig.addDataSourceProperty(PropertyNames.HIKARI_MAINTAINTIMESTATS, env.getRequiredProperty(PropertyNames.HIKARI_MAINTAINTIMESTATS));
-		
+		dataSourceConfig.setLeakDetectionThreshold(TimeUnit.SECONDS.toMillis(env.getRequiredProperty(PropertyNames.HIKARI_SETMAXIMUMLIFETIME, Integer.class)));
 		return new HikariDataSource(dataSourceConfig);
 	}
 
@@ -318,6 +322,14 @@ public final class AppConfig {
 
 	public String getMdsHttpUrl() {
 		return mdsHttpUrl;
+	}
+
+	public String getMdsHttpProblemUrl() {
+		return mdsHttpProblemUrl;
+	}
+
+	public String getMdsHttpChangeUrl() {
+		return mdsHttpChangeUrl;
 	}
 
 	public String getMdsCsvAgentDelimiters() {

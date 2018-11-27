@@ -24,9 +24,23 @@ public class TimeTools {
 		
 	}
 	
+	public LocalDate getCurrentLocalDate() {
+		
+		LocalDate localDate = LocalDate.now();
+		return localDate;
+		
+	}
+	
+	public LocalDate getPrevMonthLocalDate() {
+		
+		LocalDate current = getCurrentLocalDate();
+		return current.minusMonths(1);
+		
+	}
+	
 	public int getCurrentDate() {
 
-		LocalDate localDate = LocalDate.now();
+		LocalDate localDate = getCurrentLocalDate();
 		Date utilDate = Date.from(localDate.atStartOfDay(ZoneId.of(getZoneID().getId())).toInstant());
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd");
@@ -37,7 +51,7 @@ public class TimeTools {
 	
 	public String getCurrentDateStr() {
 
-		LocalDate localDate = LocalDate.now();
+		LocalDate localDate = getCurrentLocalDate();
 		Date utilDate = Date.from(localDate.atStartOfDay(ZoneId.of(getZoneID().getId())).toInstant());
 
 		SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
@@ -48,7 +62,7 @@ public class TimeTools {
 
 	public int getCurrentWeekYear() {
 
-		LocalDate date = LocalDate.now();
+		LocalDate date = getCurrentLocalDate();
 
 		ZonedDateTime zoneDate = date.atStartOfDay(getZoneID());
 
@@ -57,7 +71,7 @@ public class TimeTools {
 
 	public int getCurrentWeekMonth() {
 
-		LocalDate date = LocalDate.now();
+		LocalDate date = getCurrentLocalDate();
 		date = date.with(DayOfWeek.MONDAY);
 		
 		WeekFields weekFields = WeekFields.of(Locale.getDefault());
@@ -134,14 +148,14 @@ public class TimeTools {
 
 	public int getCurrentMonth() {
 
-		LocalDate date = LocalDate.now();
+		LocalDate date = getCurrentLocalDate();
 
 		return date.getMonthValue();
 	}
 
 	public String getCurrentMonthString() {
 
-		LocalDate localDate = LocalDate.now();
+		LocalDate localDate = getCurrentLocalDate();
 		Date utilDate = Date.from(localDate.atStartOfDay(ZoneId.of(getZoneID().getId())).toInstant());
 
 		SimpleDateFormat sdf = new SimpleDateFormat("MMMM");
@@ -151,7 +165,7 @@ public class TimeTools {
 
 	public String getPrevMonthString() {
 
-		LocalDate localDate = LocalDate.now();
+		LocalDate localDate = getCurrentLocalDate();
 		LocalDate earlier = localDate.minusMonths(1);
 
 		Date utilDate = Date.from(earlier.atStartOfDay(ZoneId.of("GMT+7")).toInstant());
@@ -168,7 +182,7 @@ public class TimeTools {
 	}
 
 	public int getCurrentYear() {
-		LocalDate date = LocalDate.now();
+		LocalDate date = getCurrentLocalDate();
 		return date.getYear();
 	}
 

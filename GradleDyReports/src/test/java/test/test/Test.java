@@ -16,9 +16,11 @@ import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
 import com.vdi.tools.TimeStatic;
@@ -79,6 +81,15 @@ public class Test {
 		
 		System.out.println("weekmonth: "+timeTools.getCurrentWeekMonth());
 		System.out.println(timeTools.getEndWeekOfMonth(2018, 8));
+		System.out.println("now localdate: "+timeTools.getCurrentLocalDate().minusMonths(1));
+		
+		List<String> field = new ArrayList<String>();
+		field.add("Total");
+		field.add("Open");
+		field.add("Resolve/ Close");
+		
+		System.out.println("field: "+field);
+		
 	}
 
 	private static int getLastWeekOfMonth(int month, int year) {

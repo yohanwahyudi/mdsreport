@@ -19,6 +19,8 @@ public final class PropertyNames {
 	public static final String MDS_HTTP_URL = "mds.http.url";
 	public static final String MDS_HTTP_SD_URL = "mds.http.sd.url";
 	public static final String MDS_HTTP_UR_URL = "mds.http.ur.url";
+	public static final String MDS_HTTP_PROBLEM_URL = "mds.http.problem.url";
+	public static final String MDS_HTTP_CHANGE_URL = "mds.http.change.url";
 	public static final String MDS_EMAIL_DAILY_SUBJECT = "mds.daily.email.subject";
 	public static final String MDS_DAILY_REPORT_PATH = "mds.daily.report.path";
 
@@ -72,6 +74,7 @@ public final class PropertyNames {
 	public static final String HIKARI_SETLEAKDETECTIONTHRESHOLD="hikari.setleakdetectionthreshold";
 	public static final String HIKARI_SETIDLETIMEOUT="hikari.setidletimeout";
 	public static final String HIKARI_SETMAXIMUMPOOLSIZE="hikari.setmaximumpoolsize";
+	public static final String HIKARI_SETMAXIMUMLIFETIME="hikari.setmaximumlifetime";
 	
 	// hibernate tweak
 	public static final String PROPERTY_NAME_HIBERNATE_JDBC_BATCH_SIZE = "hibernate.jdbc.batch_size";
