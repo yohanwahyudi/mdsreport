@@ -19,28 +19,34 @@ public interface MonthlyPerfTeamRepository extends CrudRepository<PerformanceTea
 			"               Count(ref) AS total_ticket " + 
 			"        FROM   incident incident " + 
 			"               INNER JOIN agent agent " + 
-			"                       ON incident.agent_fullname = agent.NAME " + 
-			"        WHERE  status IN ( 'closed', 'resolved' ) " + 
-			"               AND month(start_date)=month(curdate())-1 AND year(start_date)=year(curdate()) " + 
+			"                       ON incident.agent_fullname = agent.NAME " +
+			"		 WHERE "+	
+			//"        WHERE  status IN ( 'closed', 'resolved' ) AND " + 
+			"				start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
+			"				AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"        GROUP  BY division) one " + 
 			"       LEFT JOIN (SELECT agent.division, " + 
 			"                         Count(ref) AS achieved_ticket " + 
 			"                  FROM   incident incident " + 
 			"                         INNER JOIN agent agent " + 
-			"                                 ON incident.agent_fullname = agent.NAME " + 
-			"                  WHERE  status IN ( 'closed', 'resolved' ) " + 
-			"                         AND ttr_passed = 'no' " + 
-			"                         AND month(start_date)=month(curdate())-1 AND year(start_date)=year(curdate()) " + 
+			"                                 ON incident.agent_fullname = agent.NAME " +
+			"					WHERE "+
+			//"                  WHERE  status IN ( 'closed', 'resolved' ) AND " + 
+			"                         ttr_passed = 'no' " + 
+			"						  AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
+			"						  AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"                  GROUP  BY division) two " + 
 			"              ON one.division = two.division " + 
 			"       LEFT JOIN (SELECT agent.division, " + 
 			"                         Count(ref) AS missed_ticket " + 
 			"                  FROM   incident incident " + 
 			"                         INNER JOIN agent agent " + 
-			"                                 ON incident.agent_fullname = agent.NAME " + 
-			"                  WHERE  status IN ( 'closed', 'resolved' ) " + 
-			"                         AND ttr_passed = 'yes' " + 
-			"                         AND month(start_date)=month(curdate())-1 AND year(start_date)=year(curdate()) " + 
+			"                                 ON incident.agent_fullname = agent.NAME " +
+			" 				   WHERE "+		
+			//"                  WHERE  status IN ( 'closed', 'resolved' ) AND " + 
+			"                         ttr_passed = 'yes' " + 
+			"						  AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
+			"						  AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"                  GROUP  BY division) three " + 
 			"              ON one.division = three.division; ",nativeQuery=true)
 	public List<Object[]> getTeamTicketByDivision();

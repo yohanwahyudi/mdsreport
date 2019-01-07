@@ -18,13 +18,13 @@ public class BatchMDSPopulateUserRequest extends QuartzJobBean{
 	
 	@Override
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-		logger.debug("Execute BatchMDSPopulateUserRequest......");
+		logger.info("Execute BatchMDSPopulateUserRequest......");
 		
 		ctx = new AnnotationConfigApplicationContext(AppConfig.class);
 		PopulateUserRequest populateUserRequest = ctx.getBean(PopulateUserRequest.class);
 		populateUserRequest.populate();
 		
-		logger.debug("Execute BatchMDSPopulateUserRequest finished......");
+		logger.info("Execute BatchMDSPopulateUserRequest finished......");
 
 	}
 

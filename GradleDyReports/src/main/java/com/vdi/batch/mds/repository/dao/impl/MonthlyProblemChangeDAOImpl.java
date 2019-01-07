@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import com.vdi.batch.mds.repository.MonthlyChangeRepository;
 import com.vdi.batch.mds.repository.MonthlyProblemRepository;
 import com.vdi.batch.mds.repository.dao.MonthlyProblemChangeDAOService;
+import com.vdi.model.Change;
+import com.vdi.model.Problem;
 
 @Transactional
 @Service("monthlyProblemChangeDAO")
@@ -40,9 +42,9 @@ public class MonthlyProblemChangeDAOImpl implements MonthlyProblemChangeDAOServi
 	}
 
 	@Override
-	public List<Object[]> getProblemList() {
+	public List<Object[]> getLastMonthProblemList() {
 		
-		return problemRepo.getProblemList();
+		return problemRepo.getLastMonthProblemList();
 	}
 
 	@Override
@@ -64,9 +66,39 @@ public class MonthlyProblemChangeDAOImpl implements MonthlyProblemChangeDAOServi
 	}
 
 	@Override
-	public List<Object[]> getChangeList() {
+	public List<Object[]> getLastMonthChangeList() {
 		
-		return changeRepo.getChangeList();
+		return changeRepo.getLastMonthChangeList();
+	}
+
+	@Override
+	public List<Object[]> getAllProblemSummary() {
+		return problemRepo.getAllProblemSummary();
+	}
+
+	@Override
+	public List<Object[]> getAllOpenedProblemByTeamAgent() {
+		return problemRepo.getAllOpenedProblemByTeamAgent();
+	}
+
+	@Override
+	public List<Problem> getAllOpenedProblemList() {
+		return problemRepo.getAllOpenedProblemList();
+	}
+
+	@Override
+	public List<Object[]> getAllChangeSummary() {
+		return changeRepo.getAllChangeSummary();
+	}
+
+	@Override
+	public List<Object[]> getAllOpenedChangeByTeamAgent() {
+		return changeRepo.getAllOpenedChangeByTeamAgent();
+	}
+
+	@Override
+	public List<Change> getAllOpenedChangeList() {
+		return changeRepo.getAllOpenedChangeList();
 	}
 
 }

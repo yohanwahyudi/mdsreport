@@ -3,7 +3,9 @@ package com.vdi.reports.djasper.model;
 import java.util.List;
 import java.util.Map;
 
+import com.vdi.model.Change;
 import com.vdi.model.Incident;
+import com.vdi.model.Problem;
 import com.vdi.model.performance.PerformanceAgent;
 import com.vdi.model.performance.DedicatedAgentTeam;
 import com.vdi.model.performance.PerformanceTeam;
@@ -36,7 +38,11 @@ public class MasterReport {
 	private List<Map<String, DedicatedAgentTeam>> performanceByAgentTeam;
 	
 	private List<DedicatedAgentTeam> dedicatedTeamList;
+	private List<DedicatedAgentTeam> dedicatedTeamList1;
 	private List<DedicatedAgentTeam> dedicatedAgentTeamList;
+	
+	private List<Problem> problemList;
+	private List<Change> changeList;
 	
 	private Map<Object, Object> mapValue;
 	
@@ -202,6 +208,30 @@ public class MasterReport {
 
 	public void setDedicatedTeamList(List<DedicatedAgentTeam> dedicatedTeamList) {
 		this.dedicatedTeamList = dedicatedTeamList;
+	}
+
+	public List<DedicatedAgentTeam> getDedicatedTeamList1() {
+		return dedicatedTeamList1;
+	}
+
+	public void setDedicatedTeamList1(List<DedicatedAgentTeam> dedicatedTeamList1) {
+		this.dedicatedTeamList1 = dedicatedTeamList1;
+	}
+
+	public List<Problem> getProblemList() {
+		return problemList;
+	}
+
+	public void setProblemList(List<Problem> problemList) {
+		this.problemList = problemList;
+	}
+
+	public List<Change> getChangeList() {
+		return changeList;
+	}
+
+	public void setChangeList(List<Change> changeList) {
+		this.changeList = changeList;
 	}
 
 	

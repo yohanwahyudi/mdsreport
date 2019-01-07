@@ -76,6 +76,21 @@
 					}
 				]
 			},
+			"logger": {
+				"name": "org.springframework.scheduling.quartz",
+				"level": "error",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "error"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "error"
+					}
+				]
+			},
 			"Root": {
 				"AppenderRef": [
 					{

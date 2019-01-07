@@ -51,7 +51,14 @@ public class TemplateBuildersReport {
 
 	// for problem change report
 	private DynamicReport problemSummarySub;
+	private DynamicReport allProblemSummarySub;
+	private DynamicReport allProblemSummarybyAgentSub;
+	private DynamicReport allOpenProblemListSub;
+	
 	private DynamicReport changeSummarySub;
+	private DynamicReport allChangeSummarySub;
+	private DynamicReport allChangeSummarybyAgentSub;
+	private DynamicReport allOpenChangeListSub;
 	private DynamicReport dedicatedTeamSub;
 	private DynamicReport dedicatedAgentSub;
 
@@ -85,7 +92,14 @@ public class TemplateBuildersReport {
 		this.appTeamAgentSub = createAppTeamAgentSub(style);
 
 		this.problemSummarySub = createProblemSummarySub(style);
+		this.allProblemSummarySub = createAllProblemSummarySub(style);
+		this.allProblemSummarybyAgentSub = createAllOpenedProblemByAgentSub(style);
+		this.allOpenProblemListSub = createAllOpenProblemList(style);
+		
 		this.changeSummarySub = createChangeSummarySub(style);
+		this.allChangeSummarySub = createAllOpenChangeSummarySub(style);
+		this.allChangeSummarybyAgentSub = createAllOpenedChangeByAgentSub(style);
+		this.allOpenChangeListSub = createAllOpenChangeList(style);
 		this.dedicatedTeamSub = createDedicatedTeamSummarySub(style);
 		this.dedicatedAgentSub = createDedicatedAgentSub(style);
 
@@ -98,9 +112,9 @@ public class TemplateBuildersReport {
 		drb.setTitleStyle(style.getArialTitleAgentStyle()).setTitleHeight(10)
 				.setSubtitleStyle(style.getArialTitleAgentStyle()).setSubtitleHeight(15)
 				// .setDetailHeight(15)
-				.setLeftMargin(margin).setRightMargin(margin).setTopMargin(5).setBottomMargin(5)
+				.setLeftMargin(margin).setRightMargin(margin).setTopMargin(5).setBottomMargin(5);
 				// .setPrintBackgroundOnOddRows(true).setOddRowBackgroundStyle(style.getOddRowStyle())
-				.addAutoText(AutoText.AUTOTEXT_PAGE_X_OF_Y, AutoText.POSITION_FOOTER, AutoText.ALIGNMENT_RIGHT);
+//				.addAutoText(AutoText.AUTOTEXT_PAGE_X_OF_Y, AutoText.POSITION_FOOTER, AutoText.ALIGNMENT_RIGHT);
 		return drb;
 	}
 
@@ -747,7 +761,26 @@ public class TemplateBuildersReport {
 	private DynamicReport createProblemSummarySub(TemplateStylesReport style) {
 
 		AbstractColumn columnName = ColumnBuilder.getNew().setColumnProperty("name", String.class.getName())
-				.setTitle("Problem Overview").setWidth(new Integer(100)).setStyle(style.getArialDetailSummaryStyle())
+				.setTitle("Monthly Problem Overview").setWidth(new Integer(100)).setStyle(style.getArialDetailSummaryStyle())
+				.setHeaderStyle(style.getArialHeaderSummaryStyle()).build();
+
+		AbstractColumn columnValue = ColumnBuilder.getNew().setColumnProperty("value", String.class.getName())
+				.setTitle("").setWidth(new Integer(100)).setStyle(style.getArialDetailSummaryStyle())
+				.setHeaderStyle(style.getArialHeaderSummaryStyle()).build();
+
+		DynamicReportBuilder drb = new DynamicReportBuilder();
+		drb.addColumn(columnName);
+		drb.addColumn(columnValue);
+		// drb.setUseFullPageWidth(true);
+
+		return drb.build();
+
+	}
+	
+	private DynamicReport createAllProblemSummarySub(TemplateStylesReport style) {
+
+		AbstractColumn columnName = ColumnBuilder.getNew().setColumnProperty("name", String.class.getName())
+				.setTitle("All Problem Overview").setWidth(new Integer(100)).setStyle(style.getArialDetailSummaryStyle())
 				.setHeaderStyle(style.getArialHeaderSummaryStyle()).build();
 
 		AbstractColumn columnValue = ColumnBuilder.getNew().setColumnProperty("value", String.class.getName())
@@ -766,7 +799,7 @@ public class TemplateBuildersReport {
 	private DynamicReport createChangeSummarySub(TemplateStylesReport style) {
 
 		AbstractColumn columnName = ColumnBuilder.getNew().setColumnProperty("name", String.class.getName())
-				.setTitle("Problem Overview").setWidth(new Integer(100)).setStyle(style.getArialDetailSummaryStyle())
+				.setTitle("Change Overview").setWidth(new Integer(100)).setStyle(style.getArialDetailSummaryStyle())
 				.setHeaderStyle(style.getArialHeaderSummaryStyle()).build();
 
 		AbstractColumn columnValue = ColumnBuilder.getNew().setColumnProperty("value", String.class.getName())
@@ -780,6 +813,59 @@ public class TemplateBuildersReport {
 
 		return drb.build();
 
+	}
+	
+	private DynamicReport createAllOpenChangeSummarySub(TemplateStylesReport style) {
+
+		AbstractColumn columnName = ColumnBuilder.getNew().setColumnProperty("name", String.class.getName())
+				.setTitle("All Change Overview").setWidth(new Integer(100)).setStyle(style.getArialDetailSummaryStyle())
+				.setHeaderStyle(style.getArialHeaderSummaryStyle()).build();
+
+		AbstractColumn columnValue = ColumnBuilder.getNew().setColumnProperty("value", String.class.getName())
+				.setTitle("").setWidth(new Integer(100)).setStyle(style.getArialDetailSummaryStyle())
+				.setHeaderStyle(style.getArialHeaderSummaryStyle()).build();
+
+		DynamicReportBuilder drb = new DynamicReportBuilder();
+		drb.addColumn(columnName);
+		drb.addColumn(columnValue);
+		// drb.setUseFullPageWidth(true);
+
+		return drb.build();
+
+	}
+	
+	private DynamicReport createAllOpenedChangeByAgentSub(TemplateStylesReport style) {
+
+		AbstractColumn columnTeamName = ColumnBuilder.getNew().setColumnProperty("teamName", String.class.getName())
+				.setTitle("Section").setWidth(new Integer(70)).setStyle(style.getArialLeftAgentStyle())
+				.setHeaderStyle(style.getArialHeaderSummaryStyle()).build();
+		AbstractColumn columnAgentName = ColumnBuilder.getNew().setColumnProperty("agentName", String.class.getName())
+				.setTitle("Agent").setWidth(new Integer(100)).setStyle(style.getArialDetailAgentStyle())
+				.setHeaderStyle(style.getArialHeaderSummaryStyle()).build();
+		AbstractColumn columnTotalTicket = ColumnBuilder.getNew()
+				.setColumnProperty("totalTicket", Integer.class.getName()).setTitle("Ticket Total")
+				.setWidth(new Integer(52)).setStyle(style.getArialDetailAgentStyle())
+				.setHeaderStyle(style.getArialHeaderSummaryStyle()).build();
+
+		Style groupVariables = new Style("groupVariablesApp1");
+		groupVariables.setFont(Font.ARIAL_MEDIUM_BOLD);
+		groupVariables.setTextColor(Color.BLUE);
+		// groupVariables.setBorderBottom(Border.THIN());
+		groupVariables.setHorizontalAlign(HorizontalAlign.RIGHT);
+		groupVariables.setVerticalAlign(VerticalAlign.BOTTOM);
+
+		GroupBuilder gb1 = new GroupBuilder();
+		DJGroup g1 = gb1.setCriteriaColumn((PropertyColumn) columnTeamName).build();
+
+		DynamicReportBuilder drb = new DynamicReportBuilder();
+		drb.setTitleStyle(style.getSummaryArialTitleStyle()).setTitle("Open Change By Agent");
+		drb.addColumn(columnTeamName);
+		drb.addColumn(columnAgentName);
+		drb.addColumn(columnTotalTicket);
+		drb.addGroup(g1);
+		drb.setUseFullPageWidth(true);
+
+		return drb.build();
 	}
 
 	private DynamicReport createDedicatedTeamSummarySub(TemplateStylesReport style) {
@@ -839,7 +925,7 @@ public class TemplateBuildersReport {
 		DJGroup g1 = gb1.setCriteriaColumn((PropertyColumn) columnTeamName).build();
 
 		DynamicReportBuilder drb = new DynamicReportBuilder();
-		drb.setTitleStyle(style.getSummaryArialTitleStyle()).setTitle("Achievement per Dedicated Agent (target: 98%)");
+		drb.setTitleStyle(style.getSummaryArialTitleStyle()).setTitle("Contribution per Dedicated Agent");
 		drb.addColumn(columnTeamName);
 		drb.addColumn(columnAgentName);
 		drb.addColumn(columnTotalTicket);
@@ -849,6 +935,117 @@ public class TemplateBuildersReport {
 		drb.setUseFullPageWidth(true);
 
 		return drb.build();
+	}
+	
+	private DynamicReport createAllOpenedProblemByAgentSub(TemplateStylesReport style) {
+
+		AbstractColumn columnTeamName = ColumnBuilder.getNew().setColumnProperty("teamName", String.class.getName())
+				.setTitle("Section").setWidth(new Integer(70)).setStyle(style.getArialLeftAgentStyle())
+				.setHeaderStyle(style.getArialHeaderSummaryStyle()).build();
+		AbstractColumn columnAgentName = ColumnBuilder.getNew().setColumnProperty("agentName", String.class.getName())
+				.setTitle("Agent").setWidth(new Integer(100)).setStyle(style.getArialDetailAgentStyle())
+				.setHeaderStyle(style.getArialHeaderSummaryStyle()).build();
+		AbstractColumn columnPriority = ColumnBuilder.getNew().setColumnProperty("category", String.class.getName())
+				.setTitle("Priority").setWidth(new Integer(50)).setStyle(style.getArialDetailIncidentListStyle())
+				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
+		AbstractColumn columnTotalTicket = ColumnBuilder.getNew()
+				.setColumnProperty("totalTicket", Integer.class.getName()).setTitle("Ticket Total")
+				.setWidth(new Integer(52)).setStyle(style.getArialDetailAgentStyle())
+				.setHeaderStyle(style.getArialHeaderSummaryStyle()).build();
+
+		Style groupVariables = new Style("groupVariablesApp1");
+		groupVariables.setFont(Font.ARIAL_MEDIUM_BOLD);
+		groupVariables.setTextColor(Color.BLUE);
+		// groupVariables.setBorderBottom(Border.THIN());
+		groupVariables.setHorizontalAlign(HorizontalAlign.RIGHT);
+		groupVariables.setVerticalAlign(VerticalAlign.BOTTOM);
+
+		GroupBuilder gb1 = new GroupBuilder();
+		DJGroup g1 = gb1.setCriteriaColumn((PropertyColumn) columnTeamName).build();
+
+		DynamicReportBuilder drb = new DynamicReportBuilder();
+		drb.setTitleStyle(style.getSummaryArialTitleStyle()).setTitle("Open Problem By Agent");
+		drb.addColumn(columnTeamName);
+		drb.addColumn(columnAgentName);
+		drb.addColumn(columnPriority);
+		drb.addColumn(columnTotalTicket);
+		drb.addGroup(g1);
+		drb.setUseFullPageWidth(true);
+
+		return drb.build();
+	}
+
+	private DynamicReport createAllOpenProblemList(TemplateStylesReport style) {
+		
+
+		AbstractColumn columnRef = ColumnBuilder.getNew().setColumnProperty("ref", String.class.getName())
+				.setTitle("Ref").setWidth(new Integer(35)).setStyle(style.getArialDetailIncidentListStyle())
+				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
+		AbstractColumn columnTitle = ColumnBuilder.getNew().setColumnProperty("title", String.class.getName())
+				.setTitle("Title").setWidth(new Integer(200)).setStyle(style.getArialDetailIncidentListStyle())
+				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
+		AbstractColumn columnStatus = ColumnBuilder.getNew().setColumnProperty("status", String.class.getName())
+				.setTitle("Status").setWidth(new Integer(40)).setStyle(style.getArialDetailIncidentListStyle())
+				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
+		AbstractColumn columnAgent = ColumnBuilder.getNew().setColumnProperty("agent_id_friendlyname", String.class.getName())
+				.setTitle("Agent").setWidth(new Integer(150)).setStyle(style.getArialDetailIncidentListStyle())
+				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
+		AbstractColumn columnCaller = ColumnBuilder.getNew().setColumnProperty("caller_name", String.class.getName())
+				.setTitle("Caller").setWidth(new Integer(150)).setStyle(style.getArialDetailIncidentListStyle())
+				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
+		AbstractColumn columnPriority = ColumnBuilder.getNew().setColumnProperty("priority", String.class.getName())
+				.setTitle("Priority").setWidth(new Integer(50)).setStyle(style.getArialDetailIncidentListStyle())
+				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
+		AbstractColumn columnStartDt = ColumnBuilder.getNew().setColumnProperty("start_date", String.class.getName())
+				.setTitle("Start Date").setWidth(new Integer(50)).setStyle(style.getArialDetailIncidentListStyle())
+				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
+
+		DynamicReportBuilder drb = new DynamicReportBuilder();
+		drb.setTitle("VDI ALL OPEN PROBLEM TICKET");
+		drb.setTitleStyle(style.getArialTitleAgentStyle()).setTitleHeight(30);
+		drb.addColumn(columnRef);
+		drb.addColumn(columnTitle);
+		drb.addColumn(columnPriority);		
+		drb.addColumn(columnAgent);
+		drb.addColumn(columnCaller);	
+		drb.addColumn(columnStartDt);
+		drb.addColumn(columnStatus);
+		drb.setUseFullPageWidth(true);
+
+		return drb.build();
+		
+	}
+	
+private DynamicReport createAllOpenChangeList(TemplateStylesReport style) {
+		
+
+		AbstractColumn columnRef = ColumnBuilder.getNew().setColumnProperty("ref", String.class.getName())
+				.setTitle("Ref").setWidth(new Integer(35)).setStyle(style.getArialDetailIncidentListStyle())
+				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
+		AbstractColumn columnTitle = ColumnBuilder.getNew().setColumnProperty("title", String.class.getName())
+				.setTitle("Title").setWidth(new Integer(200)).setStyle(style.getArialDetailIncidentListStyle())
+				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
+		AbstractColumn columnAgent = ColumnBuilder.getNew().setColumnProperty("agent_id_friendlyname", String.class.getName())
+				.setTitle("Agent").setWidth(new Integer(150)).setStyle(style.getArialDetailIncidentListStyle())
+				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
+		AbstractColumn columnCaller = ColumnBuilder.getNew().setColumnProperty("caller_name", String.class.getName())
+				.setTitle("Caller").setWidth(new Integer(150)).setStyle(style.getArialDetailIncidentListStyle())
+				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
+//		AbstractColumn columnStartDt = ColumnBuilder.getNew().setColumnProperty("start_date", String.class.getName())
+//				.setTitle("Start Date").setWidth(new Integer(50)).setStyle(style.getArialDetailIncidentListStyle())
+//				.setHeaderStyle(style.getArialHeaderIncidentListStyle()).build();
+
+		DynamicReportBuilder drb = new DynamicReportBuilder();
+		drb.setTitle("VDI ALL OPEN CHANGE TICKET");
+		drb.setTitleStyle(style.getArialTitleAgentStyle()).setTitleHeight(30);
+		drb.addColumn(columnRef);
+		drb.addColumn(columnTitle);
+		drb.addColumn(columnAgent);
+		drb.addColumn(columnCaller);	
+		drb.setUseFullPageWidth(true);
+
+		return drb.build();
+		
 	}
 
 	private DynamicReport createNoteSub(TemplateStylesReport style) {
@@ -950,6 +1147,34 @@ public class TemplateBuildersReport {
 
 	public DynamicReport getDedicatedAgentSub() {
 		return dedicatedAgentSub;
+	}
+
+	public DynamicReport getAllProblemSummarySub() {
+		return allProblemSummarySub;
+	}
+
+	public DynamicReport getAllProblemSummarybyAgentSub() {
+		return allProblemSummarybyAgentSub;
+	}
+
+	public DynamicReport getAllOpenProblemListSub() {
+		return allOpenProblemListSub;
+	}
+
+	public void setAllOpenProblemListSub(DynamicReport allOpenProblemListSub) {
+		this.allOpenProblemListSub = allOpenProblemListSub;
+	}
+
+	public DynamicReport getAllChangeSummarySub() {
+		return allChangeSummarySub;
+	}
+
+	public DynamicReport getAllChangeSummarybyAgentSub() {
+		return allChangeSummarybyAgentSub;
+	}
+
+	public DynamicReport getAllOpenChangeListSub() {
+		return allOpenChangeListSub;
 	}
 
 }

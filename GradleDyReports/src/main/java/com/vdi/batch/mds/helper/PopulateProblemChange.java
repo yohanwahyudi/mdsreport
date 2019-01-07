@@ -40,13 +40,14 @@ public class PopulateProblemChange {
 		logger.info("Clear problem...");
 		repo.deleteEntity(Problem.class);
 		
-		logger.info("Add to problem...");		
-		problemList = new ArrayList<Problem>();
-		problemList = castList(Problem.class, loadProblem.getStagingAllByURL());
-
-		if (problemList != null && problemList.size() > 0) {
-			repo.addAll(problemList);
-		}
+		logger.info("Add to problem...");
+		repo.addAll(loadProblem.getStagingAllByURL());
+//		problemList = new ArrayList<Problem>();
+//		problemList = castList(Problem.class, loadProblem.getStagingAllByURL());
+//
+//		if (problemList != null && problemList.size() > 0) {
+//			repo.addAll(problemList);
+//		}
 	}
 
 	private void addToStagingChange() {
@@ -54,13 +55,14 @@ public class PopulateProblemChange {
 		logger.info("Clear change...");
 		repo.deleteEntity(Change.class);
 
-		logger.info("Add to Change...");		
-		changeList = new ArrayList<Change>();
-		changeList = castList(Change.class, loadChange.getStagingAllByURL());		
-
-		if (changeList != null && changeList.size() > 0) {
-			repo.addAll(changeList);
-		}
+		logger.info("Add to Change...");
+		repo.addAll(loadChange.getStagingAllByURL());
+//		changeList = new ArrayList<Change>();
+//		changeList = castList(Change.class, loadChange.getStagingAllByURL());		
+//
+//		if (changeList != null && changeList.size() > 0) {
+//			repo.addAll(changeList);
+//		}
 	}
 
 	private <T> List<T> castList(Class<? extends T> clazz, Collection<?> c) {

@@ -27,7 +27,8 @@ public interface MonthlySDPerfAgentRepository extends CrudRepository<Performance
 			"	LEFT JOIN agent    " + 
 			"	 ON staging.scalar_user = agent.NAME    " + 
 			"	WHERE scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
-			"    AND month(incident_startdate)=month(curdate())-1 and year(incident_startdate)=year(curdate())  " +
+			"				AND incident_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
+			"				AND incident_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"	 AND staging.scalar_user like 'EXT%' "+
 			"	GROUP  BY staging.scalar_user    " + 
 			"	ORDER BY agent ASC  " + 
@@ -42,7 +43,8 @@ public interface MonthlySDPerfAgentRepository extends CrudRepository<Performance
 			"		ON agent.name = staging.scalar_user  " + 
 			"    WHERE scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
 			"		AND staging.incident_slattopassed = 'no'   " + 
-			"    AND month(incident_startdate)=month(curdate())-1 and year(incident_startdate)=year(curdate())  " +
+			"				AND incident_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
+			"				AND incident_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"	 AND staging.scalar_user like 'EXT%' "+
 			"    GROUP BY staging.scalar_user  " + 
 			")	two  " + 
@@ -57,7 +59,8 @@ public interface MonthlySDPerfAgentRepository extends CrudRepository<Performance
 			"		ON agent.name = staging.scalar_user  " + 
 			"    WHERE scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
 			"		AND staging.incident_slattopassed = 'yes'   " + 
-			"    AND month(incident_startdate)=month(curdate())-1 and year(incident_startdate)=year(curdate())  " +
+			"				AND incident_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
+			"				AND incident_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"	 AND staging.scalar_user like 'EXT%' "+
 			"    GROUP BY staging.scalar_user  " + 
 			")	three                               " + 

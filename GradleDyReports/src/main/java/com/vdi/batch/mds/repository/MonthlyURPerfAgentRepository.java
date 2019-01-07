@@ -27,10 +27,10 @@ public interface MonthlyURPerfAgentRepository extends CrudRepository<Performance
 			"	 ON staging.scalar_user = agent.NAME    " + 
 			"	WHERE "+
 			"    scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
-			"	and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
-			"	or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
-			"	AND year(urequest_startdate)=year(curdate()) "+   
-			"	AND month(urequest_startdate)= :month "+
+//			"	and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
+//			"	or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
+			"	and urequest_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
+			"	and urequest_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"	AND staging.scalar_user like 'EXT%' "+
 			"	GROUP  BY staging.scalar_user    " + 
 			"	ORDER BY agent ASC  " + 
@@ -45,11 +45,11 @@ public interface MonthlyURPerfAgentRepository extends CrudRepository<Performance
 			"		ON agent.name = staging.scalar_user  " + 
 			"    WHERE " + 
 			"    scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
-			"	and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
-			"	or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
+//			"	and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
+//			"	or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
 			"	 AND staging.urequest_slattopassed = 'no'   " + 
-			"	 AND year(urequest_startdate)=year(curdate()) "+   
-			"	 AND month(urequest_startdate)= :month "+
+			"	and urequest_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
+			"	and urequest_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"	 AND staging.scalar_user like 'EXT%' "+
 			"    GROUP BY staging.scalar_user  " + 
 			")	two  " + 
@@ -64,11 +64,11 @@ public interface MonthlyURPerfAgentRepository extends CrudRepository<Performance
 			"		ON agent.name = staging.scalar_user  " + 
 			"    WHERE   " + 
 			"    scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
-			"	and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
-			"	or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
+//			"	and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
+//			"	or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
 			"	 AND staging.urequest_slattopassed = 'yes'   " + 
-			"	 AND year(urequest_startdate)=year(curdate()) "+   
-			"	 AND month(urequest_startdate)= :month "+
+			"	and urequest_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
+			"	and urequest_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"	 AND staging.scalar_user like 'EXT%' "+
 			"    GROUP BY staging.scalar_user  " + 
 			")	three                               " + 

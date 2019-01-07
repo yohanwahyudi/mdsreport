@@ -50,6 +50,10 @@ public class ProblemDedicatedReport implements ReportService{
 		String monthStr = timeTools.getPrevMonthString();
 		int year = timeTools.getCurrentYear();
 		
+		if(timeTools.getCurrentMonth() == 1) {
+			year = year - 1;
+		}
+		
 		DynamicReportBuilder master = templateBuilders.getMaster();
 		master.setTitle("DEDICATED AGENT CONTRIBUTION FOR PROBLEM");
 		master.setSubtitle("Based on iTop "+monthStr+" "+year);
@@ -57,10 +61,18 @@ public class ProblemDedicatedReport implements ReportService{
 		params.put("summarySubParam", problemHelper.getProblemReport().getOverallAchievementList());
 		params.put("teamSubParam", problemHelper.getProblemReport().getDedicatedTeamList());
 		params.put("agentSubParam", problemHelper.getProblemReport().getDedicatedAgentTeamList());
+		params.put("allProblemSummaryParam", problemHelper.getProblemReport().getSupportAgentSummaryList());
+		params.put("allOpenProblemAgentParam", problemHelper.getProblemReport().getDedicatedTeamList1());
+		params.put("allOpenProblemListParam", problemHelper.getProblemReport().getProblemList());
+		
+		logger.info("params: "+params.get("allOpenProblemAgentParam"));
 		
 		DynamicReport summarySub = templateBuilders.getProblemSummarySub();
 		DynamicReport teamSub = templateBuilders.getDedicatedTeamSub();
 		DynamicReport agentSub = templateBuilders.getDedicatedAgentSub();
+		DynamicReport allSummarySub = templateBuilders.getAllProblemSummarySub();
+		DynamicReport allOpenProblemByAgentSub = templateBuilders.getAllProblemSummarybyAgentSub();
+		DynamicReport allOpenProblemListSub = templateBuilders.getAllOpenProblemListSub();
 		
 		master.addConcatenatedReport(summarySub, new ClassicLayoutManager(), "summarySubParam",
 				DJConstants.DATA_SOURCE_ORIGIN_PARAMETER, DJConstants.DATA_SOURCE_TYPE_COLLECTION, false);
@@ -68,6 +80,12 @@ public class ProblemDedicatedReport implements ReportService{
 				DJConstants.DATA_SOURCE_ORIGIN_PARAMETER, DJConstants.DATA_SOURCE_TYPE_COLLECTION, false);
 		master.addConcatenatedReport(agentSub, new ClassicLayoutManager(), "agentSubParam",
 				DJConstants.DATA_SOURCE_ORIGIN_PARAMETER, DJConstants.DATA_SOURCE_TYPE_COLLECTION, false);
+		master.addConcatenatedReport(allSummarySub, new ClassicLayoutManager(), "allProblemSummaryParam",
+				DJConstants.DATA_SOURCE_ORIGIN_PARAMETER, DJConstants.DATA_SOURCE_TYPE_COLLECTION, true);
+		master.addConcatenatedReport(allOpenProblemByAgentSub, new ClassicLayoutManager(), "allOpenProblemAgentParam",
+				DJConstants.DATA_SOURCE_ORIGIN_PARAMETER, DJConstants.DATA_SOURCE_TYPE_COLLECTION, false);
+//		master.addConcatenatedReport(allOpenProblemListSub, new ClassicLayoutManager(), "allOpenProblemListParam",
+//				DJConstants.DATA_SOURCE_ORIGIN_PARAMETER, DJConstants.DATA_SOURCE_TYPE_COLLECTION, true);
 		
 		return master.build();
 	

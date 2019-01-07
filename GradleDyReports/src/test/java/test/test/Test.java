@@ -8,6 +8,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -89,6 +90,8 @@ public class Test {
 		field.add("Resolve/ Close");
 		
 		System.out.println("field: "+field);
+		
+		System.out.println(timeTools.getCurrentMonth());
 		
 	}
 

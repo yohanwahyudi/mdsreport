@@ -26,8 +26,8 @@ public interface ServiceDeskRepository extends CrudRepository<ServiceDesk, Long>
 	@Query(value="select " + 
 			"	* " + 
 			"from staging_servicedesk " + 
-			"where year(incident_startdate)=year(curdate()) "+   
-			"and month(incident_startdate)= :month "+
+			"where start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') "+   
+			"and start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"and scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned' "+
 			"and scalar_user like 'EXT%' "+
 			"order by incident_ref "+

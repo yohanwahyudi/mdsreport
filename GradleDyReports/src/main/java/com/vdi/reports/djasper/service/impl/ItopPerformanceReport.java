@@ -91,7 +91,14 @@ public class ItopPerformanceReport implements ReportService {
 			}
 			
 		} else {
-			master.setSubtitle(prevMonthStr.toUpperCase() + " " + currentYear);
+			
+			if(timeTools.getCurrentMonth() == 1) {
+				logger.info("desember");
+				master.setSubtitle(prevMonthStr.toUpperCase() + " " + (currentYear-1));
+			} else {
+				master.setSubtitle(prevMonthStr.toUpperCase() + " " + currentYear);
+			}			
+//			master.setSubtitle(prevMonthStr.toUpperCase() + " " + currentYear);
 			masterReport = monthlyReport;
 		} 
 

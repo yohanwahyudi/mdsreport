@@ -247,7 +247,7 @@ public class PopulatePerformance {
 			perfAgent.setCategory("sa");
 			perfAgent.setAchievement(achievement);
 
-			logger.info("agent: " + agentName + " division: " + division);
+			//logger.info("agent: " + agentName + " division: " + division);
 
 			newPerfList.add(perfAgent);
 			newPerfMap.put(agentName, perfAgent);

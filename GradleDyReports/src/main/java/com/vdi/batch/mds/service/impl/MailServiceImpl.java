@@ -1,5 +1,7 @@
 package com.vdi.batch.mds.service.impl;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -168,7 +170,7 @@ public class MailServiceImpl implements MailService{
 	@Override
 	public void sendEmail(Map<String, Object> mapObject, String template, FileSystemResource file, String subject) {
 
-		MimeMessage message = mailSenderDev.createMimeMessage();
+		MimeMessage message = mailSender.createMimeMessage();
 
 		String[] toEmailArr = appConfig.getMdsReportEmailTo();
 		try {
@@ -186,7 +188,7 @@ public class MailServiceImpl implements MailService{
 			logger.info("email body: " +text);
 			
 			helper.setText(text, true);
-			mailSenderDev.send(message);
+			mailSender.send(message);
 			
 			logger.info("Message has been sent......");
 			
@@ -214,8 +216,16 @@ public class MailServiceImpl implements MailService{
 			helper.setSubject(subject);
 			
 			for(FileSystemResource fsr : file) {
-				helper.addAttachment(fsr.getFilename(), fsr);
-				logger.info("file attachment: "+fsr.getPath()+"/"+fsr.getFilename());
+				
+				logger.info("file attachment: "+fsr.getPath());
+				
+				File f = new File(fsr.getPath());
+				
+				logger.info("file isExist:"+f.exists());
+				
+				if(f.exists()) {
+					helper.addAttachment(fsr.getFilename(), fsr);
+				}
 			}
 			
 			String text = getTemplateContentMdsDaily(mapObject, template);
@@ -231,7 +241,7 @@ public class MailServiceImpl implements MailService{
 			throw new MailParseException(e);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
-		}
+		} 
 
 	}
 	

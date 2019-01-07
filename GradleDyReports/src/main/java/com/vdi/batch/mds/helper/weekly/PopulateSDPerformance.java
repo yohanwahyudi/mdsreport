@@ -147,8 +147,8 @@ public class PopulateSDPerformance {
 			perfAgent.setCategory("sd");
 			perfAgent.setAchievement(achievement);
 			
-			logger.info("agent: "+agentName);
-			logger.info("all: "+totalTicket);
+			//logger.info("agent: "+agentName);
+			//logger.info("all: "+totalTicket);
 
 			newPerfList.add(perfAgent);
 			newPerfMap.put(agentName, perfAgent);

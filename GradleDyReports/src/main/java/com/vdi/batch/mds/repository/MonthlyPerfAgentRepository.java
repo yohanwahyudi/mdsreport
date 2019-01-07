@@ -23,8 +23,11 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"               Count(incident.ref) AS total_ticket " + 
 			"        FROM   incident incident " + 
 			"               JOIN agent " + 
-			"                 ON incident.agent_fullname = agent.NAME " + 
-			"        WHERE  month(start_date)=month(curdate())-1 AND year(start_date)=year(curdate()) AND status IN ( 'closed', 'resolved' ) " + 
+			"                 ON incident.agent_fullname = agent.NAME " +
+			"        WHERE " +
+//			"        WHERE  status IN ( 'closed', 'resolved' ) AND " + 
+			"				start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
+			"				AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"        GROUP  BY incident.agent_fullname " + 
 			"        ORDER  BY division, " + 
 			"                  agent_fullname ASC) one " + 
@@ -33,10 +36,12 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"                         Count(incident.ref) AS achieved_ticket " + 
 			"                  FROM   incident incident " + 
 			"                         JOIN agent " + 
-			"                           ON incident.agent_fullname = agent.NAME " + 
-			"                  WHERE  status IN ( 'closed', 'resolved' ) " + 
-			"                         AND ttr_passed = 'no' " + 
-			"                         AND month(start_date)=month(curdate())-1 AND year(start_date)=year(curdate()) " + 
+			"                           ON incident.agent_fullname = agent.NAME " +
+			"                  WHERE " +
+//			"                  WHERE  status IN ( 'closed', 'resolved' ) AND " + 
+			"                         ttr_passed = 'no' " + 
+			"						  AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
+			"					      AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"                  GROUP  BY incident.agent_fullname " + 
 			"                  ORDER  BY division, " + 
 			"                            agent_fullname ASC) two " + 
@@ -46,10 +51,12 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"                         Count(incident.ref) AS missed_ticket " + 
 			"                  FROM   incident incident " + 
 			"                         JOIN agent " + 
-			"                           ON incident.agent_fullname = agent.NAME " + 
-			"                  WHERE  status IN ( 'closed', 'resolved' ) " + 
-			"                         AND ttr_passed = 'yes' " + 
-			"                         AND month(start_date)=month(curdate())-1 AND year(start_date)=year(curdate()) " + 
+			"                           ON incident.agent_fullname = agent.NAME " +
+			"                  WHERE " +
+//			"                  WHERE  status IN ( 'closed', 'resolved' ) AND " + 
+			"                         ttr_passed = 'yes' " + 
+			"						  AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
+			"						  AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"                  GROUP  BY incident.agent_fullname " + 
 			"                  ORDER  BY division, " + 
 			"                            agent_fullname ASC) three " + 
@@ -61,7 +68,8 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"                         JOIN agent " + 
 			"                           ON incident.agent_fullname = agent.NAME " + 
 			"                  WHERE  status = 'pending' " + 
-			"                         AND month(start_date)=month(curdate())-1 AND year(start_date)=year(curdate()) " + 
+			"						  AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
+			"						  AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"                  GROUP  BY incident.agent_fullname " + 
 			"                  ORDER  BY division, " + 
 			"                            agent_fullname ASC) four " + 
@@ -73,7 +81,8 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"                         JOIN agent " + 
 			"                           ON incident.agent_fullname = agent.NAME " + 
 			"                  WHERE  status = 'assigned' " + 
-			"                         AND month(start_date)=month(curdate())-1 AND year(start_date)=year(curdate()) " + 
+			"						  AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
+			"						  AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"                  GROUP  BY incident.agent_fullname" + 
 			"                  ORDER  BY division, " + 
 			"                            agent_fullname ASC) five " + 

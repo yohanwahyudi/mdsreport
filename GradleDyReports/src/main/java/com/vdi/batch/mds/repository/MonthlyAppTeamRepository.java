@@ -20,7 +20,7 @@ public interface MonthlyAppTeamRepository extends CrudRepository<PerformanceAgen
 			"round(count(incident.ref)*100/  " + 
 			"(select count(incident.ref) from incident join agent on agent.name=incident.agent_fullname  " + 
 			" where agent.team_name not in ('DCU','OCC','OTHERS','SERVER','NETWORK','OFA') " + 
-			" AND incident.status IN ( 'closed', 'resolved' )  " + 
+			//" AND incident.status IN ( 'closed', 'resolved' )  " + 
 			" AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
 			" AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')  " + 
 			"),2) as contribution, " + 
@@ -29,40 +29,40 @@ public interface MonthlyAppTeamRepository extends CrudRepository<PerformanceAgen
 			"when agent.team_name='RMS, ReSA, DWH' " + 
 			"then round(count(incident.ref)*100/(select count(incident.ref) from incident join agent on agent.name=incident.agent_fullname  " + 
 			"	 where agent.team_name = 'RMS, ReSA, DWH' " + 
-			"	 AND incident.status IN ( 'closed', 'resolved' )  " + 
+			//"	 AND incident.status IN ( 'closed', 'resolved' )  " + 
 			"	 AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
 			"	 AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')),2)  " + 
 			"when agent.team_name='WMS' " + 
 			"then round(count(incident.ref)*100/(select count(incident.ref) from incident join agent on agent.name=incident.agent_fullname  " + 
 			"	 where agent.team_name = 'WMS' " + 
-			"	 AND incident.status IN ( 'closed', 'resolved' )  " + 
+			//"	 AND incident.status IN ( 'closed', 'resolved' )  " + 
 			"	 AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
 			"	 AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')),2) " + 
 			"when agent.team_name='MFP, OBIEE' " + 
 			"then round(count(incident.ref)*100/(select count(incident.ref) from incident join agent on agent.name=incident.agent_fullname  " + 
 			"	 where agent.team_name = 'MFP, OBIEE' " + 
-			"	 AND incident.status IN ( 'closed', 'resolved' )  " + 
+			//"	 AND incident.status IN ( 'closed', 'resolved' )  " + 
 			"	 AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
 			"	 AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')),2)      " + 
 			"when agent.team_name='DWI, RDW' " + 
 			"then round(count(incident.ref)*100/(select count(incident.ref) from incident join agent on agent.name=incident.agent_fullname  " + 
 			"	 where agent.team_name = 'DWI, RDW' " + 
-			"	 AND incident.status IN ( 'closed', 'resolved' )  " + 
+			//"	 AND incident.status IN ( 'closed', 'resolved' )  " + 
 			"	 AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
 			"	 AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')),2) " + 
 			"when agent.team_name='RIB RSIM, ReIM, Alloc' " + 
 			"then round(count(incident.ref)*100/(select count(incident.ref) from incident join agent on agent.name=incident.agent_fullname  " + 
 			"	 where agent.team_name = 'RIB RSIM, ReIM, Alloc' " + 
-			"	 AND incident.status IN ( 'closed', 'resolved' )  " + 
+			//"	 AND incident.status IN ( 'closed', 'resolved' )  " + 
 			"	 AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
 			"	 AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')),2) " + 
 			"end,0) as team_contribution " + 
 			"from incident   JOIN agent  " + 
 			"on agent.name=incident.agent_fullname  " + 
-			"WHERE agent.team_name not in ('DCU','OCC','OTHERS','SERVER','NETWORK','OFA')  " + 
-			"AND incident.status IN ( 'closed', 'resolved' )  " + 
-			"AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
+			"AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') "+
 			"AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')  " + 
+			"WHERE agent.team_name not in ('DCU','OCC','OTHERS','SERVER','NETWORK','OFA')  " + 
+			//"AND incident.status IN ( 'closed', 'resolved' )  " + 
 			"group by agent.name   order by team_name desc; "			
 			, nativeQuery = true)
 	public List<Object[]> getAgentPerformance();
@@ -74,13 +74,13 @@ public interface MonthlyAppTeamRepository extends CrudRepository<PerformanceAgen
 			+ "round(count(incident.ref)*100/ "
 			+ "	(select count(incident.ref) from incident join agent on agent.name=incident.agent_fullname "
 			+ "	 where agent.team_name not in ('DCU','OCC','OTHERS','SERVER','NETWORK','OFA')"
-			+ "	 AND incident.status IN ( 'closed', 'resolved' ) "
+			//+ "	 AND incident.status IN ( 'closed', 'resolved' ) "
 			+ "	 AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') "
 			+ "	 AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "
 			+ " ),2) as contribution " 
 			+ "from incident  " + "JOIN agent " + "on agent.name=incident.agent_fullname "
 			+ "WHERE agent.team_name not in ('DCU','OCC','OTHERS','SERVER','NETWORK','OFA') "
-			+ "AND incident.status IN ( 'closed', 'resolved' )  "
+			//+ "AND incident.status IN ( 'closed', 'resolved' )  "
 			+ "AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') "
 			+ "AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "
 			+ "group by agent.team_name " + "order by contribution desc;", nativeQuery = true)

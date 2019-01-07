@@ -4,10 +4,8 @@ import java.io.FileNotFoundException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.springframework.stereotype.Component;
 
 import com.vdi.batch.mds.helper.PopulateProblemChange;
 import com.vdi.batch.mds.helper.monthly.PopulateDedicatedAgent;
@@ -18,49 +16,67 @@ import com.vdi.tools.TimeTools;
 
 import net.sf.jasperreports.engine.JRException;
 
-public class BatchMDSPerSection extends QuartzJobBean {
+@Component
+public class BatchSubMDSPerSection {
 
-	private final Logger logger = LogManager.getLogger(BatchMDSPerSection.class);
+	private final Logger logger = LogManager.getLogger(BatchSubMDSPerSection.class);
 
-	private AnnotationConfigApplicationContext ctx;	
+	private AnnotationConfigApplicationContext ctx;
 
-	@Override
-	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
+	public BatchSubMDSPerSection() {
+
+	}
+
+	public String[] createReport() {
+		
 		logger.info("Batch mds per section monthly report started.......");
 
 		ctx = new AnnotationConfigApplicationContext(AppConfig.class);
-		
-		TimeTools timeTools = ctx.getBean(TimeTools.class);	
+
+		TimeTools timeTools = ctx.getBean(TimeTools.class);
 		AppConfig appConfig = ctx.getBean(AppConfig.class);
 		String path = appConfig.getMdsReportPath();
-		String fileSection = "/"+"VDI_ITOP_Section_Contribution_"+timeTools.getPrevMonthString()+"_"+timeTools.getCurrentYear()+".pdf";
-		String fileProblem = "/"+"VDI_ITOP_Problem_Contribution_"+timeTools.getPrevMonthString()+"_"+timeTools.getCurrentYear()+".pdf";
-		String fileChange = "/"+"VDI_ITOP_Change_Contribution_"+timeTools.getPrevMonthString()+"_"+timeTools.getCurrentYear()+".pdf";
+		
+		int currentYear;
+		if(timeTools.getCurrentMonth()!=1) {
+			currentYear = timeTools.getCurrentYear();
+		} else {
+			currentYear = timeTools.getCurrentYear() - 1;
+		}
+		
+		String fileSection = "/" + "VDI_ITOP_Section_Contribution_" + timeTools.getPrevMonthString() + "_"
+				+ currentYear + ".pdf";
+		String fileProblem = "/" + "VDI_ITOP_Problem_Contribution_" + timeTools.getPrevMonthString() + "_"
+				+ currentYear + ".pdf";
+		String fileChange = "/" + "VDI_ITOP_Change_Contribution_" + timeTools.getPrevMonthString() + "_"
+				+ currentYear + ".pdf";
+		String[] fileArray = new String[]{fileSection, fileProblem, fileChange}; 
 
 		try {
 			populateProblemChange(ctx);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
+		
+		ReportService rpt = ctx.getBean("appTeamPerformanceReportService", ReportService.class);
+		createReport(rpt, path+fileSection);
+		ctx.close();
 
-//		ReportService rpt = ctx.getBean("appTeamPerformanceReportService", ReportService.class);
-//		createReport(rpt, path+fileSection);
-//		ctx.close();
-//
-//		ctx = new AnnotationConfigApplicationContext(AppConfig.class);
-//		rpt = ctx.getBean("problemDedicatedReportService", ReportService.class);
-//		createReport(rpt, path+fileProblem);
-//		ctx.close();
-//		
-//		ctx = new AnnotationConfigApplicationContext(AppConfig.class);
-//		rpt = ctx.getBean("changeDedicatedReportService", ReportService.class);
-//		createReport(rpt, path+fileChange);
-//		ctx.close();
+		ctx = new AnnotationConfigApplicationContext(AppConfig.class);
+		rpt = ctx.getBean("problemDedicatedReportService", ReportService.class);
+		createReport(rpt, path+fileProblem);
+		ctx.close();
+		
+		ctx = new AnnotationConfigApplicationContext(AppConfig.class);
+		rpt = ctx.getBean("changeDedicatedReportService", ReportService.class);
+		createReport(rpt, path+fileChange);
+		ctx.close();
 		
 		logger.info("Batch mds per section monthly report finished.......");
 		
+		return fileArray;
 	}
-
+	
 	private void populateProblemChange(AnnotationConfigApplicationContext ctx) throws Exception {
 
 		PopulateProblemChange populate = ctx.getBean("populateProblemChange", PopulateProblemChange.class);
@@ -70,7 +86,7 @@ public class BatchMDSPerSection extends QuartzJobBean {
 		populateDedicated.insertData();
 
 	}
-
+	
 	private void createReport(ReportService rpt, String fileName) {
 
 		try {

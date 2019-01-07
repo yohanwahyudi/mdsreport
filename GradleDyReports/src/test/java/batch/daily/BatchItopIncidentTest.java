@@ -48,32 +48,32 @@ public class BatchItopIncidentTest {
 		
 		if (allList != null) {
 			int size = allList.size();
-			logger.debug("MDS daily list size: " + size);
+			logger.info("MDS daily list size: " + size);
 			
 			for(Problem c: (List<Problem>)allList) {
 				logger.debug(c.getRef());
 			}
 			
-//		PopulateProblemChange populate = annotationCtx.getBean("populateProblemChange", PopulateProblemChange.class);
-//		populate.populate();
+		PopulateProblemChange populate = annotationCtx.getBean("populateProblemChange", PopulateProblemChange.class);
+		populate.populate();
 		
 //		PopulateDedicatedAgent populateDedicated = annotationCtx.getBean("populateDedicatedAgent", PopulateDedicatedAgent.class);
 //		populateDedicated.insertData();
-		
-		ProblemReportHelper problemHelper = annotationCtx.getBean("problemReportHelper", ProblemReportHelper.class);
-		MasterReport masterReport = problemHelper.getProblemReport();
-		
-		logger.info(masterReport.getOverallAchievementList().getClass());
-		logger.info(masterReport.getOverallAchievementList().get(0).getValue());
-		logger.info(masterReport.getDedicatedAgentTeamList().get(0).getAgentName());
-		
-		ChangeReportHelper changeHelper = annotationCtx.getBean("changeReportHelper", ChangeReportHelper.class);
-		masterReport = new MasterReport();
-		masterReport = changeHelper.getProblemReport();
-		
-		logger.info(masterReport.getOverallAchievementList().getClass().getName());
-		logger.info(masterReport.getOverallAchievementList().get(0).getValue());
-		logger.info(masterReport.getDedicatedAgentTeamList().get(0).getAgentName());
+//		
+//		ProblemReportHelper problemHelper = annotationCtx.getBean("problemReportHelper", ProblemReportHelper.class);
+//		MasterReport masterReport = problemHelper.getProblemReport();
+//		
+//		logger.info(masterReport.getOverallAchievementList().getClass());
+//		logger.info(masterReport.getOverallAchievementList().get(0).getValue());
+//		logger.info(masterReport.getDedicatedAgentTeamList().get(0).getAgentName());
+//		
+//		ChangeReportHelper changeHelper = annotationCtx.getBean("changeReportHelper", ChangeReportHelper.class);
+//		masterReport = new MasterReport();
+//		masterReport = changeHelper.getChangeReport();
+//		
+//		logger.info(masterReport.getOverallAchievementList().getClass().getName());
+//		logger.info(masterReport.getOverallAchievementList().get(0).getValue());
+//		logger.info(masterReport.getDedicatedAgentTeamList().get(0).getAgentName());
 		
 			
 		} else {

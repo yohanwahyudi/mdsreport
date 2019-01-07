@@ -18,7 +18,7 @@ public class BatchMDSPopulateServiceDesk extends QuartzJobBean{
 	
 	@Override
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-		logger.debug("Execute BatchMDSPopulateServiceDesk......");
+		logger.info("Execute BatchMDSPopulateServiceDesk......");
 		
 		ctx = new AnnotationConfigApplicationContext(AppConfig.class);
 		PopulateServiceDesk populateServiceDesk = ctx.getBean(PopulateServiceDesk.class);
@@ -28,7 +28,7 @@ public class BatchMDSPopulateServiceDesk extends QuartzJobBean{
 			e.printStackTrace();
 		}
 
-		logger.debug("Execute BatchMDSPopulateServiceDesk finished......");
+		logger.info("Execute BatchMDSPopulateServiceDesk finished......");
 	}
 
 	

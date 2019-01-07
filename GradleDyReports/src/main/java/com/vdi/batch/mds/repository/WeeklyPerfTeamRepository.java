@@ -22,7 +22,7 @@ public interface WeeklyPerfTeamRepository extends CrudRepository<PerformanceTeam
 			"				year(start_date)=year(curdate()) "+   
 			"				AND month(start_date)= :month "+
 			"				AND week(start_date,3)= :week "+
-			"				AND status in ('closed','resolved') "+
+			//"				AND status in ('closed','resolved') "+
 			"        GROUP  BY division) one " + 
 			"       LEFT JOIN (SELECT agent.division, " + 
 			"                         Count(ref) AS achieved_ticket " + 
@@ -33,7 +33,7 @@ public interface WeeklyPerfTeamRepository extends CrudRepository<PerformanceTeam
 			"						year(start_date)=year(curdate()) "+   
 			"						AND month(start_date)= :month "+
 			"						AND week(start_date,3)= :week "+
-			"						AND status in ('closed','resolved') "+
+			//"						AND status in ('closed','resolved') "+
 			"                       AND ttr_passed = 'no' " + 
 			"                  GROUP  BY division) two " + 
 			"              ON one.division = two.division " + 
@@ -46,7 +46,7 @@ public interface WeeklyPerfTeamRepository extends CrudRepository<PerformanceTeam
 			"						year(start_date)=year(curdate()) "+   
 			"						AND month(start_date)= :month "+
 			"						AND week(start_date,3)= :week "+
-			"						AND status in ('closed','resolved') "+
+			//"						AND status in ('closed','resolved') "+
 			"                       AND ttr_passed = 'yes' " + 
 			"                  GROUP  BY division) three " + 
 			"              ON one.division = three.division; ",nativeQuery=true)
@@ -61,16 +61,18 @@ public interface WeeklyPerfTeamRepository extends CrudRepository<PerformanceTeam
 			"        FROM   incident incident " + 
 			"               INNER JOIN agent agent " + 
 			"                       ON incident.agent_fullname = agent.NAME " + 
-			"        WHERE  status IN ( 'closed', 'resolved' ) " + 
-			"               AND Yearweek(start_date, 3) = Yearweek(Curdate(), 3) " + 
+			"        WHERE  "+
+			//"				status IN ( 'closed', 'resolved' ) AND " + 
+			"               Yearweek(start_date, 3) = Yearweek(Curdate(), 3) " + 
 			"        GROUP  BY division) one " + 
 			"       LEFT JOIN (SELECT agent.division, " + 
 			"                         Count(ref) AS achieved_ticket " + 
 			"                  FROM   incident incident " + 
 			"                         INNER JOIN agent agent " + 
 			"                                 ON incident.agent_fullname = agent.NAME " + 
-			"                  WHERE  status IN ( 'closed', 'resolved' ) " + 
-			"                         AND ttr_passed = 'no' " + 
+			"                  WHERE  " +
+			//"						  status IN ( 'closed', 'resolved' ) AND " + 
+			"                         ttr_passed = 'no' " + 
 			"                         AND Yearweek(start_date, 3) = Yearweek(Curdate(), 3) " + 
 			"                  GROUP  BY division) two " + 
 			"              ON one.division = two.division " + 
@@ -79,8 +81,9 @@ public interface WeeklyPerfTeamRepository extends CrudRepository<PerformanceTeam
 			"                  FROM   incident incident " + 
 			"                         INNER JOIN agent agent " + 
 			"                                 ON incident.agent_fullname = agent.NAME " + 
-			"                  WHERE  status IN ( 'closed', 'resolved' ) " + 
-			"                         AND ttr_passed = 'yes' " + 
+			"                  WHERE  "+
+			//"						  status IN ( 'closed', 'resolved' ) AND " + 
+			"                         ttr_passed = 'yes' " + 
 			"                         AND Yearweek(start_date, 3) = Yearweek(Curdate(), 3) " + 
 			"                  GROUP  BY division) three " + 
 			"              ON one.division = three.division; ",nativeQuery=true)

@@ -145,7 +145,8 @@ public class ProblemDataLoaderImpl implements ItopMDSDataLoaderService {
 			allProblemList.add(problem);
 		}
 		
-		logger.debug("finish load problem from url....");
+		logger.info("size: "+ allProblemList.size());
+		logger.info("finish load problem from url....");
 		
 		return allProblemList;
 	}
