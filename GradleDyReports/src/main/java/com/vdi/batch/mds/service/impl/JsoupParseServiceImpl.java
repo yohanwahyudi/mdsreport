@@ -40,6 +40,10 @@ import com.vdi.tools.IOToolsService;
 public class JsoupParseServiceImpl implements JsoupParseService {
 
 	private final static Logger logger = LogManager.getLogger(JsoupParseServiceImpl.class);
+	
+	private final String HTML_REGEX_CLEAR_TAG = "<[^<>]+>";
+	private final String HTML_ENTITY_CLEAR = "(&nbsp;|&lt;|&gt;|&amp;|&quot;|&apos;)+";
+	private final String UNACCENT_CLEAR = "[^\\p{Print}]";
 
 	private List<Incident> deadlineList;
 	private List<Incident> assignList;
@@ -434,7 +438,13 @@ public class JsoupParseServiceImpl implements JsoupParseService {
 		incident.setTtr(row.get(43));
 		incident.setSolution(row.get(44));
 		incident.setPerson_full_name(row.get(45));
-		incident.setEmail(row.get(46));
+		
+		String email = row.get(46);
+		email = email.replaceAll(HTML_REGEX_CLEAR_TAG,"");
+		email = email.replaceAll(HTML_ENTITY_CLEAR, " ");
+		email = email.replaceAll(UNACCENT_CLEAR, "");
+		incident.setEmail(email);
+		
 		incident.setPerson_org_short(row.get(47));
 		incident.setPerson_org_name(row.get(48));
 		incident.setUser_satisfaction(row.get(49));
@@ -445,7 +455,7 @@ public class JsoupParseServiceImpl implements JsoupParseService {
 		incident.setHotflag_reason(row.get(54));
 		incident.setImpact(row.get(55));
 		incident.setUrgency(row.get(56));
-
+		
 		return incident;
 	}
 

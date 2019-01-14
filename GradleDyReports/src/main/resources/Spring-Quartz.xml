@@ -10,7 +10,7 @@
 	<bean id="cronTriggerBatchMDSDailyJob" 
                 class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="BatchMDSDailyJob" />
-		<property name="cronExpression" value="0 0 10,15 * * ? *" /> 
+		<property name="cronExpression" value="0 18 10,15,16 * * ? *" /> 
 	</bean>	
 	
 	<!-- Cron Trigger, run on SAT-SUN every 12:00, 18:00 -->
@@ -22,7 +22,6 @@
 		<property name="jobDetail" ref="BatchMDSWeekendJob" />
 		<property name="cronExpression" value="0 0 12,18 ? * SAT-SUN" />
 	</bean>
-	
 	
 	
 	<!-- Cron Trigger for populate data Incident, Servicedesk, Userrequest -->

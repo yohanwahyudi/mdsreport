@@ -115,6 +115,10 @@ public class MailServiceImpl implements MailService{
 			toEmailList.clear();
 			toEmailList.addAll(hs);
 			
+			for(String a:toEmailList) {
+				logger.info("email: "+a);
+			}
+			
 			MimeMessageHelper helper = new MimeMessageHelper(message,true);
 			helper.setFrom(new InternetAddress(appConfig.getMailFrom(), "SLA Team"));
 			helper.setTo(toEmailList.toArray(new String[toEmailList.size()]));

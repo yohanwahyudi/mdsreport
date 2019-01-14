@@ -429,7 +429,13 @@ public class ItopMDSDataLoaderServiceImpl implements ItopMDSDataLoaderService {
 		staging.setSolution(solution);
 
 		staging.setPerson_full_name(row.get(45));
-		staging.setEmail(row.get(46));
+		
+		String email = row.get(46);
+		email = email.replaceAll(HTML_REGEX_CLEAR_TAG,"");
+		email = email.replaceAll(HTML_ENTITY_CLEAR, " ");
+		email = email.replaceAll(UNACCENT_CLEAR, "");
+		staging.setEmail(email);
+		
 		staging.setPerson_org_short(row.get(47));
 		staging.setPerson_org_name(row.get(48));
 		staging.setUser_satisfaction(row.get(49));
@@ -440,7 +446,7 @@ public class ItopMDSDataLoaderServiceImpl implements ItopMDSDataLoaderService {
 		staging.setHotflag_reason(row.get(54));
 		staging.setImpact(row.get(55));
 		staging.setUrgency(row.get(56));
-
+		
 		return staging;
 	}
 

@@ -36,7 +36,7 @@ public interface StagingRepository extends CrudRepository<Staging, Long>{
 			"incident.cumulated_pending=staging.cumulated_pending, incident.assignment_date=staging.assignment_date, incident.assignment_time=staging.assignment_time, " + 
 			"incident.agent_fullname=staging.agent_fullname, incident.agent_lastname=staging.agent_lastname, incident.agent=staging.agent, " + 
 			"incident.tto=staging.tto, incident.tto_passed=staging.tto_passed, incident.tto_deadline=staging.tto_deadline, " + 
-			"incident.ttr=staging.ttr, incident.ttr_passed=staging.ttr_passed, incident.ttr_deadline=staging.ttr_deadline", nativeQuery=true)
+			"incident.ttr=staging.ttr, incident.ttr_passed=staging.ttr_passed, incident.ttr_deadline=staging.ttr_deadline, incident.pending_reason=staging.pending_reason", nativeQuery=true)
 	public void updateIncidentTable();
 	
 	@Query(value="insert into incident " + 
