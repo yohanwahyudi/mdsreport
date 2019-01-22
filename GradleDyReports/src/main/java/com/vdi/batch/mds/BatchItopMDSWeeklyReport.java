@@ -14,6 +14,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+import com.vdi.batch.mds.helper.PopulateIncident;
+import com.vdi.batch.mds.helper.PopulateServiceDesk;
+import com.vdi.batch.mds.helper.PopulateUserRequest;
 import com.vdi.batch.mds.helper.weekly.PopulatePerformance;
 import com.vdi.batch.mds.helper.weekly.PopulateSDPerformance;
 import com.vdi.batch.mds.helper.weekly.PopulateURPerformance;
@@ -28,40 +31,40 @@ import com.vdi.reports.djasper.model.MasterReport;
 import com.vdi.reports.djasper.model.SummaryReport;
 import com.vdi.reports.djasper.service.ReportService;
 import com.vdi.tools.TimeTools;
+import com.zaxxer.hikari.HikariDataSource;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 
 public class BatchItopMDSWeeklyReport extends QuartzJobBean {
-	
+
 	private final String period = PropertyNames.CONSTANT_REPORT_PERIOD_WEEKLY;
 	private final Logger logger = LogManager.getLogger(BatchItopMDSWeeklyReport.class);
-	
+
 	private AnnotationConfigApplicationContext ctx;
 
 	private Integer currentYearInt;
 	private Integer prevWeekMonth;
 	private String currentMonthStr;
 	private Integer currentWeekMonth;
-	
-//	private final String test = appConfig.getMdsReportPath();
-	
+
+	// private final String test = appConfig.getMdsReportPath();
+
 	public BatchItopMDSWeeklyReport() {
-		
+
 	}
 
 	@Override
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-		
+
 		logger.info("Batch itop mds weekly report started.......");
 		ctx = new AnnotationConfigApplicationContext(AppConfig.class);
-		
-		TimeTools timeTools = ctx.getBean(TimeTools.class);		
+
+		TimeTools timeTools = ctx.getBean(TimeTools.class);
 		this.currentWeekMonth = timeTools.getCurrentWeekMonth();
 		this.prevWeekMonth = timeTools.getCurrentWeekMonth() - 1;
 		this.currentMonthStr = timeTools.getCurrentMonthString();
 		this.currentYearInt = timeTools.getCurrentYear();
-		
 
 		AppConfig appConfig = ctx.getBean(AppConfig.class);
 		String path = appConfig.getMdsReportPath();
@@ -75,7 +78,17 @@ public class BatchItopMDSWeeklyReport extends QuartzJobBean {
 
 			populatePerformance(ctx);
 			createReport(rpt, path, fileName);
-			sendEmail(rpt, path, fileName);			
+			sendEmail(rpt, path, fileName);
+		}
+		
+		HikariDataSource hds = ctx.getBean("dataSource", HikariDataSource.class);
+		logger.info("close datasource");
+		logger.info(hds.getPoolName()+"-"+hds.getJdbcUrl());
+		try {
+			hds.close();
+		} catch (Exception e) {
+			logger.info("Error closing datasource ");
+			e.printStackTrace();
 		}
 
 		logger.info("Batch itop mds weekly report finished......");
@@ -83,13 +96,25 @@ public class BatchItopMDSWeeklyReport extends QuartzJobBean {
 	}
 
 	private void populatePerformance(AnnotationConfigApplicationContext ctx) {
+		// populate Data
+		logger.info("start populate incident, ur, sd");
+		PopulateIncident populateIncident = ctx.getBean(PopulateIncident.class);
+		populateIncident.populate();
+		PopulateServiceDesk populateServiceDesk = ctx.getBean(PopulateServiceDesk.class);
+		populateServiceDesk.populate();
+		PopulateUserRequest populateUserRequest = ctx.getBean(PopulateUserRequest.class);
+		populateUserRequest.populate();
+		logger.info("end populate incident, ur, sd");
+
 		// populate performance
+		logger.info("start calculate weekly performance");
 		PopulatePerformance weekly = ctx.getBean("populatePerformanceWeekly", PopulatePerformance.class);
 		weekly.populatePerformance();
 		PopulateSDPerformance weeklySD = ctx.getBean("populateSDPerformanceWeekly", PopulateSDPerformance.class);
 		weeklySD.populatePerformance();
 		PopulateURPerformance weeklyUR = ctx.getBean("populateURPerformanceWeekly", PopulateURPerformance.class);
 		weeklyUR.populatePerformance();
+		logger.info("end calculate weekly performance");
 	}
 
 	private void createReport(ReportService rpt, String path, String fileName) {

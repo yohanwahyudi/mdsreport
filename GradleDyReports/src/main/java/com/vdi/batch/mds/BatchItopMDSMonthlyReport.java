@@ -16,6 +16,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+import com.vdi.batch.mds.helper.PopulateIncident;
+import com.vdi.batch.mds.helper.PopulateServiceDesk;
+import com.vdi.batch.mds.helper.PopulateUserRequest;
 import com.vdi.batch.mds.helper.monthly.PopulatePerformance;
 import com.vdi.batch.mds.helper.monthly.PopulateSDPerformance;
 import com.vdi.batch.mds.helper.monthly.PopulateURPerformance;
@@ -30,6 +33,7 @@ import com.vdi.reports.djasper.model.MasterReport;
 import com.vdi.reports.djasper.model.SummaryReport;
 import com.vdi.reports.djasper.service.ReportService;
 import com.vdi.tools.TimeTools;
+import com.zaxxer.hikari.HikariDataSource;
 
 import net.sf.jasperreports.engine.JRException;
 
@@ -85,7 +89,16 @@ public class BatchItopMDSMonthlyReport extends QuartzJobBean {
 
 		ReportService rpt = ctx.getBean("itopPerformanceReport", ReportService.class);
 		//populate performance monthly
-		populatePerformance(ctx);
+		try {
+			populatePerformance(ctx);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 		createReport(rpt, path, fileNameMonthly, periodMonthly);
 		
 		// populate performance weekly
@@ -112,7 +125,19 @@ public class BatchItopMDSMonthlyReport extends QuartzJobBean {
 			rpt = ctx.getBean("itopPerformanceReport", ReportService.class);
 			
 			populateWeeklyPerformance(ctx, weeklyWeekYear, previousMonth);
-			createReport(rpt, path, filenameWeekly, periodWeekly, previousMonth, weeklyWeekMonth);	
+			createReport(rpt, path, filenameWeekly, periodWeekly, previousMonth, weeklyWeekMonth);
+			
+			HikariDataSource hds = ctx.getBean("dataSource", HikariDataSource.class);
+			logger.info("close datasource");
+			logger.info(hds.getPoolName()+"-"+hds.getJdbcUrl());
+			try {
+				hds.close();
+			} catch (Exception e) {
+				logger.info("Error closing datasource ");
+				e.printStackTrace();
+			}
+			
+			logger.info("Batch Itop MDS Monthly report finished.");
 			
 		} else {
 			logger.info("Skip Weekly reports...");
@@ -133,18 +158,36 @@ public class BatchItopMDSMonthlyReport extends QuartzJobBean {
 		}
 		
 		sendEmail(rpt, path, fileNameArray, periodMonthly);
+		
+		HikariDataSource ds = ctx.getBean("dataSource", HikariDataSource.class);
+		logger.info("close datasource");
+		logger.info(ds.getPoolName()+"-"+ds.getJdbcUrl());
+		ds.close();
 
 		logger.info("Batch itop mds monthly report finished.......");
 	}
 
 	private void populatePerformance(AnnotationConfigApplicationContext ctx) {
+		
+		//populate Data
+		logger.info("start populate incident, ur, sd");
+		PopulateIncident populateIncident = ctx.getBean(PopulateIncident.class);
+		populateIncident.populate();		
+		PopulateServiceDesk populateServiceDesk = ctx.getBean(PopulateServiceDesk.class);
+		populateServiceDesk.populate();
+		PopulateUserRequest populateUserRequest = ctx.getBean(PopulateUserRequest.class);
+		populateUserRequest.populate();
+		logger.info("end populate incident, ur, sd");
+		
 		// populate performance
+		logger.info("start calculate monthly performance");
 		PopulatePerformance monthlyInc = ctx.getBean("populatePerformanceMonthly", PopulatePerformance.class);
 		monthlyInc.populatePerformance();
 		PopulateSDPerformance monthlySD = ctx.getBean("populateSDPerformanceMonthly", PopulateSDPerformance.class);
 		monthlySD.populatePerformance();
 		PopulateURPerformance monthlyUR = ctx.getBean("populateURPerformanceMonthly", PopulateURPerformance.class);
 		monthlyUR.populatePerformance();
+		logger.info("end calculate monthly performance");
 	}
 
 	private void populateWeeklyPerformance(AnnotationConfigApplicationContext ctx, int week, int month) {

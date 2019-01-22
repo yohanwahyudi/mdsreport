@@ -56,7 +56,7 @@ public class PopulateIncident {
 		}
 	}
 
-	public void addToMaster() throws Throwable {
+	public void addToMaster() {
 		stagingDAO.updateIncidentTable();
 
 		stagingDAO.insertToIncidentTable();
@@ -76,7 +76,6 @@ public class PopulateIncident {
 			
 			logger.debug("Agent not registered "+content);
 
-			throw new Exception("Agent not Registered " + content);
 		}
 
 		
@@ -110,7 +109,7 @@ public class PopulateIncident {
 		mailService.sendEmail(map, "fm_unregisteredAgent.txt", toStrArr, "Weekly/ Monthly Report not Running");
 	}
 
-	public void populate() throws Throwable {
+	public void populate() {
 		
 		// delete and reset sequence for staging table
 		stagingDAO.deleteEntity();

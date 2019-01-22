@@ -17,6 +17,7 @@ import com.vdi.batch.mds.service.JsoupParseService;
 import com.vdi.batch.mds.service.MailService;
 import com.vdi.configuration.AppConfig;
 import com.vdi.model.Incident;
+import com.zaxxer.hikari.HikariDataSource;
 //import com.vdi.reports.dyreports.templates.service.ReportGeneratorService;
 
 //@Component
@@ -29,7 +30,7 @@ public class BatchMDSDaily extends QuartzJobBean {
 	@Override
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
 
-		logger.debug("execute batch mds daily...");
+		logger.info("execute batch mds daily...");
 		annotationCtx = new AnnotationConfigApplicationContext(AppConfig.class);
 
 		JsoupParseService jsoupParse = annotationCtx.getBean("jsoupParseServiceDailyMDS", JsoupParseService.class);
@@ -46,6 +47,16 @@ public class BatchMDSDaily extends QuartzJobBean {
 		// List<Incident> assignedPendingList = (List<Incident>)
 		// annotationCtx.getBean("getIncidentAssignPending", List.class);
 
+		HikariDataSource hds = annotationCtx.getBean("dataSource", HikariDataSource.class);
+		logger.info("close datasource");
+		logger.info(hds.getPoolName()+"-"+hds.getJdbcUrl());
+		try {
+			hds.close();
+		} catch (Exception e) {
+			logger.info("Error closing datasource ");
+			e.printStackTrace();
+		}
+		
 		if (allDailyList != null) {
 			int size = allDailyList.size();
 			logger.debug("MDS daily list size: " + size);
@@ -69,9 +80,11 @@ public class BatchMDSDaily extends QuartzJobBean {
 				mailService.sendEmail(mapObject,"fm_mailTemplateDaily.txt");
 			}
 		} else {
-			logger.debug("no incident ticket...");
+			logger.info("no incident ticket...");
 		}
-		logger.debug("finish batch mds daily...");
+		
+		
+		logger.info("finish batch mds daily...");
 
 	}
 

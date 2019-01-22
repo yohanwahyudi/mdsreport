@@ -52,6 +52,10 @@ public class AppTeamPerformanceReport implements ReportService{
 		String monthStr = timeTools.getPrevMonthString();
 		int year = timeTools.getCurrentYear();
 		
+		if(timeTools.getCurrentMonth()==1) {
+			year = year - 1;
+		}
+		
 		DynamicReportBuilder master = templateBuilders.getMaster();
 		master.setTitle("DEDICATED AGENT ACHIEVEMENT FOR INCIDENT");
 		master.setSubtitle("Based on iTop "+monthStr+" "+year);
