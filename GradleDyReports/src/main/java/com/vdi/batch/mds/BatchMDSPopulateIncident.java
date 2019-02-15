@@ -9,6 +9,7 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import com.vdi.batch.mds.helper.PopulateIncident;
 import com.vdi.configuration.AppConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 //@Component
 public class BatchMDSPopulateIncident extends QuartzJobBean{
@@ -24,6 +25,16 @@ public class BatchMDSPopulateIncident extends QuartzJobBean{
 		try {
 			populateIncident.populate();
 		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+		
+		HikariDataSource hds = ctx.getBean("dataSource", HikariDataSource.class);
+		logger.info("close datasource");
+		logger.info(hds.getPoolName()+"-"+hds.getJdbcUrl());
+		try {
+			hds.close();
+		} catch (Exception e) {
+			logger.info("Error closing datasource ");
 			e.printStackTrace();
 		}
 		

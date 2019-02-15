@@ -127,17 +127,17 @@ public class BatchItopMDSMonthlyReport extends QuartzJobBean {
 			populateWeeklyPerformance(ctx, weeklyWeekYear, previousMonth);
 			createReport(rpt, path, filenameWeekly, periodWeekly, previousMonth, weeklyWeekMonth);
 			
-			HikariDataSource hds = ctx.getBean("dataSource", HikariDataSource.class);
-			logger.info("close datasource");
-			logger.info(hds.getPoolName()+"-"+hds.getJdbcUrl());
-			try {
-				hds.close();
-			} catch (Exception e) {
-				logger.info("Error closing datasource ");
-				e.printStackTrace();
-			}
-			
-			logger.info("Batch Itop MDS Monthly report finished.");
+//			HikariDataSource hds = ctx.getBean("dataSource", HikariDataSource.class);
+//			logger.info("close datasource");
+//			logger.info(hds.getPoolName()+"-"+hds.getJdbcUrl());
+//			try {
+//				hds.close();
+//			} catch (Exception e) {
+//				logger.info("Error closing datasource ");
+//				e.printStackTrace();
+//			}
+//			
+//			logger.info("Batch Itop MDS Monthly report finished.");
 			
 		} else {
 			logger.info("Skip Weekly reports...");
@@ -170,14 +170,14 @@ public class BatchItopMDSMonthlyReport extends QuartzJobBean {
 	private void populatePerformance(AnnotationConfigApplicationContext ctx) {
 		
 		//populate Data
-		logger.info("start populate incident, ur, sd");
-		PopulateIncident populateIncident = ctx.getBean(PopulateIncident.class);
-		populateIncident.populate();		
-		PopulateServiceDesk populateServiceDesk = ctx.getBean(PopulateServiceDesk.class);
-		populateServiceDesk.populate();
-		PopulateUserRequest populateUserRequest = ctx.getBean(PopulateUserRequest.class);
-		populateUserRequest.populate();
-		logger.info("end populate incident, ur, sd");
+//		logger.info("start populate incident, ur, sd");
+//		PopulateIncident populateIncident = ctx.getBean(PopulateIncident.class);
+//		populateIncident.populate();		
+//		PopulateServiceDesk populateServiceDesk = ctx.getBean(PopulateServiceDesk.class);
+//		populateServiceDesk.populate();
+//		PopulateUserRequest populateUserRequest = ctx.getBean(PopulateUserRequest.class);
+//		populateUserRequest.populate();
+//		logger.info("end populate incident, ur, sd");
 		
 		// populate performance
 		logger.info("start calculate monthly performance");

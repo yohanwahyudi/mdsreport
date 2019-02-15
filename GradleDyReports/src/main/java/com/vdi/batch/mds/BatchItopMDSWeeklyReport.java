@@ -97,14 +97,14 @@ public class BatchItopMDSWeeklyReport extends QuartzJobBean {
 
 	private void populatePerformance(AnnotationConfigApplicationContext ctx) {
 		// populate Data
-		logger.info("start populate incident, ur, sd");
-		PopulateIncident populateIncident = ctx.getBean(PopulateIncident.class);
-		populateIncident.populate();
-		PopulateServiceDesk populateServiceDesk = ctx.getBean(PopulateServiceDesk.class);
-		populateServiceDesk.populate();
-		PopulateUserRequest populateUserRequest = ctx.getBean(PopulateUserRequest.class);
-		populateUserRequest.populate();
-		logger.info("end populate incident, ur, sd");
+//		logger.info("start populate incident, ur, sd");
+//		PopulateIncident populateIncident = ctx.getBean(PopulateIncident.class);
+//		populateIncident.populate();
+//		PopulateServiceDesk populateServiceDesk = ctx.getBean(PopulateServiceDesk.class);
+//		populateServiceDesk.populate();
+//		PopulateUserRequest populateUserRequest = ctx.getBean(PopulateUserRequest.class);
+//		populateUserRequest.populate();
+//		logger.info("end populate incident, ur, sd");
 
 		// populate performance
 		logger.info("start calculate weekly performance");

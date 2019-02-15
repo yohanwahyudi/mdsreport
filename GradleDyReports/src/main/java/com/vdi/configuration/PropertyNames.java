@@ -21,6 +21,7 @@ public final class PropertyNames {
 	public static final String MDS_HTTP_UR_URL = "mds.http.ur.url";
 	public static final String MDS_HTTP_PROBLEM_URL = "mds.http.problem.url";
 	public static final String MDS_HTTP_CHANGE_URL = "mds.http.change.url";
+	public static final String MDS_HTTP_UR_YTD_URL = "mds.http.ur.ytd.url";
 	public static final String MDS_EMAIL_DAILY_SUBJECT = "mds.daily.email.subject";
 	public static final String MDS_DAILY_REPORT_PATH = "mds.daily.report.path";
 

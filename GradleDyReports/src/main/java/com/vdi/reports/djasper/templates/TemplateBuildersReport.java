@@ -788,6 +788,7 @@ public class TemplateBuildersReport {
 				.setHeaderStyle(style.getArialHeaderSummaryStyle()).build();
 
 		DynamicReportBuilder drb = new DynamicReportBuilder();
+		drb.setTitleStyle(style.getSummaryArialTitleStyle()).setTitle("Problem Summary (Year To Date)");
 		drb.addColumn(columnName);
 		drb.addColumn(columnValue);
 		// drb.setUseFullPageWidth(true);
@@ -826,6 +827,7 @@ public class TemplateBuildersReport {
 				.setHeaderStyle(style.getArialHeaderSummaryStyle()).build();
 
 		DynamicReportBuilder drb = new DynamicReportBuilder();
+		drb.setTitleStyle(style.getSummaryArialTitleStyle()).setTitle("Change Summary (Year To Date)");
 		drb.addColumn(columnName);
 		drb.addColumn(columnValue);
 		// drb.setUseFullPageWidth(true);

@@ -122,7 +122,9 @@ public interface MonthlyProblemRepository extends CrudRepository<Problem, Long>{
 			" " + 
 			"from staging_problem problem " + 
 			"where " + 
-			"agent_id_friendlyname like 'EXT%';", nativeQuery=true)
+			"agent_id_friendlyname like 'EXT%'" +
+			"and year(start_date) = year(now()); "+
+			";", nativeQuery=true)
 	public List<Object[]> getAllProblemSummary();
 	
 	@Query(value="select  " + 
@@ -133,7 +135,9 @@ public interface MonthlyProblemRepository extends CrudRepository<Problem, Long>{
 			"where  " + 
 			"agent_id_friendlyname like 'EXT%' " + 
 			"and " + 
-			"status not in ('Resolved','Closed') " + 
+			"status not in ('Resolved','Closed') " +
+			"and "+
+			"year(start_date) = year(now()) "+
 			"group by name, priority " + 
 			"order by team, name asc;", nativeQuery=true)
 	public List<Object[]> getAllOpenedProblemByTeamAgent();
@@ -146,6 +150,8 @@ public interface MonthlyProblemRepository extends CrudRepository<Problem, Long>{
 			"or agent_id_friendlyname = '' )" + 
 			"and " + 
 			"status not in ('Resolved','Closed') " + 
+			"and "+
+			"year(start_date) = year(now()) "+
 			"order by priority, agent_id_friendlyname asc;", nativeQuery=true)
 	public List<Problem> getAllOpenedProblemList();
 	

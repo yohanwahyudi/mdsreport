@@ -138,7 +138,10 @@ public interface MonthlyChangeRepository extends CrudRepository<Change, Long>{
 			"				) as rejected    " + 
 			"			from staging_change as changes    " + 
 			"			where    " + 
-			"				agent_id_friendlyname like 'EXT%';", nativeQuery=true)
+			"				agent_id_friendlyname like 'EXT%' " +
+			"				and "+
+			"				year(start_date) = year(now()) "+
+			";", nativeQuery=true)
 	public List<Object[]> getAllChangeSummary();
 	
 	@Query(value="select agent.team_name as team, agent.name as agent, count(changes.ref) as count " + 
@@ -147,13 +150,15 @@ public interface MonthlyChangeRepository extends CrudRepository<Change, Long>{
 			"			on agent.name = changes.agent_id_friendlyname " + 
 			"where " + 
 			"	status in ('Approved','Assigned','Implemented','New','Planned and scheduled','Validated') " + 
+			"   and year(start_date) = year(now()) "+
 			"group by agent.name " + 
 			"order by team asc;", nativeQuery=true)
 	public List<Object[]> getAllOpenedChangeByTeamAgent();
 	
 	@Query(value="SELECT ref, agent_id_friendlyname as agent, title, caller_name, start_date " + 
 			"FROM staging_change where agent_id_friendlyname like 'EXT%' " + 
-			"and status in ('Approved','Assigned','Implemented','New','Planned and scheduled','Validated') " + 
+			"and status in ('Approved','Assigned','Implemented','New','Planned and scheduled','Validated') " +
+			"and year(start_date) = year(now()) " +
 			"order by agent_id_friendlyname asc;", nativeQuery=true)
 	public List<Change> getAllOpenedChangeList();
 
