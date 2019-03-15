@@ -13,7 +13,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.AbstractApplicationContext;
 
 import com.mchange.v2.reflect.ReflectUtils;
+import com.vdi.batch.mds.helper.PopulateUserRequestYTD;
 import com.vdi.batch.mds.repository.dao.StagingIncidentDAOService;
+import com.vdi.batch.mds.repository.dao.StagingUReqYTDDAOService;
 import com.vdi.batch.mds.service.ItopMDSDataLoaderService;
 import com.vdi.batch.mds.service.impl.UserRequestDataLoaderYTDImpl;
 import com.vdi.configuration.AppConfig;
@@ -42,21 +44,19 @@ public class BatchTest {
 		}
 
 		logger.info("my list size: " + allStagingList.size());
-
-		// StagingIncidentDAOService stagingQuery =
-		// annotationCtx.getBean("stagingDAORepo", StagingIncidentDAOService.class);
-
+		
+//		StagingUReqYTDDAOService stagingQuery = annotationCtx.getBean("stagingUreqYTDDAO", StagingUReqYTDDAOService.class);
+		
+		PopulateUserRequestYTD ureqYTD = annotationCtx.getBean(PopulateUserRequestYTD.class);
+		
+		ureqYTD.populate();
+		
+		
+		
 		logger.info("start time: " + new java.util.Date());
 
-		// stagingQuery.deleteEntity();
-		// stagingQuery.add(allStagingList.get(0));
 		// stagingQuery.addAll(allStagingList);
 
-		// BaseQueryService baseQuery = annotationCtx.getBean("baseQueryService",
-		// BaseQueryService.class);
-		// baseQuery.deleteAllStaging(Staging.class);
-		// baseQuery.addAll(allStagingList);
-		// baseQuery.add(allStagingList.get(1));
 
 		logger.info("end time: " + new java.util.Date());
 		annotationCtx.close();

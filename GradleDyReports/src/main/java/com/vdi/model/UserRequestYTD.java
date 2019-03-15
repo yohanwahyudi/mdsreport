@@ -19,8 +19,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 public class UserRequestYTD {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "seq3")
-	@SequenceGenerator(name = "seq3", sequenceName = "seq3", allocationSize = 100)
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "seq13")
+	@SequenceGenerator(name = "seq13", sequenceName = "seq13", allocationSize = 100)
 	@Column(name = "id", updatable = false, nullable = false)
 	private Long id;
 	private String ref;

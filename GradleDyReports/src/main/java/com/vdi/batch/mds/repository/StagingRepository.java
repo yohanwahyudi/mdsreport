@@ -54,5 +54,17 @@ public interface StagingRepository extends CrudRepository<Staging, Long>{
 			"	(select agent_fullname,team_name from incident group by agent_fullname) AS agentIncident " + 
 			"where agentIncident.agent_fullname not in (select name from agent group by name)", nativeQuery=true)
 	public List<Object[]> getUnregisteredAgent();
+	
+	@Query(value="delete from incident  " + 
+			"where  " + 
+			"	date_format(str_to_date(start_date, '%Y-%m-%d'), '%Y-%m')= date_format(curdate(), '%Y-%m') " + 
+			"and  " + 
+			"	ref not in  " + 
+			"	( " + 
+			"		select ref from staging_incident " + 
+			"		where  " + 
+			"		date_format(str_to_date(start_date, '%Y-%m-%d'), '%Y-%m')= date_format(curdate(), '%Y-%m') " + 
+			"	);", nativeQuery=true)
+	public void syncDelete();
 
 }

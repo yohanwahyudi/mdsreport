@@ -78,6 +78,7 @@ public class PopulateIncident {
 
 		}
 
+		stagingDAO.syncDeleteMaster();
 		
 		
 //		if (unregisteredAgentList.size() < 1) {
