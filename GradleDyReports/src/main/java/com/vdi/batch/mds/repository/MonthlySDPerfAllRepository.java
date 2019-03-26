@@ -17,8 +17,8 @@ public interface MonthlySDPerfAllRepository extends CrudRepository<PerformanceOv
 			"	count(incident_ref) " + 
 			"from staging_servicedesk " + 
 			"where scalar_previousvalue in ('escalated_tto','new') AND scalar_newvalue = 'assigned' "+
-			"	   AND incident_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
-			"	   AND incident_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			"	   AND DATE_FORMAT(incident_startdate,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')  "+
+			"	   AND DATE_FORMAT(incident_startdate,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"	   AND scalar_user like 'EXT%';", nativeQuery=true)
 	public int getTicketCount();
 	
@@ -27,8 +27,8 @@ public interface MonthlySDPerfAllRepository extends CrudRepository<PerformanceOv
 			"from staging_servicedesk " + 
 			"where scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned' "+
 			"	   AND incident_slattopassed='no' "+
-			"	   AND incident_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
-			"	   AND incident_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			"	   AND DATE_FORMAT(incident_startdate,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')  "+
+			"	   AND DATE_FORMAT(incident_startdate,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"	   AND scalar_user like 'EXT%';", nativeQuery=true)
 	public int getAchievedTicketCount();
 	
@@ -37,8 +37,8 @@ public interface MonthlySDPerfAllRepository extends CrudRepository<PerformanceOv
 			"from staging_servicedesk " + 
 			"where scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned' "+
 			"	   AND incident_slattopassed='yes' "+
-			"	   AND incident_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
-			"	   AND incident_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			"	   AND DATE_FORMAT(incident_startdate,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')  "+
+			"	   AND DATE_FORMAT(incident_startdate,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"	   AND scalar_user like 'EXT%';", nativeQuery=true)
 	public int getMissedTicketCount();
 	

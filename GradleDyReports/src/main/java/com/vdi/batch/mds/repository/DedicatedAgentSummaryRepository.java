@@ -11,7 +11,7 @@ public interface DedicatedAgentSummaryRepository extends CrudRepository<Dedicate
 	@Query(value="select *  " + 
 			"from dedicated_summary  " + 
 			"where  " + 
-			"report_dt < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') " + 
+			"report_dt < DATE_FORMAT(NOW(),'%Y-%m-01') " + 
 			"and  " + 
 			"report_dt >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+ 
 			"and "+ 

@@ -17,8 +17,8 @@ public interface MonthlyURPerfAllRepository extends CrudRepository<PerformanceOv
 	@Query(value="select " + 
 			"	count(scalar_urequestref) " + 
 			"from staging_userrequest " + 
-			"where urequest_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') "+   
-			"and urequest_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			"where DATE_FORMAT(urequest_startdate,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') "+   
+			"and DATE_FORMAT(urequest_startdate,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"and scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned' "+
 			//"and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
 			//"or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
@@ -29,8 +29,8 @@ public interface MonthlyURPerfAllRepository extends CrudRepository<PerformanceOv
 	@Query(value="select " + 
 			"	count(scalar_urequestref) " + 
 			"from staging_userrequest " + 
-			"where urequest_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') "+   
-			"and urequest_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			"where DATE_FORMAT(urequest_startdate,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') "+   
+			"and DATE_FORMAT(urequest_startdate,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"and scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned' "+
 			//"and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
 			//"or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
@@ -42,8 +42,8 @@ public interface MonthlyURPerfAllRepository extends CrudRepository<PerformanceOv
 	@Query(value="select " + 
 			"	count(scalar_urequestref) " + 
 			"from staging_userrequest " + 
-			"where urequest_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') "+   
-			"and urequest_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			"where DATE_FORMAT(urequest_startdate,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') "+   
+			"and DATE_FORMAT(urequest_startdate,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"and scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned' "+
 			//"and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
 			//"or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+

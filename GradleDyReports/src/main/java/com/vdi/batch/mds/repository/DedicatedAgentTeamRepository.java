@@ -13,7 +13,7 @@ public interface DedicatedAgentTeamRepository extends CrudRepository<DedicatedAg
 	@Query(value="select *  " + 
 			"from dedicated_team  " + 
 			"where  " + 
-			"report_dt < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') " + 
+			"report_dt < DATE_FORMAT(NOW(),'%Y-%m-01') " + 
 			"and  " + 
 			"report_dt >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+ 
 			"and "+
@@ -26,13 +26,13 @@ public interface DedicatedAgentTeamRepository extends CrudRepository<DedicatedAg
 			"	 sum(totalTicket) *100/ " + 
 			"		(select sum(totalTicket)  " + 
 			"		 from dedicated_team  " + 
-			"		 where report_dt < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
+			"		 where report_dt < DATE_FORMAT(NOW(),'%Y-%m-01')  " + 
 			"		 and report_dt >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') and category = :category " + 
 			"		 )  " + 
 			"   ,2) as contribution " + 
 			"from dedicated_team       " + 
 			"where       " + 
-			" report_dt < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')      " + 
+			" report_dt < DATE_FORMAT(NOW(),'%Y-%m-01')      " + 
 			"and       " + 
 			" report_dt >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')     " + 
 			"and     " + 

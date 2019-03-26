@@ -30,8 +30,8 @@ public interface StagingServiceDeskRepository extends CrudRepository<StagingServ
 	@Query(value="select " + 
 			"	* " + 
 			"from staging_servicedesk " + 
-			"where incident_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') "+   
-			"and incident_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			"where DATE_FORMAT(incident_startdate,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') "+   
+			"and DATE_FORMAT(incident_startdate,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"and scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned' "+
 			"and scalar_user like 'EXT%' "+
 			"order by incident_slattopassed DESC  "+

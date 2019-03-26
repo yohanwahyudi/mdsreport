@@ -10,8 +10,8 @@ import com.vdi.model.performance.PerformanceOverall;
 public interface MonthlyPerfAllRepository extends CrudRepository<PerformanceOverall, Long>{
 	
 	@Query(value="select count(ref) as total_ticket from incident "+ 
-			 "where start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') "+ 
-			 "and start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			 "where date_format(start_date, '%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01') "+ 
+			 "and date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			 "and agent_fullname like 'EXT%' "+ 
 			 "; " ,nativeQuery=true)
 	public int getAllTicketCount();
@@ -20,8 +20,8 @@ public interface MonthlyPerfAllRepository extends CrudRepository<PerformanceOver
 			"select count(ref) as total_ticket from incident "+
 		    "where "+
 			// "where status in ('closed','resolved') and "+ 
-			 "start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') "+ 
-			 "and start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			 "date_format(start_date, '%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01')  "+ 
+			 "and date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')  "+
 			 "and agent_fullname like 'EXT%' "+ 
 			 "; " ,nativeQuery=true)
 	public int getTicketCount();
@@ -30,8 +30,8 @@ public interface MonthlyPerfAllRepository extends CrudRepository<PerformanceOver
 			 "where "+
 			 //"status in ('closed','resolved') and "+
 			 "ttr_passed='no' "+ 
-			 "and start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') "+ 
-			 "and start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			 "and date_format(start_date,'%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01') "+ 
+			 "and date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')  "+
 			 "and agent_fullname like 'EXT%' "+ 
 			 "; " ,nativeQuery=true)
 	public int getAchievedTicketCount();
@@ -40,8 +40,8 @@ public interface MonthlyPerfAllRepository extends CrudRepository<PerformanceOver
 			 "where "+
 			 //"status in ('closed','resolved') and "+
 			 "ttr_passed='yes' "+
-			 "and start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') "+ 
-			 "and start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			 "and date_format(start_date,'%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01') "+ 
+			 "and date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')  "+
 			 "and agent_fullname like 'EXT%' "+
 			 ";" ,nativeQuery=true)
 	public int getMissedTicketCount();

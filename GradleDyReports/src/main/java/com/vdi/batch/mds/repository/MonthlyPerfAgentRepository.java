@@ -25,8 +25,8 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"               JOIN agent " + 
 			"                 ON incident.agent_fullname = agent.NAME " +
 			"        WHERE " +
-//			"        WHERE  status IN ( 'closed', 'resolved' ) AND " + 
-			"				start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
+			"		 		agent.is_active=1 "+
+			"				AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
 			"				AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"        GROUP  BY incident.agent_fullname " + 
 			"        ORDER  BY division, " + 
@@ -38,7 +38,7 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"                         JOIN agent " + 
 			"                           ON incident.agent_fullname = agent.NAME " +
 			"                  WHERE " +
-//			"                  WHERE  status IN ( 'closed', 'resolved' ) AND " + 
+			"		 		   agent.is_active=1 AND "+
 			"                         ttr_passed = 'no' " + 
 			"						  AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
 			"					      AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
@@ -53,7 +53,7 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"                         JOIN agent " + 
 			"                           ON incident.agent_fullname = agent.NAME " +
 			"                  WHERE " +
-//			"                  WHERE  status IN ( 'closed', 'resolved' ) AND " + 
+			"		 		   agent.is_active=1 AND "+
 			"                         ttr_passed = 'yes' " + 
 			"						  AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
 			"						  AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
@@ -68,6 +68,7 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"                         JOIN agent " + 
 			"                           ON incident.agent_fullname = agent.NAME " + 
 			"                  WHERE  status = 'pending' " + 
+			"		 		   		  AND agent.is_active=1 "+
 			"						  AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
 			"						  AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"                  GROUP  BY incident.agent_fullname " + 
@@ -81,6 +82,7 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"                         JOIN agent " + 
 			"                           ON incident.agent_fullname = agent.NAME " + 
 			"                  WHERE  status = 'assigned' " + 
+			"		 		   		  AND agent.is_active=1 "+
 			"						  AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
 			"						  AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"                  GROUP  BY incident.agent_fullname" + 

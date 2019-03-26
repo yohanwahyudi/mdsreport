@@ -22,20 +22,20 @@ public class ParseCsv {
 	static List<String> list = new ArrayList<String>();
 	
 	public static void main(String args[]) {
-		File file = new File(System.getProperty("user.dir")+File.separator+"test.csv");
+		File file = new File(System.getProperty("user.dir")+File.separator+"SupportAgentTeam.csv");
 		try {
 			InputStream is = new FileInputStream(file);
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 			
-			String line="";
-			while ((line=br.readLine())!=null) {
-				System.out.println(line);
-			}
+//			String line="";
+//			while ((line=br.readLine())!=null) {
+//				System.out.println(line);
+//			}
 			
-			try (Stream<String> lines = Files.lines(Paths.get(System.getProperty("user.dir")+File.separator+"test.csv"))){
+			try (Stream<String> lines = Files.lines(Paths.get(System.getProperty("user.dir")+File.separator+"support_agent_new.csv"))){
 				
-				List<List<String>> values = lines.skip(1).map(row -> Arrays.asList(row.split(","))).collect(Collectors.toList());
-				
+				List<List<String>> values = lines.skip(1).map(row -> Arrays.asList(row.split(";"))).collect(Collectors.toList());
+				System.out.println("values: " +values);
 				System.out.println(values.get(0).get(2));
 				
 			} catch(IOException e) {

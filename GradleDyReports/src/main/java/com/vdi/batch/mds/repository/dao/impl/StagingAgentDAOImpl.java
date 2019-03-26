@@ -76,6 +76,16 @@ public class StagingAgentDAOImpl implements StagingAgentDAOService{
 		repo.enableSafeUpdates();
 		
 	}
+
+	@Override
+	public void updateAgentTableMaster() {
+		repo.updateAgentTableMaster();
+	}
+
+	@Override
+	public void insertAgentTableMaster() {
+		repo.insertAgentTableMaster();		
+	}
 	
 	
 	

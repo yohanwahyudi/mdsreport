@@ -29,6 +29,7 @@ public interface MonthlyURPerfAgentRepository extends CrudRepository<Performance
 			"    scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
 //			"	and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
 //			"	or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
+			"	AND agent.is_active=1 "+
 			"	and urequest_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
 			"	and urequest_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"	AND staging.scalar_user like 'EXT%' "+
@@ -47,10 +48,11 @@ public interface MonthlyURPerfAgentRepository extends CrudRepository<Performance
 			"    scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
 //			"	and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
 //			"	or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
-			"	 AND staging.urequest_slattopassed = 'no'   " + 
+			"	AND agent.is_active=1 "+
+			"	AND staging.urequest_slattopassed = 'no'   " + 
 			"	and urequest_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
 			"	and urequest_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
-			"	 AND staging.scalar_user like 'EXT%' "+
+			"	AND staging.scalar_user like 'EXT%' "+
 			"    GROUP BY staging.scalar_user  " + 
 			")	two  " + 
 			"	ON one.agent = two.agent  " + 
@@ -66,11 +68,12 @@ public interface MonthlyURPerfAgentRepository extends CrudRepository<Performance
 			"    scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
 //			"	and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
 //			"	or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
-			"	 AND staging.urequest_slattopassed = 'yes'   " + 
+			"	AND agent.is_active=1 "+
+			"	AND staging.urequest_slattopassed = 'yes'   " + 
 			"	and urequest_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
 			"	and urequest_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
-			"	 AND staging.scalar_user like 'EXT%' "+
-			"    GROUP BY staging.scalar_user  " + 
+			"	AND staging.scalar_user like 'EXT%' "+
+			"   GROUP BY staging.scalar_user  " + 
 			")	three                               " + 
 			"	ON one.agent = three.agent; ", nativeQuery=true)
 	public List<Object[]> getAgentTicket(@Param("month") int month);

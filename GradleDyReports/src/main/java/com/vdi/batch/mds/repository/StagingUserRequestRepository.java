@@ -25,8 +25,8 @@ public interface StagingUserRequestRepository extends CrudRepository<StagingUser
 	@Query(value="select " + 
 			"	* " + 
 			"from staging_userrequest " + 
-			"where urequest_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') "+   
-			"and urequest_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			"where DATE_FORMAT(urequest_startdate,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') "+   
+			"and DATE_FORMAT(urequest_startdate,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"and scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned' "+
 			"and scalar_user like 'EXT%' "+
 			"order by urequest_slattopassed DESC "+

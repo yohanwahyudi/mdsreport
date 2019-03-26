@@ -31,8 +31,9 @@ public interface MonthlyProblemRepository extends CrudRepository<Problem, Long>{
 					"	on agent.name = problem.agent_id_friendlyname " + 
 					"where " + 
 					"	agent.team_name not in ('DCU','OCC','OTHERS','SERVER','NETWORK','OFA') " + 
-					"	and start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
-					"    and start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01');", nativeQuery=true)
+					"	and agent.is_active=1 "+
+					"	and DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')  " + 
+					"   and DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01');", nativeQuery=true)
 	public List<Object[]> getProblemSummary();
 	
 	@Query(value="select " + 
@@ -40,14 +41,15 @@ public interface MonthlyProblemRepository extends CrudRepository<Problem, Long>{
 			"    count(problem.ref) as ticket_count,  " + 
 			"    round(count(problem.ref)*100/ " + 
 			"		    (select count(1) from staging_problem as problem join agent on agent.name=problem.agent_id_friendlyname " + 
-			"			 where agent.team_name not in ('DCU','OCC','OTHERS','SERVER','NETWORK','OFA')),2) as contribution " + 
+			"			 where agent.is_active=1 and agent.team_name not in ('DCU','OCC','OTHERS','SERVER','NETWORK','OFA')),2) as contribution " + 
 			"from staging_problem as problem " + 
 			"	right join agent " + 
 			"	on agent.name = problem.agent_id_friendlyname " + 
-			"   AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') "+
-			"   AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			"   AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') "+
+			"   AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"where " + 
 			"	agent.team_name not in ('DCU','OCC','OTHERS','SERVER','NETWORK','OFA') " + 
+			"	AND agent.is_active=1 " +
 			"group by agent.team_name " + 
 			"order by team_name asc;", nativeQuery=true)
 	public List<Object[]> getProblemAchievementByTeam();
@@ -58,37 +60,38 @@ public interface MonthlyProblemRepository extends CrudRepository<Problem, Long>{
 			"    count(problem.ref) as ticket_count,  " + 
 			"    round(count(problem.ref)*100/ " + 
 			"		    (select count(1) from staging_problem as problem join agent on agent.name=problem.agent_id_friendlyname " + 
-			"			 where agent.team_name not in ('DCU','OCC','OTHERS','SERVER','NETWORK','OFA') AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') ) " + 
+			"			 where agent.team_name not in ('DCU','OCC','OTHERS','SERVER','NETWORK','OFA') AND agent.is_active=1 AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') AND DATE_FORMAT(start_date,'%Y-%m-01')  >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') ) " + 
 			"		  ,2) as contribution, " + 
 			"	ifnull(round(case  " + 
 			"		when agent.team_name='RMS, ReSA, DWH'  " + 
 			"        then count(problem.ref)*100/ " + 
 			"			(select count(problem.ref) from staging_problem as problem join agent on agent.name=problem.agent_id_friendlyname " + 
-			"			 where agent.team_name = 'RMS, ReSA, DWH' AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') ) " + 
+			"			 where agent.team_name = 'RMS, ReSA, DWH' AND agent.is_active=1 AND DATE_FORMAT(start_date,'%Y-%m-01')  < DATE_FORMAT(NOW(),'%Y-%m-01') AND DATE_FORMAT(start_date,'%Y-%m-01')  >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') ) " + 
 			"		when agent.team_name='WMS'  " + 
 			"        then count(problem.ref)*100/ " + 
 			"			(select count(problem.ref) from staging_problem as problem join agent on agent.name=problem.agent_id_friendlyname " + 
-			"			 where agent.team_name = 'WMS' AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') ) " + 
+			"			 where agent.team_name = 'WMS' AND agent.is_active=1 AND DATE_FORMAT(start_date,'%Y-%m-01')  < DATE_FORMAT(NOW(),'%Y-%m-01') AND DATE_FORMAT(start_date,'%Y-%m-01')  >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') ) " + 
 			"		when agent.team_name='MFP, OBIEE'  " + 
 			"        then count(problem.ref)*100/ " + 
 			"			(select count(problem.ref) from staging_problem as problem join agent on agent.name=problem.agent_id_friendlyname " + 
-			"			 where agent.team_name = 'MFP, OBIEE' AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') ) " + 
+			"			 where agent.team_name = 'MFP, OBIEE' AND agent.is_active=1 AND DATE_FORMAT(start_date,'%Y-%m-01')  < DATE_FORMAT(NOW(),'%Y-%m-01') AND DATE_FORMAT(start_date,'%Y-%m-01')  >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') ) " + 
 			"		when agent.team_name='DWI, RDW'  " + 
 			"        then count(problem.ref)*100/ " + 
 			"			(select count(problem.ref) from staging_problem as problem join agent on agent.name=problem.agent_id_friendlyname " + 
-			"			 where agent.team_name = 'DWI, RDW' AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') ) " + 
+			"			 where agent.team_name = 'DWI, RDW' AND agent.is_active=1 AND DATE_FORMAT(start_date,'%Y-%m-01')  < DATE_FORMAT(NOW(),'%Y-%m-01') AND DATE_FORMAT(start_date,'%Y-%m-01')  >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') ) " + 
 			"		when agent.team_name='RIB RSIM, ReIM, Alloc'  " + 
 			"        then count(problem.ref)*100/ " + 
 			"			(select count(problem.ref) from staging_problem as problem join agent on agent.name=problem.agent_id_friendlyname " + 
-			"			 where agent.team_name = 'RIB RSIM, ReIM, Alloc' AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') ) " + 
+			"			 where agent.team_name = 'RIB RSIM, ReIM, Alloc' AND agent.is_active=1 AND DATE_FORMAT(start_date,'%Y-%m-01')  < DATE_FORMAT(NOW(),'%Y-%m-01') AND DATE_FORMAT(start_date,'%Y-%m-01')  >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') ) " + 
 			"	end,2),0) as team_contribution " + 
 			"from staging_problem as problem " + 
 			"	right join agent " + 
 			"	on agent.name = problem.agent_id_friendlyname " + 
-			"   AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') "+
-			"   AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			"   AND DATE_FORMAT(start_date,'%Y-%m-01')  < DATE_FORMAT(NOW(),'%Y-%m-01') "+
+			"   AND DATE_FORMAT(start_date,'%Y-%m-01')  >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"where " + 
 			"	agent.team_name not in ('DCU','OCC','OTHERS','SERVER','NETWORK','OFA') " + 
+			"	AND agent.is_active=1 "+
 			"group by agent.name " + 
 			"order by team_name asc;", nativeQuery=true)
 	public List<Object[]> getProblemAchievementByAgent();
@@ -107,8 +110,9 @@ public interface MonthlyProblemRepository extends CrudRepository<Problem, Long>{
 			"inner join agent " + 
 			"	on agent.name = problem.agent_id_friendlyname " + 
 			"where " + 
-			"	agent.team_name not in ('DCU','OCC','OTHERS','SERVER','NETWORK','OFA') " + 
-			" AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00') AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			"	agent.team_name not in ('DCU','OCC','OTHERS','SERVER','NETWORK','OFA') " +
+			"	AND agent.is_active=1 "+
+			" AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"order by team_name asc;", nativeQuery=true)
 	public List<Object[]> getLastMonthProblemList();
 	
@@ -134,6 +138,7 @@ public interface MonthlyProblemRepository extends CrudRepository<Problem, Long>{
 			"on problem.agent_id_friendlyname = agent.name " + 
 			"where  " + 
 			"agent_id_friendlyname like 'EXT%' " + 
+			//"and agent.is_active=1 "+
 			"and " + 
 			"status not in ('Resolved','Closed') " +
 			"and "+
