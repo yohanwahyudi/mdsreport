@@ -26,8 +26,9 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"                 ON incident.agent_fullname = agent.NAME " +
 			"        WHERE " +
 			"		 		agent.is_active=1 "+
-			"				AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
-			"				AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			"				AND incident.team_name NOT LIKE '%SUPPLIER PORTAL%' "+	
+			"				AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')  "+
+			"				AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"        GROUP  BY incident.agent_fullname " + 
 			"        ORDER  BY division, " + 
 			"                  agent_fullname ASC) one " + 
@@ -38,10 +39,11 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"                         JOIN agent " + 
 			"                           ON incident.agent_fullname = agent.NAME " +
 			"                  WHERE " +
-			"		 		   agent.is_active=1 AND "+
-			"                         ttr_passed = 'no' " + 
-			"						  AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
-			"					      AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			"		 		   agent.is_active=1 "+
+			"                         AND ttr_passed = 'no' " + 
+			"						  AND incident.team_name NOT LIKE '%SUPPLIER PORTAL%' "+	
+			"						  AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')  "+
+			"					      AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"                  GROUP  BY incident.agent_fullname " + 
 			"                  ORDER  BY division, " + 
 			"                            agent_fullname ASC) two " + 
@@ -53,10 +55,11 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"                         JOIN agent " + 
 			"                           ON incident.agent_fullname = agent.NAME " +
 			"                  WHERE " +
-			"		 		   agent.is_active=1 AND "+
-			"                         ttr_passed = 'yes' " + 
-			"						  AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
-			"						  AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			"		 		   agent.is_active=1 "+
+			"                         AND ttr_passed = 'yes' " + 
+			"						  AND incident.team_name NOT LIKE '%SUPPLIER PORTAL%' "+	
+			"						  AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')  "+
+			"						  AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"                  GROUP  BY incident.agent_fullname " + 
 			"                  ORDER  BY division, " + 
 			"                            agent_fullname ASC) three " + 
@@ -69,8 +72,9 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"                           ON incident.agent_fullname = agent.NAME " + 
 			"                  WHERE  status = 'pending' " + 
 			"		 		   		  AND agent.is_active=1 "+
-			"						  AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
-			"						  AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			"						  AND incident.team_name NOT LIKE '%SUPPLIER PORTAL%' "+	
+			"						  AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')  "+
+			"						  AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"                  GROUP  BY incident.agent_fullname " + 
 			"                  ORDER  BY division, " + 
 			"                            agent_fullname ASC) four " + 
@@ -83,8 +87,9 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"                           ON incident.agent_fullname = agent.NAME " + 
 			"                  WHERE  status = 'assigned' " + 
 			"		 		   		  AND agent.is_active=1 "+
-			"						  AND start_date < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
-			"						  AND start_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			"						  AND incident.team_name NOT LIKE '%SUPPLIER PORTAL%' "+	
+			"						  AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')  "+
+			"						  AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"                  GROUP  BY incident.agent_fullname" + 
 			"                  ORDER  BY division, " + 
 			"                            agent_fullname ASC) five " + 

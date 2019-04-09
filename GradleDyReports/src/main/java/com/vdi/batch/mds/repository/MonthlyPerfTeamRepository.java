@@ -22,6 +22,7 @@ public interface MonthlyPerfTeamRepository extends CrudRepository<PerformanceTea
 			"                       ON incident.agent_fullname = agent.NAME " +
 			"		 WHERE "+	
 			"				agent.is_active=1 "+
+			"				AND incident.team_name NOT LIKE '%SUPPLIER PORTAL%' "+	
 			"				AND date_format(start_date, '%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01')  "+
 			"				AND date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"        GROUP  BY division) one " + 
@@ -33,6 +34,7 @@ public interface MonthlyPerfTeamRepository extends CrudRepository<PerformanceTea
 			"					WHERE "+
 			"                         ttr_passed = 'no' " +
 			"						  AND agent.is_active=1 "+
+			"						  AND incident.team_name NOT LIKE '%SUPPLIER PORTAL%' "+
 			"						  AND date_format(start_date, '%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01')  "+
 			"						  AND date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"                  GROUP  BY division) two " + 
@@ -45,6 +47,7 @@ public interface MonthlyPerfTeamRepository extends CrudRepository<PerformanceTea
 			" 				   WHERE "+		
 			"                         ttr_passed = 'yes' " +
 			"						  AND agent.is_active=1 "+
+			"						  AND incident.team_name NOT LIKE '%SUPPLIER PORTAL%' "+
 			"						  AND date_format(start_date, '%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01')  "+
 			"						  AND date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"                  GROUP  BY division) three " + 

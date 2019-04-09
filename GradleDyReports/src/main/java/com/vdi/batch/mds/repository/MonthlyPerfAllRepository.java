@@ -23,6 +23,7 @@ public interface MonthlyPerfAllRepository extends CrudRepository<PerformanceOver
 			 "date_format(start_date, '%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01')  "+ 
 			 "and date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')  "+
 			 "and agent_fullname like 'EXT%' "+ 
+			 "and team_name not like '%SUPPLIER PORTAL%' "+
 			 "; " ,nativeQuery=true)
 	public int getTicketCount();
 	
@@ -33,6 +34,7 @@ public interface MonthlyPerfAllRepository extends CrudRepository<PerformanceOver
 			 "and date_format(start_date,'%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01') "+ 
 			 "and date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')  "+
 			 "and agent_fullname like 'EXT%' "+ 
+			 "and team_name not like '%SUPPLIER PORTAL%' "+
 			 "; " ,nativeQuery=true)
 	public int getAchievedTicketCount();
 	
@@ -43,6 +45,7 @@ public interface MonthlyPerfAllRepository extends CrudRepository<PerformanceOver
 			 "and date_format(start_date,'%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01') "+ 
 			 "and date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')  "+
 			 "and agent_fullname like 'EXT%' "+
+			 "and team_name not like '%SUPPLIER PORTAL%' "+
 			 ";" ,nativeQuery=true)
 	public int getMissedTicketCount();
 	
