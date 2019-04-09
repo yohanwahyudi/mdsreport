@@ -53,12 +53,13 @@ public class PopulateSupportAgent {
 			}
 		}
 		
-		stagingDAO.deleteEntity();
 	}
 
 	public void addToMaster() {		
 		stagingDAO.updateAgentTableMaster();
 		stagingDAO.insertAgentTableMaster();
+		
+		stagingDAO.deleteEntity();
 		
 	}
 

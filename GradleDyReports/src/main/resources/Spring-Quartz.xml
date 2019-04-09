@@ -23,6 +23,15 @@
 		<property name="cronExpression" value="0 0 12,18 ? * SAT-SUN" />
 	</bean>
 	
+	<!-- Cron for update agents--> 
+	<bean name="BatchUpdateAgents" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass" value="com.vdi.batch.mds.BatchUpdateAgents" />
+	</bean>
+	<bean id="cronTriggerBatchItopBatchUpdateAgents" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="BatchUpdateAgents" />
+		<property name="cronExpression" value="0 0/1 * * * ? *" />
+	</bean>	
+	
 	
 	<!-- Cron Trigger for populate data Incident, Servicedesk, Userrequest -->
 	<bean name="BatchMDSPopulateIncidentJob" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
@@ -97,6 +106,8 @@
 			<list>
 				<ref bean="cronTriggerBatchMDSDailyJob" />
 				<ref bean="cronTriggerBatchMDSWeekendJob" />
+				
+				<ref bean="cronTriggerBatchItopBatchUpdateAgents" />
 								 
 				<ref bean="cronTriggerBatchMDSPopulateIncidentJob" />
 				<ref bean="cronTriggerBatchMDSPopulateServiceDeskJob" />
