@@ -34,7 +34,7 @@ public interface MonthlyChangeRepository extends CrudRepository<Change, Long>{
 			"	inner join agent " + 
 			"	on agent.name = changes.agent_id_friendlyname " + 
 			"where " + 
-			"	agent.team_name not in ('DCU','OCC','OTHERS','SERVER','NETWORK','OFA') "+
+			"	agent.team_name not in ('DCU','OCC','SERVER','NETWORK','OFA', 'Service Desk') "+
 			"	AND agent.is_active=1 "+
 			"   AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') "+
 			"   AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
@@ -46,7 +46,7 @@ public interface MonthlyChangeRepository extends CrudRepository<Change, Long>{
 			"    count(changes.ref) as ticket_count,  " + 
 			"    round(count(changes.ref)*100/ " + 
 			"		    (select count(1) from staging_change as changes join agent on agent.name=changes.agent_id_friendlyname " + 
-			"			 where agent.team_name not in ('DCU','OCC','OTHERS','SERVER','NETWORK','OFA') "+
+			"			 where agent.team_name not in ('DCU','OCC','OTHERS','SERVER','NETWORK','OFA', 'Service Desk') "+
 			"			 AND agent.is_active=1 " +
 			"			 AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') ),2) as contribution " + 
 			"from staging_change as changes " + 
@@ -55,7 +55,7 @@ public interface MonthlyChangeRepository extends CrudRepository<Change, Long>{
 			"   AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') "+
 			"   AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"where " + 
-			"	agent.team_name not in ('DCU','OCC','OTHERS','SERVER','NETWORK','OFA') " + 
+			"	agent.team_name not in ('DCU','OCC','SERVER','NETWORK','OFA') " + 
 			"AND agent.is_active=1 " +
 			"group by agent.team_name " + 
 			"order by team_name asc;", nativeQuery=true)
@@ -67,7 +67,7 @@ public interface MonthlyChangeRepository extends CrudRepository<Change, Long>{
 			"    count(changes.ref) as ticket_count,  " + 
 			"    round(count(changes.ref)*100/ " + 
 			"		    (select count(1) from staging_change as changes join agent on agent.name=changes.agent_id_friendlyname " + 
-			"			 where agent.team_name not in ('DCU','OCC','OTHERS','SERVER','NETWORK','OFA') AND agent.is_active=1 AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') ),2) as contribution, " + 
+			"			 where agent.team_name not in ('DCU','OCC','SERVER','NETWORK','OFA', 'Service Desk') AND agent.is_active=1 AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') ),2) as contribution, " + 
 			"	ifnull(round(case " + 
 			"		when agent.team_name='RMS, ReSA, DWH'  " + 
 			"        then count(changes.ref)*100/ " + 
@@ -85,6 +85,10 @@ public interface MonthlyChangeRepository extends CrudRepository<Change, Long>{
 			"        then count(changes.ref)*100/ " + 
 			"			(select count(changes.ref) from staging_change as changes join agent on agent.name=changes.agent_id_friendlyname " + 
 			"			 where agent.team_name = 'DWI, RDW') AND agent.is_active=1 AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') " + 
+			"		when agent.team_name='OTHERS'  " + 
+			"        then count(changes.ref)*100/ " + 
+			"			(select count(changes.ref) from staging_change as changes join agent on agent.name=changes.agent_id_friendlyname " + 
+			"			 where agent.team_name = 'OTHERS') AND agent.is_active=1 AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') " +
 			"		when agent.team_name='RIB RSIM, ReIM, Alloc'  " + 
 			"        then count(changes.ref)*100/ " + 
 			"			(select count(changes.ref) from staging_change as changes join agent on agent.name=changes.agent_id_friendlyname " + 
@@ -96,7 +100,7 @@ public interface MonthlyChangeRepository extends CrudRepository<Change, Long>{
 			"   AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') "+
 			"   AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"where " + 
-			"	agent.team_name not in ('DCU','OCC','OTHERS','SERVER','NETWORK','OFA') " + 
+			"	agent.team_name not in ('DCU','OCC','SERVER','NETWORK','OFA', 'Service Desk') " + 
 			"	AND agent.is_active=1 "+
 			"group by agent.name " + 
 			"order by team_name asc;", nativeQuery=true)
@@ -117,7 +121,7 @@ public interface MonthlyChangeRepository extends CrudRepository<Change, Long>{
 			"   AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') "+
 			"   AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"where " + 
-			"	agent.team_name not in ('DCU','OCC','OTHERS','SERVER','NETWORK','OFA') " +
+			"	agent.team_name not in ('DCU','OCC','SERVER','NETWORK','OFA') " +
 			"	AND agent.is_active=1 "+
 			"order by team_name asc;", nativeQuery=true)
 	public List<Object[]> getLastMonthChangeList();

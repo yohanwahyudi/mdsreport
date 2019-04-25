@@ -29,7 +29,7 @@
 	</bean>
 	<bean id="cronTriggerBatchItopBatchUpdateAgents" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="BatchUpdateAgents" />
-		<property name="cronExpression" value="0 1 * * * ? *" />
+		<property name="cronExpression" value="0 0/1 * * * ? *" />
 	</bean>	
 	
 	
@@ -87,7 +87,7 @@
 		<property name="jobDetail" ref="BatchItopMDSMonthlyPerformance" />
 		<!-- <property name="cronExpression" value="0 0 10 1 * ?" /> -->
 		<!-- <property name="cronExpression" value="0 0 12 ? * MON#1 *" /> -->
-		<property name="cronExpression" value="0 3 11 * * ? *" />
+		<property name="cronExpression" value="0 34 9 * * ? *" />
 	</bean>	
 	
 	<bean name="BatchItopMDSTest" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
