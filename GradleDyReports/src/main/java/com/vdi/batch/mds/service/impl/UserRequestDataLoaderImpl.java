@@ -141,12 +141,12 @@ public class UserRequestDataLoaderImpl implements ItopMDSDataLoaderService {
 		allStagingList = new ArrayList<StagingUserRequest>();
 
 		for (Iterator<?> iterator = (Iterator<?>) temp.iterator(); iterator.hasNext();) {
-			StagingUserRequest staging = (StagingUserRequest) iterator.next();
-
+			StagingUserRequest staging = (StagingUserRequest) iterator.next();			
+			
 			allStagingList.add(staging);
 
 		}
-		logger.debug("All UR url Daily list size: " + allStagingList.size());
+		logger.info("All UR url Daily list size: " + allStagingList.size());
 
 		return allStagingList;
 	}
@@ -172,7 +172,16 @@ public class UserRequestDataLoaderImpl implements ItopMDSDataLoaderService {
 		ur.setScalar_newvalue(row.get(9));
 		ur.setScalar_type(row.get(10));
 		ur.setScalar_urequestref(row.get(11));
-		ur.setUrequest_title(row.get(12) );
+		
+		String title = row.get(12);
+		title = title.replaceAll(HTML_REGEX_CLEAR_TAG, "");
+		title = title.replaceAll(HTML_ENTITY_CLEAR, " ");
+		title = title.replaceAll(UNACCENT_CLEAR, "");
+		if (title.length() > 4000) {
+			title = title.substring(0, 4000);
+		}
+		ur.setUrequest_title(title);
+		
 		ur.setUrequest_startdate(row.get(13));
 		ur.setUrequest_starttime(row.get(14));
 		ur.setUrequest_enddate(row.get(15));
