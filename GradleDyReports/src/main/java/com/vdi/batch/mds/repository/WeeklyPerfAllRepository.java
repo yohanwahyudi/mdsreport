@@ -15,6 +15,8 @@ public interface WeeklyPerfAllRepository extends CrudRepository<PerformanceOvera
 	@Query(value="select " + 
 			"	count(ref) " + 
 			"from incident " + 
+			"INNER JOIN agent agent "+ 
+			"ON incident.agent_fullname = agent.NAME "+ 
 			"where year(start_date)=year(curdate()) "+   
 			"and month(start_date)= :month "+
 			"and week(start_date,3)= :week "+
@@ -32,6 +34,8 @@ public interface WeeklyPerfAllRepository extends CrudRepository<PerformanceOvera
 	@Query(value="select " + 
 			"	count(ref) " + 
 			"from incident " + 
+			"INNER JOIN agent agent "+ 
+			"ON incident.agent_fullname = agent.NAME "+ 
 			"where year(start_date)=year(curdate()) "+   
 			"and month(start_date)= :month "+
 			"and week(start_date,3)= :week "+
@@ -50,6 +54,8 @@ public interface WeeklyPerfAllRepository extends CrudRepository<PerformanceOvera
 	@Query(value="select " + 
 			"	count(ref) " + 
 			"from incident " + 
+			"INNER JOIN agent agent "+ 
+			"ON incident.agent_fullname = agent.NAME "+ 
 			"where year(start_date)=year(curdate()) "+   
 			"and month(start_date)= :month "+
 			"and week(start_date,3)= :week "+
