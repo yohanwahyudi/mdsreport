@@ -168,7 +168,17 @@ public class ServiceDeskDataLoaderImpl implements ItopMDSDataLoaderService{
 		sdStaging.setScalar_newvalue(row.get(7));
 		sdStaging.setScalar_type(row.get(8));
 		sdStaging.setIncident_ref(row.get(9));
-		sdStaging.setIncident_title(row.get(10));
+		
+		
+		String title = row.get(10);
+		title = title.replaceAll(HTML_REGEX_CLEAR_TAG, "");
+		title = title.replaceAll(HTML_ENTITY_CLEAR, " ");
+		title = title.replaceAll(UNACCENT_CLEAR, "");
+		if (title.length() > 4000) {
+			title = title.substring(0, 4000);
+		}
+		sdStaging.setIncident_title(title);
+		
 		sdStaging.setIncident_startdate(row.get(11));
 		sdStaging.setIncident_starttime(row.get(12));
 		sdStaging.setIncident_enddate(row.get(13));

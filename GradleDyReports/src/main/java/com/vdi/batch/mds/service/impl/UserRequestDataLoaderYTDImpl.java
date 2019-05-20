@@ -159,7 +159,16 @@ public class UserRequestDataLoaderYTDImpl implements ItopMDSDataLoaderService{
 
 		StagingUserRequestYTD ur = new StagingUserRequestYTD();
 		ur.setRef(row.get(0));
-		ur.setTitle(row.get(1));
+		
+		String title = row.get(1);
+		title = title.replaceAll(HTML_REGEX_CLEAR_TAG, "");
+		title = title.replaceAll(HTML_ENTITY_CLEAR, " ");
+		title = title.replaceAll(UNACCENT_CLEAR, "");
+		if (title.length() > 4000) {
+			title = title.substring(0, 4000);
+		}
+		ur.setTitle(title);
+		
 		ur.setStatus(row.get(2));
 		
 		String pendingReason = row.get(3);

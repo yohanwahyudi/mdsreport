@@ -178,7 +178,16 @@ public class ProblemDataLoaderImpl implements ItopMDSDataLoaderService {
 		
 		Problem problem = new Problem();
 		problem.setRef(row.get(0));
-		problem.setTitle(row.get(1));
+		
+		String title = row.get(1);
+		title = title.replaceAll(HTML_REGEX_CLEAR_TAG, "");
+		title = title.replaceAll(HTML_ENTITY_CLEAR, " ");
+		title = title.replaceAll(UNACCENT_CLEAR, "");
+		if (title.length() > 4000) {
+			title = title.substring(0, 4000);
+		}
+		problem.setTitle(title);
+		
 		problem.setStatus(row.get(2));
 		problem.setPriority(row.get(3));
 		problem.setOrg_id(row.get(4));

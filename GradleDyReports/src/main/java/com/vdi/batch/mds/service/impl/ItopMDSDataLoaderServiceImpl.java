@@ -357,7 +357,16 @@ public class ItopMDSDataLoaderServiceImpl implements ItopMDSDataLoaderService {
 
 		Staging staging = new Staging();
 		staging.setRef(row.get(0));
-		staging.setTitle(row.get(1));
+		
+		String title = row.get(1);
+		title = title.replaceAll(HTML_REGEX_CLEAR_TAG, "");
+		title = title.replaceAll(HTML_ENTITY_CLEAR, " ");
+		title = title.replaceAll(UNACCENT_CLEAR, "");
+		if (title.length() > 4000) {
+			title = title.substring(0, 4000);
+		}
+		staging.setTitle(title);
+		
 		staging.setStatus(row.get(2));
 		staging.setStart_date(row.get(3));
 		staging.setStart_time(row.get(4));
