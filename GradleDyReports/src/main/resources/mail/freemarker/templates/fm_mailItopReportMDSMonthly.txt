@@ -77,9 +77,9 @@
 								        <#list perfTeam as team>							        	
 								        		<tr style="font-size:13; text-align:left; padding: 4px; border:1px solid;">
 										        	<td style="border:1px solid black; padding: 4px;"><b>${team.teamName}</b></td>
-										        	<td style="border:1px solid black; padding: 4px;"><b>${team.totalTicket}</b></td>
 										        	<td style="border:1px solid black; padding: 4px;"><b>${team.totalAchieved}</b></td>
 										        	<td style="border:1px solid black; padding: 4px;"><b>${team.totalMissed}</b></td>
+										        	<td style="border:1px solid black; padding: 4px;"><b>${team.totalTicket}</b></td>
 										        	<td style="border:1px solid black; padding: 4px;"><b>${team.achievement} %</b></td>
 								        		</tr>			        		
 								        	
