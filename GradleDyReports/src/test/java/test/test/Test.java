@@ -26,6 +26,7 @@ import java.util.Locale;
 
 import com.vdi.tools.TimeStatic;
 import com.vdi.tools.TimeTools;
+import com.vdi.tools.component.SanitizeString;
 
 import static java.time.DayOfWeek.MONDAY;
 import static java.time.DayOfWeek.SUNDAY;
@@ -92,6 +93,10 @@ public class Test {
 		System.out.println("field: "+field);
 		
 		System.out.println(timeTools.getCurrentMonth());
+		
+		SanitizeString sanitize = new SanitizeString();
+		System.out.println(sanitize.getSanitizedString("<b>Bold</b>", 2));
+		
 		
 	}
 

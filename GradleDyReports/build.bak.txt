@@ -1,16 +1,56 @@
-apply plugin: 'java'
-apply plugin: 'eclipse'
+//apply plugin: 'java'
+//apply plugin: 'eclipse'
 
-jar {
-    baseName = 'reporttest'
+plugins {
+    id 'java'
+    id 'eclipse'
+    id 'net.nemerosa.versioning' version '2.6.1'
+}
+
+eclipse {
+    project {
+        name = 'MDS Report'
+    }
+    
+     classpath {
+      file {
+            whenMerged {
+                def source = entries.find { it.path == 'src/main/java' }
+                source.entryAttributes['ignore_optional_problems'] = 'true'
+            }
+        }
+    }
+}
+
+jar {    
+    doFirst {
+        manifest {
+            if (!configurations.compile.isEmpty()) {
+                attributes(
+                		'Built-By'       : System.properties['user.name'],
+                		'Build-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),   
+                		'Build-Revision' : versioning.info.commit,             		
+                		'Created-By'     : "Gradle ${gradle.gradleVersion}",
+                		'Build-Jdk'      : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
+            			'Build-OS'       : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}",
+                        'Class-Path'	 : configurations.compile.collect{it.getName()}.join(' '),
+                        'Main-Class'	 : "MainClass")
+            }
+        }
+    }
+    
+	baseName = 'mdsitop'
     version = '0.0.1-SNAPSHOT'
+    
 }
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
-    mavenCentral()
+    mavenCentral artifactUrls: [
+        'http://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/'
+    ]
 }
 
 dependencies {
@@ -45,20 +85,14 @@ dependencies {
     //dynamicJasper
     compile('ar.com.fdvs:DynamicJasper:5.1.1')
     compile('net.sf.jasperreports:jasperreports-fonts:6.0.0')
-    //compile('net.sf.jasperreports:jasperreports:6.6.0')
     compile('commons-beanutils:commons-beanutils:1.9.3')
     compile('commons-digester:commons-digester:2.1')
+    compile 'net.sf.jasperreports:jasperreports:6.4.1'
     
     //dynamicreports
-    //compile('net.sourceforge.dynamicreports:dynamicreports-core:5.1.0')
-    //compile('net.sourceforge.dynamicreports:dynamicreports-adhoc:5.1.0')
-	//compile('net.sourceforge.dynamicreports:dynamicreports-googlecharts:5.1.0')
 	compile('com.lowagie:itext:2.1.7')
-	//compile('ar.com.fdvs:DynamicJasper:5.1.0')
 	
 	//mail templates
-	//compile('org.apache.velocity:velocity:1.7')
-	//compile('org.apache.velocity:velocity-tools:2.0')
 	compile('org.freemarker:freemarker:2.3.23')
 	
 	compile('org.quartz-scheduler:quartz:2.3.0')
@@ -83,18 +117,6 @@ dependencies {
     
     //javax validation
 	compile('javax.validation:validation-api:2.0.1.Final')	
-	
-	//spring 4
-	/*
-	compile('org.springframework:spring-core:4.3.13.RELEASE')
-	compile('org.springframework:spring-jdbc:4.3.13.RELEASE')
-	compile('org.springframework:spring-oxm:4.3.13.RELEASE')
-	compile('org.springframework:spring-context-support:4.3.13.RELEASE')
-	compile('org.springframework:spring-webmvc:4.3.13.RELEASE')
-	*/
-	//springbatch
-	//compile('org.springframework.batch:spring-batch-core:4.0.0.RELEASE')
-	//compile('org.springframework.batch:spring-batch-infrastructure:4.0.0.RELEASE')
 	
 	compile('javax.servlet:javax.servlet-api:4.0.0')
 	

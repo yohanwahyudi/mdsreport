@@ -33,6 +33,7 @@ import com.vdi.configuration.AppConfig;
 import com.vdi.configuration.PropertyNames;
 import com.vdi.model.Incident;
 import com.vdi.tools.IOToolsService;
+import com.vdi.tools.component.SanitizeString;
 
 @Service("jsoupParseServiceDailyMDS")
 // @ComponentScan({ "com.vdi.batch.mds.service", "com.vdi.tools",
@@ -41,10 +42,6 @@ import com.vdi.tools.IOToolsService;
 public class JsoupParseServiceImpl implements JsoupParseService {
 
 	private final static Logger logger = LogManager.getLogger(JsoupParseServiceImpl.class);
-
-	private final String HTML_REGEX_CLEAR_TAG = "<[^<>]+>";
-	private final String HTML_ENTITY_CLEAR = "(&nbsp;|&lt;|&gt;|&amp;|&quot;|&apos;)+";
-	private final String UNACCENT_CLEAR = "[^\\p{Print}]";
 
 	private List<Incident> deadlineList;
 	private List<Incident> assignList;
@@ -55,6 +52,9 @@ public class JsoupParseServiceImpl implements JsoupParseService {
 
 	@Autowired
 	private AppConfig appConfig;
+	
+	@Autowired
+	private SanitizeString sanitize;
 
 	@Autowired
 	public JsoupParseServiceImpl(AppConfig appConfig) {
@@ -401,7 +401,7 @@ public class JsoupParseServiceImpl implements JsoupParseService {
 
 		Incident incident = new Incident();
 		incident.setRef(row.get(0));
-		incident.setTitle(row.get(1));
+		incident.setTitle(sanitize.getSanitizedString(row.get(1), 255));
 		incident.setStatus(row.get(2));
 		incident.setStart_date(row.get(3));
 		incident.setStart_time(row.get(4));
@@ -417,7 +417,7 @@ public class JsoupParseServiceImpl implements JsoupParseService {
 		incident.setAgent_fullname(row.get(14));
 		incident.setTeam(row.get(15));
 		incident.setTeam_name(row.get(16));
-		incident.setDescription(row.get(17));
+		incident.setDescription(sanitize.getSanitizedString(row.get(17),4000));
 		incident.setOrigin(row.get(18));
 		incident.setLastpending_date(row.get(19));
 		incident.setLastpending_time(row.get(20));
@@ -447,16 +447,12 @@ public class JsoupParseServiceImpl implements JsoupParseService {
 		incident.setSolution(row.get(44));
 		incident.setPerson_full_name(row.get(45));
 
-		String email = row.get(46);
-		email = email.replaceAll(HTML_REGEX_CLEAR_TAG, "");
-		email = email.replaceAll(HTML_ENTITY_CLEAR, " ");
-		email = email.replaceAll(UNACCENT_CLEAR, "");
-		incident.setEmail(email);
+		incident.setEmail(sanitize.getSanitizedString(row.get(46), 255));
 
 		incident.setPerson_org_short(row.get(47));
 		incident.setPerson_org_name(row.get(48));
 		incident.setUser_satisfaction(row.get(49));
-		incident.setUser_comment(row.get(50));
+		incident.setUser_comment(sanitize.getSanitizedString(row.get(50), 4000));
 		incident.setResolution_date(row.get(51));
 		incident.setResolution_time(row.get(52));
 		incident.setHotflag(row.get(53));

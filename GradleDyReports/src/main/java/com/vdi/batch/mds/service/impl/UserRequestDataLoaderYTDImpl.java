@@ -18,15 +18,12 @@ import com.vdi.batch.mds.service.ItopMDSDataLoaderService;
 import com.vdi.configuration.AppConfig;
 import com.vdi.model.staging.StagingUserRequestYTD;
 import com.vdi.tools.IOToolsService;
+import com.vdi.tools.component.SanitizeString;
 
 @Service("userRequestDataLoaderYTDService")
 public class UserRequestDataLoaderYTDImpl implements ItopMDSDataLoaderService{
 	
 	private final static Logger logger = LogManager.getLogger(UserRequestDataLoaderYTDImpl.class);
-	
-	private final String HTML_REGEX_CLEAR_TAG = "<[^<>]+>";
-	private final String HTML_ENTITY_CLEAR = "(&nbsp;|&lt;|&gt;|&amp;|&quot;|&apos;)+";
-	private final String UNACCENT_CLEAR = "[^\\p{Print}]";
 	
 	private List<StagingUserRequestYTD> allStagingList;
 
@@ -35,6 +32,9 @@ public class UserRequestDataLoaderYTDImpl implements ItopMDSDataLoaderService{
 
 	@Autowired
 	private AppConfig appConfig;
+	
+	@Autowired
+	private SanitizeString sanitize;
 
 	public Elements parseTableTr(String data) {
 		Elements rowsData;
@@ -160,25 +160,11 @@ public class UserRequestDataLoaderYTDImpl implements ItopMDSDataLoaderService{
 		StagingUserRequestYTD ur = new StagingUserRequestYTD();
 		ur.setRef(row.get(0));
 		
-		String title = row.get(1);
-		title = title.replaceAll(HTML_REGEX_CLEAR_TAG, "");
-		title = title.replaceAll(HTML_ENTITY_CLEAR, " ");
-		title = title.replaceAll(UNACCENT_CLEAR, "");
-		if (title.length() > 4000) {
-			title = title.substring(0, 4000);
-		}
-		ur.setTitle(title);
+		ur.setTitle(sanitize.getSanitizedString(row.get(1), 255));
 		
 		ur.setStatus(row.get(2));
 		
-		String pendingReason = row.get(3);
-		pendingReason = pendingReason.replaceAll(HTML_REGEX_CLEAR_TAG, "");
-		pendingReason = pendingReason.replaceAll(HTML_ENTITY_CLEAR, " ");
-		pendingReason = pendingReason.replaceAll(UNACCENT_CLEAR, "");
-		if (pendingReason.length() > 4000) {
-			pendingReason = pendingReason.substring(0, 4000);
-		}
-		ur.setPendingReason(pendingReason);
+		ur.setPendingReason(sanitize.getSanitizedString(row.get(3), 4000));
 		
 		ur.setStartDate(row.get(4));
 		ur.setStartTime(row.get(5));
@@ -194,11 +180,7 @@ public class UserRequestDataLoaderYTDImpl implements ItopMDSDataLoaderService{
 		ur.setResolutionTime(row.get(15));
 		ur.setAgent(row.get(16));
 		
-		String email = row.get(17);
-		email = email.replaceAll(HTML_REGEX_CLEAR_TAG, "");
-		email = email.replaceAll(HTML_ENTITY_CLEAR, " ");
-		email = email.replaceAll(UNACCENT_CLEAR, "");
-		ur.setEmail(email);
+		ur.setEmail(sanitize.getSanitizedString(row.get(17), 255));
 		
 		ur.setFullName(row.get(18));
 		ur.setPersonOrganizationName(row.get(19));
@@ -217,17 +199,10 @@ public class UserRequestDataLoaderYTDImpl implements ItopMDSDataLoaderService{
 		ur.setTtrDeadline(row.get(33));
 		ur.setTicketSubClass(row.get(34));
 		
-		String solution = row.get(35);
-		solution = solution.replaceAll(HTML_REGEX_CLEAR_TAG, "");
-		solution = solution.replaceAll(HTML_ENTITY_CLEAR, " ");
-		solution = solution.replaceAll(UNACCENT_CLEAR, "");
-		if (solution.length() > 4000) {
-			solution = solution.substring(0, 4000);
-		}
-		ur.setSolution(solution);
+		ur.setSolution(sanitize.getSanitizedString(row.get(35), 4000));
 		
 		ur.setUserSatisfaction(row.get(36));
-		ur.setUserComment(row.get(37));
+		ur.setUserComment(sanitize.getSanitizedString(row.get(37), 4000));
 		ur.setServiceName(row.get(38));
 
 		return ur;

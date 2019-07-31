@@ -18,14 +18,12 @@ import com.vdi.batch.mds.service.ItopMDSDataLoaderService;
 import com.vdi.configuration.AppConfig;
 import com.vdi.model.staging.StagingServiceDesk;
 import com.vdi.tools.IOToolsService;
+import com.vdi.tools.component.SanitizeString;
 
 @Service("serviceDeskDataLoaderService")
 public class ServiceDeskDataLoaderImpl implements ItopMDSDataLoaderService{
 	
 	private static final Logger logger = LogManager.getLogger(ServiceDeskDataLoaderImpl.class);
-	private final String HTML_REGEX_CLEAR_TAG = "<[^<>]+>";
-	private final String HTML_ENTITY_CLEAR = "(&nbsp;|&lt;|&gt;|&amp;|&quot;|&apos;)+";
-	private final String UNACCENT_CLEAR = "[^\\p{Print}]";
 	
 	private List<StagingServiceDesk> allStagingList;
 	
@@ -34,6 +32,9 @@ public class ServiceDeskDataLoaderImpl implements ItopMDSDataLoaderService{
 	
 	@Autowired
 	private AppConfig appConfig;
+	
+	@Autowired
+	private SanitizeString sanitize;
 
 	public Elements parseTableTr(String data) {
 		Elements rowsData;
@@ -169,15 +170,7 @@ public class ServiceDeskDataLoaderImpl implements ItopMDSDataLoaderService{
 		sdStaging.setScalar_type(row.get(8));
 		sdStaging.setIncident_ref(row.get(9));
 		
-		
-		String title = row.get(10);
-		title = title.replaceAll(HTML_REGEX_CLEAR_TAG, "");
-		title = title.replaceAll(HTML_ENTITY_CLEAR, " ");
-		title = title.replaceAll(UNACCENT_CLEAR, "");
-		if (title.length() > 4000) {
-			title = title.substring(0, 4000);
-		}
-		sdStaging.setIncident_title(title);
+		sdStaging.setIncident_title(sanitize.getSanitizedString(row.get(10), 255));
 		
 		sdStaging.setIncident_startdate(row.get(11));
 		sdStaging.setIncident_starttime(row.get(12));
@@ -195,15 +188,7 @@ public class ServiceDeskDataLoaderImpl implements ItopMDSDataLoaderService{
 		sdStaging.setIncident_teamName(row.get(24));
 		sdStaging.setIncident_team(row.get(25));
 		
-		String description = row.get(26);
-		description = description.replaceAll(HTML_REGEX_CLEAR_TAG,"");
-		description = description.replaceAll(HTML_ENTITY_CLEAR, " ");
-		description = description.replaceAll(UNACCENT_CLEAR, "");
-		if (description.length() > 4000) {
-			description = description.substring(0, 4000);
-		}		
-		sdStaging.setIncident_description(description);
-		
+		sdStaging.setIncident_description(sanitize.getSanitizedString(row.get(26), 4000));
 		
 		sdStaging.setIncident_status(row.get(27));
 		sdStaging.setIncident_priority(row.get(28));
@@ -212,14 +197,7 @@ public class ServiceDeskDataLoaderImpl implements ItopMDSDataLoaderService{
 		sdStaging.setIncident_lastpendingtime(row.get(31));
 		sdStaging.setIncident_cumulatedpending(row.get(32));
 		
-		String pendingReason = row.get(33);
-		pendingReason = pendingReason.replaceAll(HTML_REGEX_CLEAR_TAG,"");
-		pendingReason = pendingReason.replaceAll(HTML_ENTITY_CLEAR, " ");
-		pendingReason = pendingReason.replaceAll(UNACCENT_CLEAR, "");
-		if (pendingReason.length() > 4000) {
-			pendingReason = pendingReason.substring(0, 4000);
-		}
-		sdStaging.setIncident_pendingreason(pendingReason);
+		sdStaging.setIncident_pendingreason(sanitize.getSanitizedString(row.get(33), 4000));
 		
 		sdStaging.setIncident_parentincidentref(row.get(34));
 		sdStaging.setIncident_ref2(row.get(35));
@@ -234,14 +212,7 @@ public class ServiceDeskDataLoaderImpl implements ItopMDSDataLoaderService{
 		sdStaging.setIncident_ttrDeadline(row.get(44));
 		sdStaging.setIncident_resolutiondelay(row.get(45));
 		
-		String solution = row.get(46);
-		solution = solution.replaceAll(HTML_REGEX_CLEAR_TAG,"");
-		solution = solution.replaceAll(HTML_ENTITY_CLEAR, " ");
-		solution = solution.replaceAll(UNACCENT_CLEAR, "");
-		if (solution.length() > 4000) {
-			solution = solution.substring(0, 4000);
-		}
-		sdStaging.setIncident_solution(solution);
+		sdStaging.setIncident_solution(sanitize.getSanitizedString(row.get(46), 4000));
 		
 		sdStaging.setIncident_tto(row.get(47));
 		sdStaging.setIncident_ttr(row.get(48));
@@ -252,14 +223,7 @@ public class ServiceDeskDataLoaderImpl implements ItopMDSDataLoaderService{
 		
 		sdStaging.setIncident_usersatisfaction(row.get(52));
 		
-		String userComment = row.get(53);
-		userComment = userComment.replaceAll(HTML_REGEX_CLEAR_TAG,"");
-		userComment = userComment.replaceAll(HTML_ENTITY_CLEAR, " ");
-		userComment = userComment.replaceAll(UNACCENT_CLEAR, "");
-		if (userComment.length() > 4000) {
-			userComment = userComment.substring(0, 4000);
-		}
-		sdStaging.setIncident_usercomment(userComment);
+		sdStaging.setIncident_usercomment(sanitize.getSanitizedString(row.get(53), 4000));
 		
 		return sdStaging;
 	}

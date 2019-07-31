@@ -18,14 +18,12 @@ import com.vdi.batch.mds.service.ItopMDSDataLoaderService;
 import com.vdi.configuration.AppConfig;
 import com.vdi.model.staging.StagingUserRequest;
 import com.vdi.tools.IOToolsService;
+import com.vdi.tools.component.SanitizeString;
 
 @Service("userRequestDataLoaderService")
 public class UserRequestDataLoaderImpl implements ItopMDSDataLoaderService {
 
 	private static final Logger logger = LogManager.getLogger(ServiceDeskDataLoaderImpl.class);
-	private final String HTML_REGEX_CLEAR_TAG = "<[^<>]+>";
-	private final String HTML_ENTITY_CLEAR = "(&nbsp;|&lt;|&gt;|&amp;|&quot;|&apos;)+";
-	private final String UNACCENT_CLEAR = "[^\\p{Print}]";
 
 	private List<StagingUserRequest> allStagingList;
 
@@ -34,6 +32,9 @@ public class UserRequestDataLoaderImpl implements ItopMDSDataLoaderService {
 
 	@Autowired
 	private AppConfig appConfig;
+	
+	@Autowired
+	private SanitizeString sanitize;
 
 	public Elements parseTableTr(String data) {
 		Elements rowsData;
@@ -173,14 +174,7 @@ public class UserRequestDataLoaderImpl implements ItopMDSDataLoaderService {
 		ur.setScalar_type(row.get(10));
 		ur.setScalar_urequestref(row.get(11));
 		
-		String title = row.get(12);
-		title = title.replaceAll(HTML_REGEX_CLEAR_TAG, "");
-		title = title.replaceAll(HTML_ENTITY_CLEAR, " ");
-		title = title.replaceAll(UNACCENT_CLEAR, "");
-		if (title.length() > 4000) {
-			title = title.substring(0, 4000);
-		}
-		ur.setUrequest_title(title);
+		ur.setUrequest_title(sanitize.getSanitizedString(row.get(12), 255));
 		
 		ur.setUrequest_startdate(row.get(13));
 		ur.setUrequest_starttime(row.get(14));
@@ -198,14 +192,7 @@ public class UserRequestDataLoaderImpl implements ItopMDSDataLoaderService {
 		ur.setUrequest_teamname(row.get(26));
 		ur.setUrequest_team(row.get(27));
 
-		String description = row.get(28);
-		description = description.replaceAll(HTML_REGEX_CLEAR_TAG, "");
-		description = description.replaceAll(HTML_ENTITY_CLEAR, " ");
-		description = description.replaceAll(UNACCENT_CLEAR, "");
-		if (description.length() > 4000) {
-			description = description.substring(0, 4000);
-		}
-		ur.setUrequest_description(description);
+		ur.setUrequest_description(sanitize.getSanitizedString(row.get(28), 4000));
 
 		ur.setUrequest_status(row.get(29));
 		ur.setUrequest_priority(row.get(30));
@@ -214,14 +201,7 @@ public class UserRequestDataLoaderImpl implements ItopMDSDataLoaderService {
 		ur.setUrequest_lastpendingtime(row.get(33));
 		ur.setUrequest_cumulatedpending(row.get(34));
 
-		String pendingReason = row.get(35);
-		pendingReason = pendingReason.replaceAll(HTML_REGEX_CLEAR_TAG, "");
-		pendingReason = pendingReason.replaceAll(HTML_ENTITY_CLEAR, " ");
-		pendingReason = pendingReason.replaceAll(UNACCENT_CLEAR, "");
-		if (pendingReason.length() > 4000) {
-			pendingReason = pendingReason.substring(0, 4000);
-		}
-		ur.setUrequest_pendingreason(pendingReason);
+		ur.setUrequest_pendingreason(sanitize.getSanitizedString(row.get(35), 4000));
 
 		ur.setUrequest_refproblem(row.get(36));
 		ur.setUrequest_refchange(row.get(37));
@@ -235,14 +215,7 @@ public class UserRequestDataLoaderImpl implements ItopMDSDataLoaderService {
 		ur.setUrequest_ttrdeadline(row.get(45));
 		ur.setUrequest_resolutiondelay(row.get(46));
 
-		String solution = row.get(47);
-		solution = solution.replaceAll(HTML_REGEX_CLEAR_TAG, "");
-		solution = solution.replaceAll(HTML_ENTITY_CLEAR, " ");
-		solution = solution.replaceAll(UNACCENT_CLEAR, "");
-		if (solution.length() > 4000) {
-			solution = solution.substring(0, 4000);
-		}
-		ur.setUrequest_solution(solution);
+		ur.setUrequest_solution(sanitize.getSanitizedString(row.get(47), 4000));
 
 		ur.setUrequest_tto(row.get(48));
 		ur.setUrequest_ttr(row.get(49));
@@ -251,14 +224,7 @@ public class UserRequestDataLoaderImpl implements ItopMDSDataLoaderService {
 		ur.setPerson_organization(row.get(52));
 		ur.setUrequest_usersatisfaction(row.get(53));
 
-		String userComment = row.get(54);
-		userComment = userComment.replaceAll(HTML_REGEX_CLEAR_TAG, "");
-		userComment = userComment.replaceAll(HTML_ENTITY_CLEAR, " ");
-		userComment = userComment.replaceAll(UNACCENT_CLEAR, "");
-		if (userComment.length() > 4000) {
-			userComment = userComment.substring(0, 4000);
-		}
-		ur.setUrequest_usercomment(userComment);
+		ur.setUrequest_usercomment(sanitize.getSanitizedString(row.get(54), 4000));
 
 		ur.setUrequest_servicename(row.get(55));
 

@@ -18,6 +18,7 @@ import com.vdi.batch.mds.service.ItopMDSDataLoaderService;
 import com.vdi.configuration.AppConfig;
 import com.vdi.model.staging.Staging;
 import com.vdi.tools.IOToolsService;
+import com.vdi.tools.component.SanitizeString;
 //this is comment
 @Service("itopMDSDataLoaderService")
 public class ItopMDSDataLoaderServiceImpl implements ItopMDSDataLoaderService {
@@ -32,6 +33,9 @@ public class ItopMDSDataLoaderServiceImpl implements ItopMDSDataLoaderService {
 
 	@Autowired
 	private AppConfig appConfig;
+	
+	@Autowired
+	private SanitizeString sanitize;
 
 	private List<Staging> allStagingList;
 	private List<Staging> allStagingVisionetList;
@@ -358,14 +362,7 @@ public class ItopMDSDataLoaderServiceImpl implements ItopMDSDataLoaderService {
 		Staging staging = new Staging();
 		staging.setRef(row.get(0));
 		
-		String title = row.get(1);
-		title = title.replaceAll(HTML_REGEX_CLEAR_TAG, "");
-		title = title.replaceAll(HTML_ENTITY_CLEAR, " ");
-		title = title.replaceAll(UNACCENT_CLEAR, "");
-		if (title.length() > 4000) {
-			title = title.substring(0, 4000);
-		}
-		staging.setTitle(title);
+		staging.setTitle(sanitize.getSanitizedString(row.get(1), 4000));
 		
 		staging.setStatus(row.get(2));
 		staging.setStart_date(row.get(3));
@@ -382,29 +379,15 @@ public class ItopMDSDataLoaderServiceImpl implements ItopMDSDataLoaderService {
 		staging.setAgent_fullname(row.get(14));
 		staging.setTeam(row.get(15));
 		staging.setTeam_name(row.get(16));
-
-		String description = row.get(17);
-		description = description.replaceAll(HTML_REGEX_CLEAR_TAG,"");
-		description = description.replaceAll(HTML_ENTITY_CLEAR, " ");
-		description = description.replaceAll(UNACCENT_CLEAR, "");
-		if (description.length() > 4000) {
-			description = description.substring(0, 4000);
-		}		
-		staging.setDescription(description);
+		
+		staging.setDescription(sanitize.getSanitizedString(row.get(17), 4000));
 
 		staging.setOrigin(row.get(18));
 		staging.setLastpending_date(row.get(19));
 		staging.setLastpending_time(row.get(20));
 		staging.setCumulated_pending(row.get(21));
 
-		String pendingReason = row.get(22);
-		pendingReason = pendingReason.replaceAll(HTML_REGEX_CLEAR_TAG,"");
-		pendingReason = pendingReason.replaceAll(HTML_ENTITY_CLEAR, " ");
-		pendingReason = pendingReason.replaceAll(UNACCENT_CLEAR, "");
-		if (pendingReason.length() > 4000) {
-			pendingReason = pendingReason.substring(0, 4000);
-		}
-		staging.setPending_reason(pendingReason);
+		staging.setPending_reason(sanitize.getSanitizedString(row.get(22), 4000));
 
 		staging.setParent_incident_ref(row.get(23));
 		staging.setParent_problem_ref(row.get(24));
@@ -428,27 +411,25 @@ public class ItopMDSDataLoaderServiceImpl implements ItopMDSDataLoaderService {
 		staging.setTto(row.get(42));
 		staging.setTtr(row.get(43));
 
-		String solution = row.get(44);
-		solution = solution.replaceAll(HTML_REGEX_CLEAR_TAG,"");
-		solution = solution.replaceAll(HTML_ENTITY_CLEAR, " ");
-		solution = solution.replaceAll(UNACCENT_CLEAR, "");
-		if (solution.length() > 4000) {
-			solution = solution.substring(0, 4000);
-		}
-		staging.setSolution(solution);
+		staging.setSolution(sanitize.getSanitizedString(row.get(44), 4000));
 
 		staging.setPerson_full_name(row.get(45));
 		
-		String email = row.get(46);
-		email = email.replaceAll(HTML_REGEX_CLEAR_TAG,"");
-		email = email.replaceAll(HTML_ENTITY_CLEAR, " ");
-		email = email.replaceAll(UNACCENT_CLEAR, "");
-		staging.setEmail(email);
+		staging.setEmail(sanitize.getSanitizedString(row.get(46), 255));
 		
 		staging.setPerson_org_short(row.get(47));
 		staging.setPerson_org_name(row.get(48));
 		staging.setUser_satisfaction(row.get(49));
-		staging.setUser_comment(row.get(50));
+		
+//		String userComment = row.get(50);
+//		userComment = userComment.replaceAll(HTML_REGEX_CLEAR_TAG,"");
+//		userComment = userComment.replaceAll(HTML_ENTITY_CLEAR, " ");
+//		userComment = userComment.replaceAll(UNACCENT_CLEAR, "");
+//		if (userComment.length() > 4000) {
+//			userComment = userComment.substring(0, 4000);
+//		}
+		staging.setUser_comment(sanitize.getSanitizedString(row.get(50), 4000));
+		
 		staging.setResolution_date(row.get(51));
 		staging.setResolution_time(row.get(52));
 		staging.setHotflag(row.get(53));
