@@ -35,14 +35,16 @@ public class ReportTest {
 //		ReportService rpt = ctx.getBean("monthlyIncidentSAReport", ReportService.class);
 //		ReportService rpt = ctx.getBean("weeklyIncidentSDReport", ReportService.class);
 //		ReportService rpt = ctx.getBean("monthlyIncidentSDReport", ReportService.class);
-		ReportService rpt = ctx.getBean("weeklyTest", ReportService.class);
+//		ReportService rpt = ctx.getBean("weeklyTest", ReportService.class);
 		
 		
-		ReportExporter.exportReport(rpt.getReport(), System.getProperty("user.dir") + "/target/reports/" 
-				+ "weekly_incident_servicedesk" + ".pdf");
+//		ReportExporter.exportReport(rpt.getReport(), System.getProperty("user.dir") + "/target/reports/" 
+//				+ "weekly_incident_servicedesk" + ".pdf");
 //		JasperViewer jv = new JasperViewer(rpt.getReport());
 //		jv.setVisible(true);
 		
+		ReportService rpt2 = ctx.getBean("itopPerformanceReport", ReportService.class);
+		ReportExporter.exportReport(rpt2.getReport("monthly"), "/data/mdsitop/target/reports/" + "a.pdf");		
 		
 		
 		ctx.close();

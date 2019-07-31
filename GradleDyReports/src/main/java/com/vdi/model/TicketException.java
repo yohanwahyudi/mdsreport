@@ -24,6 +24,8 @@ public class TicketException {
 	
 	private String ref;
 	private String type;
+	
+	@Column(length=4000)
 	private String reason;
 	
 	@Column(name="created_dt")
