@@ -13,6 +13,7 @@ public interface StagingIncidentDAOService extends BaseDAOService{
 	public void updateIncidentTable();
 	public void insertToIncidentTable();
 	public void syncDeleteMaster();
+	public void syncDeletePrevMonth();
 	public List<Object[]> getUnregisteredAgent();
 
 }

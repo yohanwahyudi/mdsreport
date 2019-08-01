@@ -19,7 +19,7 @@ public interface MonthlyAppTeamRepository extends CrudRepository<PerformanceAgen
 					"		 round(count(case when ttr_passed='no' then ref end)*100/count(incident.ref),2) as achievement,          " + 
 					"		 round(count(incident.ref)*100/          " + 
 					"		 (select count(incident.ref) from incident join agent on agent.name=incident.agent_fullname          " + 
-					"		  where agent.team_name not in ('DCU','OCC','SERVER','NETWORK','OFA','SUPPLIER PORTAL TEAM')        " + 
+					"		  where agent.team_name not in ('DCU','OCC','SERVER','NETWORK','OFA','SUPPLIER PORTAL TEAM', 'Service Desk')        " + 
 					"		  AND agent.is_active=1        " + 
 					"		  AND incident.team_id not in (30278)    " + 
 					"		  AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')          " + 
@@ -55,13 +55,6 @@ public interface MonthlyAppTeamRepository extends CrudRepository<PerformanceAgen
 					"				 AND incident.team_id not in (30278)    " + 
 					"				 AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')          " + 
 					"				 AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')),2) " + 
-					"             when agent.team_name='Service Desk'         " + 
-					"			 then round(count(incident.ref)*100/(select count(incident.ref) from incident join agent on agent.name=incident.agent_fullname          " + 
-					"				 where agent.team_name = 'Service Desk'         " + 
-					"				 AND agent.is_active=1        " + 
-					"				 AND incident.team_id not in (30278)    " + 
-					"				 AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')          " + 
-					"				 AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')),2)   " + 
 					"             when agent.team_name='OTHERS'         " + 
 					"			 then round(count(incident.ref)*100/(select count(incident.ref) from incident join agent on agent.name=incident.agent_fullname          " + 
 					"				 where agent.team_name = 'OTHERS'         " + 
@@ -82,7 +75,7 @@ public interface MonthlyAppTeamRepository extends CrudRepository<PerformanceAgen
 					"			 on agent.name=incident.agent_fullname          " + 
 					"			 AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')       " + 
 					"			 AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')          " + 
-					"			 WHERE agent.team_name not in ('DCU','OCC','SERVER','NETWORK','OFA','SUPPLIER PORTAL TEAM')         " + 
+					"			 WHERE agent.team_name not in ('DCU','OCC','SERVER','NETWORK','OFA','SUPPLIER PORTAL TEAM', 'Service Desk')         " + 
 					"			 AND agent.is_active=1            " + 
 					"			 AND incident.team_id not in (30278)    " + 
 					"		 group by agent.name   order by team_name desc;   "	
@@ -96,14 +89,14 @@ public interface MonthlyAppTeamRepository extends CrudRepository<PerformanceAgen
 			"	 round(count(case when ttr_passed='no' then ref end)*100/count(incident.ref),2) as achievement,  " + 
 			"	 round(count(incident.ref)*100/  " + 
 			"		  (select count(incident.ref) from incident join agent on agent.name=incident.agent_fullname  " + 
-			"			 where agent.team_name not in ('DCU','OCC','SERVER','NETWORK','OFA','SUPPLIER PORTAL TEAM') " + 
+			"			 where agent.team_name not in ('DCU','OCC','SERVER','NETWORK','OFA','SUPPLIER PORTAL TEAM', 'Service Desk') " + 
 			"			 AND agent.is_active=1   " + 
 			"			 AND incident.team_id not in (30278) " + 
 			"			 AND DATE_FORMAT(start_date,'%Y-%m-01')  < DATE_FORMAT(NOW(),'%Y-%m-01')  " + 
 			"			 AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')  " + 
 			"		   ),2) as contribution   " + 
 			"from incident    JOIN agent   on agent.name=incident.agent_fullname  " + 
-			"WHERE agent.team_name not in ('DCU','OCC','SERVER','NETWORK','OFA','SUPPLIER PORTAL TEAM') " + 
+			"WHERE agent.team_name not in ('DCU','OCC','SERVER','NETWORK','OFA','SUPPLIER PORTAL TEAM', 'Service Desk') " + 
 			"	  AND agent.is_active=1   " + 
 			"      AND incident.team_id not in (30278) " + 
 			"	  AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')  " + 

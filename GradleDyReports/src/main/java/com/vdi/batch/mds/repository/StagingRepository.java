@@ -68,5 +68,22 @@ public interface StagingRepository extends CrudRepository<Staging, Long>{
 			"		date_format(str_to_date(start_date, '%Y-%m-%d'), '%Y-%m')= date_format(curdate(), '%Y-%m') " + 
 			"	);", nativeQuery=true)
 	public void syncDelete();
+	
+	@Query(value="delete from incident    " + 
+			"			where    " + 
+			"				date_format(start_date,'%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01')   " + 
+			"			and   " + 
+			"				date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')    " + 
+			"			and    " + 
+			"				ref not in    " + 
+			"				(   " + 
+			"					select ref from staging_incident   " + 
+			"					where    " + 
+			"						date_format(start_date,'%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01')   " + 
+			"					and   " + 
+			"						date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')    " + 
+			"				);"
+			, nativeQuery=true)
+	public void syncDeletePrevMonth();
 
 }

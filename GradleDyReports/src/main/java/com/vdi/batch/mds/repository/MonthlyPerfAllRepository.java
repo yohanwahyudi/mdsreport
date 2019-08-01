@@ -17,35 +17,44 @@ public interface MonthlyPerfAllRepository extends CrudRepository<PerformanceOver
 	public int getAllTicketCount();
 	
 	@Query(value=			 
-			"select count(ref) as total_ticket from incident "+
-		    "where "+
-			// "where status in ('closed','resolved') and "+ 
-			 "date_format(start_date, '%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01')  "+ 
-			 "and date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')  "+
-			 "and agent_fullname like 'EXT%' "+ 
+			"select count(1) as total_ticket from incident i "+
+		    "left outer join ticket_exception e "+
+            "on i.ref=e.ref and e.type='sa' "+
+            "where "+ 
+			 "date_format(start_date, '%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01') "+   
+			 "and date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+  
+			 "and agent_fullname like 'EXT%' "+  
 			 "and team_name not like '%SUPPLIER PORTAL%' "+
-			 "; " ,nativeQuery=true)
+             "and e.ref is null "+
+             ";"			
+			,nativeQuery=true)
 	public int getTicketCount();
 	
-	@Query(value="select count(ref) as total_ticket from incident "+ 
+	@Query(value=
+			"select count(1) as total_ticket from incident  i "+
+			"left outer join ticket_exception e "+
+            "on i.ref=e.ref and e.type='sa'  "+
 			 "where "+
-			 //"status in ('closed','resolved') and "+
-			 "ttr_passed='no' "+ 
-			 "and date_format(start_date,'%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01') "+ 
-			 "and date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')  "+
-			 "and agent_fullname like 'EXT%' "+ 
-			 "and team_name not like '%SUPPLIER PORTAL%' "+
+			 "ttr_passed='no' "+  
+			 "and date_format(start_date,'%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01') "+  
+			 "and date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+  
+			 "and agent_fullname like 'EXT%'  "+
+			 "and team_name not like '%SUPPLIER PORTAL%' "+ 
+             "and e.ref is null "+
 			 "; " ,nativeQuery=true)
 	public int getAchievedTicketCount();
 	
-	@Query(value="select count(ref) as total_ticket from incident "+
-			 "where "+
-			 //"status in ('closed','resolved') and "+
-			 "ttr_passed='yes' "+
-			 "and date_format(start_date,'%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01') "+ 
-			 "and date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')  "+
-			 "and agent_fullname like 'EXT%' "+
-			 "and team_name not like '%SUPPLIER PORTAL%' "+
+	@Query(value=
+			"select count(1) as total_ticket from incident i "+
+			"left outer join ticket_exception e "+
+            "on i.ref=e.ref and e.type='sa' "+
+			" where "+
+			" ttr_passed='yes' "+ 
+			" and date_format(start_date,'%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01') "+  
+			" and date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+  
+			" and agent_fullname like 'EXT%' "+
+			" and team_name not like '%SUPPLIER PORTAL%' "+
+            " and e.ref is null "+
 			 ";" ,nativeQuery=true)
 	public int getMissedTicketCount();
 	

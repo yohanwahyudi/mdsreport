@@ -79,7 +79,7 @@ public class PopulateIncident {
 		}
 
 		stagingDAO.syncDeleteMaster();
-		
+		stagingDAO.syncDeletePrevMonth();
 		
 //		if (unregisteredAgentList.size() < 1) {
 //			stagingDAO.insertToIncidentTable();

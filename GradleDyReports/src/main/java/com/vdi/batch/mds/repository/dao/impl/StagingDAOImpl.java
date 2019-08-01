@@ -92,6 +92,13 @@ public class StagingDAOImpl implements StagingIncidentDAOService{
 		stagingRepository.syncDelete();
 		
 	}
+	
+	@Override
+	public void syncDeletePrevMonth() {
+		
+		stagingRepository.syncDeletePrevMonth();
+		
+	}
 
 	@Override
 	public void resetSequenceTo1() {

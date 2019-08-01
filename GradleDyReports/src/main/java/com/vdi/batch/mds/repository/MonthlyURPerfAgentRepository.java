@@ -21,18 +21,19 @@ public interface MonthlyURPerfAgentRepository extends CrudRepository<Performance
 			"	SELECT   " + 
 			"		IFNULL(agent.division,'') AS division, "+
 			"		staging.scalar_user AS agent,    " + 
-			"		Count(staging.scalar_urequestref) AS total_ticket    " + 
+			"		Count(1) AS total_ticket    " + 
 			"	FROM  staging_userrequest staging    " + 
 			"	LEFT JOIN agent    " + 
 			"	 ON staging.scalar_user = agent.NAME    " + 
+			"	left join ticket_exception e "+   
+            "	 on staging.scalar_urequestref = e.ref and e.type='ur' "+  
 			"	WHERE "+
 			"    scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
-//			"	and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
-//			"	or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
 			"	AND agent.is_active=1 "+
 			"	and urequest_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
 			"	and urequest_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"	AND staging.scalar_user like 'EXT%' "+
+			"	and e.ref is null "+
 			"	GROUP  BY staging.scalar_user    " + 
 			"	ORDER BY agent ASC  " + 
 			") one " + 
@@ -44,15 +45,16 @@ public interface MonthlyURPerfAgentRepository extends CrudRepository<Performance
 			"		staging_userrequest staging  " + 
 			"	LEFT JOIN agent   " + 
 			"		ON agent.name = staging.scalar_user  " + 
+			"	left join ticket_exception e "+   
+            "	 on staging.scalar_urequestref = e.ref and e.type='ur' "+  
 			"    WHERE " + 
 			"    scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
-//			"	and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
-//			"	or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
 			"	AND agent.is_active=1 "+
 			"	AND staging.urequest_slattopassed = 'no'   " + 
 			"	and urequest_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
 			"	and urequest_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"	AND staging.scalar_user like 'EXT%' "+
+			"	and e.ref is null "+
 			"    GROUP BY staging.scalar_user  " + 
 			")	two  " + 
 			"	ON one.agent = two.agent  " + 
@@ -64,15 +66,16 @@ public interface MonthlyURPerfAgentRepository extends CrudRepository<Performance
 			"		staging_userrequest staging  " + 
 			"	LEFT JOIN agent   " + 
 			"		ON agent.name = staging.scalar_user  " + 
+			"	left join ticket_exception e "+   
+            "	 on staging.scalar_urequestref = e.ref and e.type='ur' "+  
 			"    WHERE   " + 
 			"    scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
-//			"	and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
-//			"	or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
 			"	AND agent.is_active=1 "+
 			"	AND staging.urequest_slattopassed = 'yes'   " + 
 			"	and urequest_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
 			"	and urequest_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"	AND staging.scalar_user like 'EXT%' "+
+			"	and e.ref is null "+
 			"   GROUP BY staging.scalar_user  " + 
 			")	three                               " + 
 			"	ON one.agent = three.agent; ", nativeQuery=true)
