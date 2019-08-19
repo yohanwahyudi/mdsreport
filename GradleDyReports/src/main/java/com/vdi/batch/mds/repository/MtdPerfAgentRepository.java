@@ -4,12 +4,10 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
 
 import com.vdi.model.performance.PerformanceAgent;
 
-@Repository
-public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAgent, Long>{
+public interface MtdPerfAgentRepository extends CrudRepository<PerformanceAgent, Long>{
 
 	@Query(value="SELECT one.division,   " + 
 			"			       one.agent_fullname,  " + 
@@ -29,9 +27,7 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"							 AND e.type='sa' " + 
 			"			        WHERE  " + 
 			"					 		agent.is_active=1 " + 
-//			"							AND incident.team_name NOT LIKE '%SUPPLIER PORTAL%' 	" + 
-			"							AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')  " + 
-			"							AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') " + 
+			"							AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(NOW(),'%Y-%m-01')  " +  
 			"                            AND e.ref is null" + 
 			"			        GROUP  BY incident.agent_fullname   " + 
 			"			        ORDER  BY division,   " + 
@@ -48,9 +44,7 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"			                  WHERE  " + 
 			"					 		   agent.is_active=1 " + 
 			"			                         AND ttr_passed = 'no'   " + 
-//			"									  AND incident.team_name NOT LIKE '%SUPPLIER PORTAL%' 	" + 
-			"									  AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')  " + 
-			"								      AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') " + 
+			"									  AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(NOW(),'%Y-%m-01')  " +  
 			"                                      AND e.ref is null" + 
 			"			                  GROUP  BY incident.agent_fullname   " + 
 			"			                  ORDER  BY division,   " + 
@@ -68,9 +62,7 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"			                  WHERE  " + 
 			"					 		   agent.is_active=1 " + 
 			"			                         AND ttr_passed = 'yes'   " + 
-//			"									  AND incident.team_name NOT LIKE '%SUPPLIER PORTAL%' 	" + 
-			"									  AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')  " + 
-			"									  AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') " + 
+			"									  AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(NOW(),'%Y-%m-01')  " +  
 			"									  AND e.ref is null" + 
 			"			                  GROUP  BY incident.agent_fullname   " + 
 			"			                  ORDER  BY division,   " + 
@@ -87,9 +79,7 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"										 AND e.type='sa'   " + 
 			"			                  WHERE  status = 'pending'   " + 
 			"					 		   		  AND agent.is_active=1 " + 
-//			"									  AND incident.team_name NOT LIKE '%SUPPLIER PORTAL%' 	" + 
-			"									  AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')  " + 
-			"									  AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') " + 
+			"									  AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(NOW(),'%Y-%m-01')  " +  
 			"                                      AND e.ref is null" + 
 			"			                  GROUP  BY incident.agent_fullname   " + 
 			"			                  ORDER  BY division,   " + 
@@ -106,9 +96,7 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"										 AND e.type='sa'   " + 
 			"			                  WHERE  status = 'assigned'   " + 
 			"					 		   		  AND agent.is_active=1 " + 
-//			"									  AND incident.team_name NOT LIKE '%SUPPLIER PORTAL%' 	" + 
-			"									  AND DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')  " + 
-			"									  AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') " + 
+			"									  AND DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(NOW(),'%Y-%m-01')  " +  
 			"                                      AND e.ref is null" + 
 			"			                  GROUP  BY incident.agent_fullname  " + 
 			"			                  ORDER  BY division,   " + 
@@ -117,11 +105,9 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 	public List<Object[]> getAgentTicket();
 	
 	@Query(value="SELECT * FROM perf_agent "
-			+ "WHERE month=month(curdate())-1 "
+			+ "WHERE month=month(curdate()) "
 			+ "AND year(created_dt)=year(curdate()) "
 			+ "AND period='monthly' AND category='sa';", nativeQuery=true)
-	public List<PerformanceAgent> getPerformanceThisWeek();
-	
-
+	public List<PerformanceAgent> getPerformance();
 	
 }

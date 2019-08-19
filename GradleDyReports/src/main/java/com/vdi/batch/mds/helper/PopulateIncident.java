@@ -50,6 +50,12 @@ public class PopulateIncident {
 	public void addToStaging() {
 		stagingList = new ArrayList<Staging>();
 		stagingList = loadIncidentFromURL.getStagingAllByURL();
+		
+		try {
+			logger.info("incident staging list size: "+stagingList.size());
+		} catch (Exception e) {
+			// bypass
+		}
 
 		if (stagingList != null && stagingList.size() > 0) {
 			stagingDAO.addAll(stagingList);
@@ -112,6 +118,8 @@ public class PopulateIncident {
 
 	public void populate() {
 		
+		logger.info("start populate incident....");
+		
 		// delete and reset sequence for staging table
 		stagingDAO.deleteEntity();
 
@@ -120,6 +128,8 @@ public class PopulateIncident {
 
 		// add to table incident
 		addToMaster();
+		
+		logger.info("finish populate incident....");
 
 	}
 

@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository;
 import com.vdi.model.performance.PerformanceTeam;
 
 @Repository
-public interface MonthlyPerfTeamRepository extends CrudRepository<PerformanceTeam,Long>{
-
+public interface MtdPerfTeamRepository extends CrudRepository<PerformanceTeam, Long>{
+	
 	@Query(value="SELECT one.division,   " + 
 			"			       Ifnull(one.total_ticket, 0) as total_ticket,   " + 
 			"			       Ifnull(two.achieved_ticket, 0) as achieved_ticket,   " + 
@@ -25,9 +25,7 @@ public interface MonthlyPerfTeamRepository extends CrudRepository<PerformanceTea
 			"                                   AND e.type='sa'" + 
 			"					 WHERE 	" + 
 			"							agent.is_active=1 " + 
-			//"							AND incident.team_name NOT LIKE '%SUPPLIER PORTAL%' 	" + 
-			"							AND date_format(start_date, '%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01')  " + 
-			"							AND date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') " + 
+			"							AND date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(NOW(),'%Y-%m-01')  " +  
 			"                            AND e.ref is null" + 
 			"			        GROUP  BY division) one   " + 
 			"			       LEFT JOIN (SELECT agent.division,   " + 
@@ -41,9 +39,7 @@ public interface MonthlyPerfTeamRepository extends CrudRepository<PerformanceTea
 			"								WHERE " + 
 			"			                         ttr_passed = 'no'  " + 
 			"									  AND agent.is_active=1 " + 
-			//"									  AND incident.team_name NOT LIKE '%SUPPLIER PORTAL%' " + 
-			"									  AND date_format(start_date, '%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01')  " + 
-			"									  AND date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') " + 
+			"									  AND date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(NOW(),'%Y-%m-01')  " +  
 			"                                      AND e.ref is null" + 
 			"			                  GROUP  BY division) two   " + 
 			"			              ON one.division = two.division   " + 
@@ -58,18 +54,15 @@ public interface MonthlyPerfTeamRepository extends CrudRepository<PerformanceTea
 			"			 				   WHERE 		" + 
 			"			                         ttr_passed = 'yes'  " + 
 			"									  AND agent.is_active=1 " + 
-			//"									  AND incident.team_name NOT LIKE '%SUPPLIER PORTAL%' " + 
-			"									  AND date_format(start_date, '%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01')  " + 
-			"									  AND date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') " + 
+			"									  AND date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(NOW(),'%Y-%m-01')  " +  
 			"                                      AND e.ref is null" + 
 			"			                  GROUP  BY division) three   " + 
 			"			              ON one.division = three.division; ",nativeQuery=true)
 	public List<Object[]> getTeamTicketByDivision();
 	
 	@Query(value="select * from perf_team "
-			+ "WHERE  month=month(curdate())-1 "
-			+ "AND year(created_dt)=year(curdate()) "
+			+ "WHERE  month=month(curdate()) and year(created_dt)=year(curdate()) "
 			+ "AND period='monthly' AND category='sa';", nativeQuery=true)
-	public List<PerformanceTeam> getPerformanceThisWeek();
-	
+	public List<PerformanceTeam> getExistingPerformance();
+
 }
