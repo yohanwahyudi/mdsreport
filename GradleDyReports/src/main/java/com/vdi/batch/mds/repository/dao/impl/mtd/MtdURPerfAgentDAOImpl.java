@@ -1,60 +1,57 @@
-package com.vdi.batch.mds.repository.dao.impl;
+package com.vdi.batch.mds.repository.dao.impl.mtd;
 
 import java.util.List;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
-import com.vdi.batch.mds.repository.WeeklyURPefAgentRepository;
+import com.vdi.batch.mds.repository.MtdURPerfAgentRepository;
 import com.vdi.batch.mds.repository.dao.PerfAgentDAOService;
 import com.vdi.model.performance.PerformanceAgent;
 
 @Transactional
-@Repository("weeklyURPerfAgentDAO")
-public class WeeklyURPerfAgentDAOImpl implements PerfAgentDAOService{
+@Service("mtdUrPerfAgentDao")
+public class MtdURPerfAgentDAOImpl implements PerfAgentDAOService{
 	
 	@Autowired
-	private WeeklyURPefAgentRepository repo;
+	private MtdURPerfAgentRepository mtdUrAgentRepository;
 
 	@Override
 	public List<Object[]> getAgentTicket() {
 		
-		return null;
+		return mtdUrAgentRepository.getAgentTicket();
 	}
 
 	@Override
 	public List<Object[]> getAgentTicket(int week, int month) {
-		
-		return repo.getAgentTicket(week, month);
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public void insertPerformance(List<PerformanceAgent> listAgent) {
 		
-		repo.saveAll(listAgent);
-		
+		mtdUrAgentRepository.saveAll(listAgent);
 	}
 
 	@Override
 	public List<PerformanceAgent> getPerformance() {
 		
-		return null;
+		return mtdUrAgentRepository.getExistingPerformance();
 	}
 
 	@Override
 	public List<PerformanceAgent> getPerformance(int week, int month) {
-		
-		return repo.getPerformanceThisWeek(week, month);
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public void updatePerformance(List<PerformanceAgent> agents) {
 		
-		repo.saveAll(agents);
+		mtdUrAgentRepository.saveAll(agents);
 	}
-	
-	
 
 }

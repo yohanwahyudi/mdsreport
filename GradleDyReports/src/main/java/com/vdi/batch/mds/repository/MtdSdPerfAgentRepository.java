@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.vdi.model.performance.PerformanceAgent;
 
 @Repository
-public interface MonthlySDPerfAgentRepository extends CrudRepository<PerformanceAgent, Long>{
+public interface MtdSdPerfAgentRepository extends CrudRepository<PerformanceAgent, Long>{
 
 	@Query(value="SELECT   " + 
 			"				one.division, " + 
@@ -31,8 +31,7 @@ public interface MonthlySDPerfAgentRepository extends CrudRepository<Performance
 			"				 ON staging.scalar_user = agent.NAME      " + 
 			"				WHERE scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'    " + 
 			"							AND agent.is_active=1 " + 
-			"							AND incident_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
-			"							AND incident_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') " + 
+			"							AND incident_startdate >= DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
 			"				 AND staging.scalar_user like 'EXT%' " + 
 			"                 AND e.ref is null" + 
 			"				GROUP  BY staging.scalar_user      " + 
@@ -52,8 +51,7 @@ public interface MonthlySDPerfAgentRepository extends CrudRepository<Performance
 			"			    WHERE scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'    " + 
 			"					AND staging.incident_slattopassed = 'no'     " + 
 			"							AND agent.is_active=1 " + 
-			"							AND incident_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
-			"							AND incident_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') " + 
+			"							AND incident_startdate >= DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
 			"				 AND staging.scalar_user like 'EXT%' " + 
 			"                 AND e.ref is null" + 
 			"			    GROUP BY staging.scalar_user    " + 
@@ -73,8 +71,7 @@ public interface MonthlySDPerfAgentRepository extends CrudRepository<Performance
 			"			    WHERE scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'    " + 
 			"					AND staging.incident_slattopassed = 'yes'     " + 
 			"							AND agent.is_active=1 " + 
-			"							AND incident_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
-			"							AND incident_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') " + 
+			"							AND incident_startdate >= DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
 			"				 AND staging.scalar_user like 'EXT%' " + 
 			"                 AND e.ref is null" + 
 			"			    GROUP BY staging.scalar_user    " + 
@@ -82,8 +79,8 @@ public interface MonthlySDPerfAgentRepository extends CrudRepository<Performance
 			"				ON one.agent = three.agent; ", nativeQuery=true)
 	public List<Object[]> getAgentTicket();
 	
-	@Query(value="SELECT * FROM perf_agent WHERE month=month(curdate())-1 and "+
+	@Query(value="SELECT * FROM perf_agent WHERE month=month(curdate()) and "+
 			"year(created_dt)=year(curdate()) AND period='monthly' AND category='sd';", nativeQuery=true)
-	public List<PerformanceAgent> getPerformanceThisWeek();
+	public List<PerformanceAgent> getExistingPerformance();
 	
 }

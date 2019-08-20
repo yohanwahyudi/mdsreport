@@ -8,7 +8,11 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import com.vdi.batch.mds.helper.PopulateIncident;
+import com.vdi.batch.mds.helper.PopulateServiceDesk;
+import com.vdi.batch.mds.helper.PopulateUserRequest;
 import com.vdi.batch.mds.helper.mtd.MtdPerformanceIncident;
+import com.vdi.batch.mds.helper.mtd.MtdPerformanceSD;
+import com.vdi.batch.mds.helper.mtd.MtdPerformanceUR;
 import com.vdi.configuration.AppConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -16,69 +20,87 @@ public class BatchMDSMtdPerformance extends QuartzJobBean {
 
 	private final Logger logger = LogManager.getLogger(BatchMDSMtdPerformance.class);
 	private AnnotationConfigApplicationContext ctx;
+	
+	public BatchMDSMtdPerformance() {
+		
+		ctx = new AnnotationConfigApplicationContext(AppConfig.class);
+		
+	}
 
 	@Override
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
 
 		logger.info("Batch itop mds performance started.......");
-
-		ctx = new AnnotationConfigApplicationContext(AppConfig.class);
-
-		populateData(ctx);
-		populatePerformance(ctx);
 		
-		closeDataSource();
-		
+		executeBatch();
+
 		logger.info("Batch itop mds performance ended.......");
 
 	}
-
-	private void populatePerformance(AnnotationConfigApplicationContext ctx) {
-
-		// populate performance
-		logger.info("start calculate mtd performance");
-		
-		MtdPerformanceIncident incident = ctx.getBean(MtdPerformanceIncident.class);
-		incident.populate();
-		
-		logger.info("end calculate mtd performance");
-	}
 	
-	private void populateData(AnnotationConfigApplicationContext ctx) {
+	public void executeBatch() {
 		
-		logger.info("start populate....");
+		incidentProcess(ctx);
+		sdProcess(ctx);
+		urProcess(ctx);
+
+		closeDataSource();
+		
+	}
+
+	private void incidentProcess(AnnotationConfigApplicationContext ctx) {
+
+		logger.info("start incident process");
 		PopulateIncident populateIncident = ctx.getBean(PopulateIncident.class);
-//		PopulateServiceDesk populateSD = ctx.getBean(PopulateServiceDesk.class);
-//		PopulateUserRequest populateUR = ctx.getBean(PopulateUserRequest.class);
-//		
-//		PopulateProblemChange problemChange = ctx.getBean(PopulateProblemChange.class);
-//		PopulateUserRequestYTD urYtd = ctx.getBean(PopulateUserRequestYTD.class);
-		
 		populateIncident.populate();
-//		populateSD.populate();
-//
-//		problemChange.populate();
-//		populateUR.populate();
-//		urYtd.populate();
-		
-		logger.info("End populate....");
-		
+
+		MtdPerformanceIncident incidentPerformance = ctx.getBean(MtdPerformanceIncident.class);
+		incidentPerformance.populate();
+
+		logger.info("finish incident process");
+
 	}
-	
+
+	private void sdProcess(AnnotationConfigApplicationContext ctx) {
+
+		logger.info("start sd process");
+
+		PopulateServiceDesk populateSD = ctx.getBean(PopulateServiceDesk.class);
+		populateSD.populate();
+
+		MtdPerformanceSD sdPerformance = ctx.getBean(MtdPerformanceSD.class);
+		sdPerformance.populate();
+
+		logger.info("finish sd process");
+
+	}
+
+	private void urProcess(AnnotationConfigApplicationContext ctx) {
+
+		logger.info("start ur process");
+
+		PopulateUserRequest populateUR = ctx.getBean(PopulateUserRequest.class);
+		populateUR.populate();
+
+		MtdPerformanceUR urPerformance = ctx.getBean(MtdPerformanceUR.class);
+		urPerformance.populate();
+
+		logger.info("finish ur process");
+
+	}
+
 	private void closeDataSource() {
-		
+
 		HikariDataSource hds = ctx.getBean("dataSource", HikariDataSource.class);
 		logger.info("close datasource");
-		logger.info(hds.getPoolName()+"-"+hds.getJdbcUrl());
+		logger.info(hds.getPoolName() + "-" + hds.getJdbcUrl());
 		try {
 			hds.close();
 		} catch (Exception e) {
 			logger.info("Error closing datasource ");
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	
 
 }

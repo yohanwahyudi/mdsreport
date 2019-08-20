@@ -4,12 +4,13 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import com.vdi.model.performance.PerformanceAgent;
 
-public interface WeeklyURPefAgentRepository extends CrudRepository<PerformanceAgent, Long>{
-
+@Repository
+public interface MtdURPerfAgentRepository extends CrudRepository<PerformanceAgent, Long>{
+	
 	@Query(value="SELECT " + 
 			"	one.division, "+
 			"	one.agent,   " + 
@@ -21,16 +22,18 @@ public interface WeeklyURPefAgentRepository extends CrudRepository<PerformanceAg
 			"	SELECT   " + 
 			"		IFNULL(agent.division,'') AS division, "+
 			"		staging.scalar_user AS agent,    " + 
-			"		Count(staging.scalar_urequestref) AS total_ticket    " + 
+			"		Count(1) AS total_ticket    " + 
 			"	FROM  staging_userrequest staging    " + 
 			"	LEFT JOIN agent    " + 
 			"	 ON staging.scalar_user = agent.NAME    " + 
+			"	left join ticket_exception e "+   
+            "	 on staging.scalar_urequestref = e.ref and e.type='ur' "+  
 			"	WHERE "+
 			"    scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
-			"	AND year(urequest_startdate)=year(curdate()) "+   
-			"	AND month(urequest_startdate)= :month "+
-			"	AND week(urequest_startdate,3)= :week "+
+			"	AND agent.is_active=1 "+
+			"	and urequest_startdate >= DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
 			"	AND staging.scalar_user like 'EXT%' "+
+			"	and e.ref is null "+
 			"	GROUP  BY staging.scalar_user    " + 
 			"	ORDER BY agent ASC  " + 
 			") one " + 
@@ -42,13 +45,15 @@ public interface WeeklyURPefAgentRepository extends CrudRepository<PerformanceAg
 			"		staging_userrequest staging  " + 
 			"	LEFT JOIN agent   " + 
 			"		ON agent.name = staging.scalar_user  " + 
+			"	left join ticket_exception e "+   
+            "	 on staging.scalar_urequestref = e.ref and e.type='ur' "+  
 			"    WHERE " + 
 			"    scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
-			"	 AND staging.urequest_slattopassed = 'no'   " + 
-			"	 AND year(urequest_startdate)=year(curdate()) "+   
-			"	 AND month(urequest_startdate)= :month "+
-			"	 AND week(urequest_startdate,3)= :week "+
-			"	 AND staging.scalar_user like 'EXT%' "+
+			"	AND agent.is_active=1 "+
+			"	AND staging.urequest_slattopassed = 'no'   " + 
+			"	and urequest_startdate >= DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
+			"	AND staging.scalar_user like 'EXT%' "+
+			"	and e.ref is null "+
 			"    GROUP BY staging.scalar_user  " + 
 			")	two  " + 
 			"	ON one.agent = two.agent  " + 
@@ -60,28 +65,29 @@ public interface WeeklyURPefAgentRepository extends CrudRepository<PerformanceAg
 			"		staging_userrequest staging  " + 
 			"	LEFT JOIN agent   " + 
 			"		ON agent.name = staging.scalar_user  " + 
+			"	left join ticket_exception e "+   
+            "	 on staging.scalar_urequestref = e.ref and e.type='ur' "+  
 			"    WHERE   " + 
 			"    scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
-			"	 AND staging.urequest_slattopassed = 'yes'   " + 
-			"	 AND year(urequest_startdate)=year(curdate()) "+   
-			"	 AND month(urequest_startdate)= :month "+
-			"	 AND week(urequest_startdate,3)= :week "+
-			"	 AND staging.scalar_user like 'EXT%' "+
-			"    GROUP BY staging.scalar_user  " + 
+			"	AND agent.is_active=1 "+
+			"	AND staging.urequest_slattopassed = 'yes'   " + 
+			"	and urequest_startdate >= DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
+			"	AND staging.scalar_user like 'EXT%' "+
+			"	and e.ref is null "+
+			"   GROUP BY staging.scalar_user  " + 
 			")	three                               " + 
 			"	ON one.agent = three.agent; ", nativeQuery=true)
-	public List<Object[]> getAgentTicket(@Param("week") int week, @Param("month") int month);
+	public List<Object[]> getAgentTicket();
 	
 	@Query(value="select " + 
 			"	* " + 
 			"from perf_agent " + 
 			"where "+
 			"year(created_dt)=year(curdate()) "+   
-			"AND month= :month "+
-			"AND week(created_dt,3)= :week "+
-			"AND period='weekly'  "+
+			"AND month = month(curdate()) "+
+			"AND period='monthly'  "+
 			"AND category='ur' "+
 			";", nativeQuery=true)
-	public List<PerformanceAgent> getPerformanceThisWeek(@Param("week") int week, @Param("month") int month);
-	
+	public List<PerformanceAgent> getExistingPerformance();
+
 }

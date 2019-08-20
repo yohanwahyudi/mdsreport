@@ -65,7 +65,7 @@ public interface MonthlyURPerfAllRepository extends CrudRepository<PerformanceOv
 				"AND category='ur';", nativeQuery=true)
 	public PerformanceOverall getPerformanceThisMonth(@Param("month") int month);
 	
-	@Query(value="select * from perf_overall WHERE  Year(created_dt) = Year(Curdate()) AND month(created_dt) = month(curdate()) "+
+	@Query(value="select * from perf_overall WHERE  Year(created_dt) = Year(Curdate()) AND month = month(curdate())-1 "+
 			"AND period='monthly' AND category='ur';", nativeQuery=true)
 	public PerformanceOverall getPerformanceThisMonth();
 

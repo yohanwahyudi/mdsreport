@@ -40,7 +40,7 @@ public class MtdPerfAgentDAOImpl implements PerfAgentDAOService{
 	@Override
 	public List<PerformanceAgent> getPerformance() {
 		
-		return mtdAgentRepository.getPerformance();
+		return mtdAgentRepository.getExistingPerformance();
 	}
 
 	@Override

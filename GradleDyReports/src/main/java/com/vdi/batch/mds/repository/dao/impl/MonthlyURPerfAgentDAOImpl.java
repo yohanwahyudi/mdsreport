@@ -45,7 +45,7 @@ public class MonthlyURPerfAgentDAOImpl implements PerfAgentDAOService{
 	@Override
 	public List<PerformanceAgent> getPerformance(int week, int month) {
 		
-		return repo.getPerformanceThisMonth(month);
+		return repo.getPerformanceThisMonth();
 	}
 
 	@Override

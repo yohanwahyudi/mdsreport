@@ -108,6 +108,6 @@ public interface MtdPerfAgentRepository extends CrudRepository<PerformanceAgent,
 			+ "WHERE month=month(curdate()) "
 			+ "AND year(created_dt)=year(curdate()) "
 			+ "AND period='monthly' AND category='sa';", nativeQuery=true)
-	public List<PerformanceAgent> getPerformance();
+	public List<PerformanceAgent> getExistingPerformance();
 	
 }

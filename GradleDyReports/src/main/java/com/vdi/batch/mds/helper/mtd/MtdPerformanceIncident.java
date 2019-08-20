@@ -20,6 +20,7 @@ import com.vdi.model.performance.PerformanceAgent;
 import com.vdi.model.performance.PerformanceOverall;
 import com.vdi.model.performance.PerformanceTeam;
 import com.vdi.tools.TimeStatic;
+import com.vdi.tools.TimeTools;
 
 @Component("mtdPerformanceIncident")
 public class MtdPerformanceIncident {
@@ -41,7 +42,12 @@ public class MtdPerformanceIncident {
 	private Integer thisMonth;
 	
 	public MtdPerformanceIncident() {
-		this.thisMonth = TimeStatic.currentMonth;
+		
+	}
+	
+	@Autowired
+	public MtdPerformanceIncident(TimeTools timeTools) {
+		this.thisMonth = timeTools.getCurrentMonth();
 	}
 	
 	public void populate() {
