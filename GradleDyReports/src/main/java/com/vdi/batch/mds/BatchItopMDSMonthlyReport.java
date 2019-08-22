@@ -102,7 +102,7 @@ public class BatchItopMDSMonthlyReport extends QuartzJobBean {
 		createReport(rpt, path, fileNameMonthly, periodMonthly);
 		
 		// populate performance weekly
-		if (currentMonth != 1) {
+/*		if (currentMonth != 1) {
 			String filenameWeekly;
 			Integer weeklyWeekMonth;
 			Integer weeklyWeekYear;
@@ -127,22 +127,11 @@ public class BatchItopMDSMonthlyReport extends QuartzJobBean {
 			populateWeeklyPerformance(ctx, weeklyWeekYear, previousMonth);
 			createReport(rpt, path, filenameWeekly, periodWeekly, previousMonth, weeklyWeekMonth);
 			
-//			HikariDataSource hds = ctx.getBean("dataSource", HikariDataSource.class);
-//			logger.info("close datasource");
-//			logger.info(hds.getPoolName()+"-"+hds.getJdbcUrl());
-//			try {
-//				hds.close();
-//			} catch (Exception e) {
-//				logger.info("Error closing datasource ");
-//				e.printStackTrace();
-//			}
-//			
-//			logger.info("Batch Itop MDS Monthly report finished.");
 			
 		} else {
 			logger.info("Skip Weekly reports...");
 		}
-		
+*/
 		String[] file = new String[] {};
 		try {
 			BatchSubMDSPerSection subBatch = ctx.getBean(BatchSubMDSPerSection.class);

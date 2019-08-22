@@ -30,8 +30,8 @@ public interface MonthlyURPerfAgentRepository extends CrudRepository<Performance
 			"	WHERE "+
 			"    scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
 			"	AND agent.is_active=1 "+
-			"	and urequest_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
-			"	and urequest_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			"	and DATE_FORMAT(urequest_startdate,'%Y-%m-01 00:00:00') < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
+			"	and DATE_FORMAT(urequest_startdate,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"	AND staging.scalar_user like 'EXT%' "+
 			"	and e.ref is null "+
 			"	GROUP  BY staging.scalar_user    " + 
@@ -51,8 +51,8 @@ public interface MonthlyURPerfAgentRepository extends CrudRepository<Performance
 			"    scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
 			"	AND agent.is_active=1 "+
 			"	AND staging.urequest_slattopassed = 'no'   " + 
-			"	and urequest_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
-			"	and urequest_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			"	and DATE_FORMAT(urequest_startdate,'%Y-%m-01 00:00:00') < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
+			"	and DATE_FORMAT(urequest_startdate,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"	AND staging.scalar_user like 'EXT%' "+
 			"	and e.ref is null "+
 			"    GROUP BY staging.scalar_user  " + 
@@ -72,8 +72,8 @@ public interface MonthlyURPerfAgentRepository extends CrudRepository<Performance
 			"    scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
 			"	AND agent.is_active=1 "+
 			"	AND staging.urequest_slattopassed = 'yes'   " + 
-			"	and urequest_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
-			"	and urequest_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			"	and DATE_FORMAT(urequest_startdate,'%Y-%m-01 00:00:00') < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
+			"	and DATE_FORMAT(urequest_startdate,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"	AND staging.scalar_user like 'EXT%' "+
 			"	and e.ref is null "+
 			"   GROUP BY staging.scalar_user  " + 
@@ -97,7 +97,7 @@ public interface MonthlyURPerfAgentRepository extends CrudRepository<Performance
 			"from perf_agent " + 
 			"where "+
 			"year(created_dt)=year(curdate()) "+   
-			"AND month= month(curdate()) "+
+			"AND month= month(curdate())-1 "+
 			"AND period='monthly'  "+
 			"AND category='ur' "+
 			";", nativeQuery=true)

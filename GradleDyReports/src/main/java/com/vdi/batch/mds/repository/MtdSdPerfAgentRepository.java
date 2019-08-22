@@ -31,7 +31,7 @@ public interface MtdSdPerfAgentRepository extends CrudRepository<PerformanceAgen
 			"				 ON staging.scalar_user = agent.NAME      " + 
 			"				WHERE scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'    " + 
 			"							AND agent.is_active=1 " + 
-			"							AND incident_startdate >= DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
+			"							AND DATE_FORMAT(incident_startdate,'%Y-%m-01 00:00:00') >= DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
 			"				 AND staging.scalar_user like 'EXT%' " + 
 			"                 AND e.ref is null" + 
 			"				GROUP  BY staging.scalar_user      " + 
@@ -51,7 +51,7 @@ public interface MtdSdPerfAgentRepository extends CrudRepository<PerformanceAgen
 			"			    WHERE scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'    " + 
 			"					AND staging.incident_slattopassed = 'no'     " + 
 			"							AND agent.is_active=1 " + 
-			"							AND incident_startdate >= DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
+			"							AND DATE_FORMAT(incident_startdate,'%Y-%m-01 00:00:00') >= DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
 			"				 AND staging.scalar_user like 'EXT%' " + 
 			"                 AND e.ref is null" + 
 			"			    GROUP BY staging.scalar_user    " + 
@@ -71,7 +71,7 @@ public interface MtdSdPerfAgentRepository extends CrudRepository<PerformanceAgen
 			"			    WHERE scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'    " + 
 			"					AND staging.incident_slattopassed = 'yes'     " + 
 			"							AND agent.is_active=1 " + 
-			"							AND incident_startdate >= DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
+			"							AND DATE_FORMAT(incident_startdate,'%Y-%m-01 00:00:00') >= DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
 			"				 AND staging.scalar_user like 'EXT%' " + 
 			"                 AND e.ref is null" + 
 			"			    GROUP BY staging.scalar_user    " + 

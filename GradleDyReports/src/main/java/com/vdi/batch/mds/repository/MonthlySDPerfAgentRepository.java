@@ -31,8 +31,8 @@ public interface MonthlySDPerfAgentRepository extends CrudRepository<Performance
 			"				 ON staging.scalar_user = agent.NAME      " + 
 			"				WHERE scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'    " + 
 			"							AND agent.is_active=1 " + 
-			"							AND incident_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
-			"							AND incident_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') " + 
+			"							AND DATE_FORMAT(incident_startdate,'%Y-%m-01 00:00:00') < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
+			"							AND DATE_FORMAT(incident_startdate,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') " + 
 			"				 AND staging.scalar_user like 'EXT%' " + 
 			"                 AND e.ref is null" + 
 			"				GROUP  BY staging.scalar_user      " + 
@@ -52,8 +52,8 @@ public interface MonthlySDPerfAgentRepository extends CrudRepository<Performance
 			"			    WHERE scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'    " + 
 			"					AND staging.incident_slattopassed = 'no'     " + 
 			"							AND agent.is_active=1 " + 
-			"							AND incident_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
-			"							AND incident_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') " + 
+			"							AND DATE_FORMAT(incident_startdate,'%Y-%m-01 00:00:00') < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
+			"							AND DATE_FORMAT(incident_startdate,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') " + 
 			"				 AND staging.scalar_user like 'EXT%' " + 
 			"                 AND e.ref is null" + 
 			"			    GROUP BY staging.scalar_user    " + 
@@ -73,8 +73,8 @@ public interface MonthlySDPerfAgentRepository extends CrudRepository<Performance
 			"			    WHERE scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'    " + 
 			"					AND staging.incident_slattopassed = 'yes'     " + 
 			"							AND agent.is_active=1 " + 
-			"							AND incident_startdate < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
-			"							AND incident_startdate >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') " + 
+			"							AND DATE_FORMAT(incident_startdate,'%Y-%m-01 00:00:00') < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  " + 
+			"							AND DATE_FORMAT(incident_startdate,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') " + 
 			"				 AND staging.scalar_user like 'EXT%' " + 
 			"                 AND e.ref is null" + 
 			"			    GROUP BY staging.scalar_user    " + 

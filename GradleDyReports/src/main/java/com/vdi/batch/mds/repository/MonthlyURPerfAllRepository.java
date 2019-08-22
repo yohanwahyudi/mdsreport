@@ -17,12 +17,15 @@ public interface MonthlyURPerfAllRepository extends CrudRepository<PerformanceOv
 	@Query(value="select   " + 
 			"				count(1)  " + 
 			"			from staging_userrequest   ur" + 
+			"				 LEFT JOIN agent    " + 
+			"	 			   ON ur.scalar_user = agent.NAME    " + 
 			"				 left join ticket_exception e" + 
 			"                  on ur.scalar_urequestref = e.ref and e.type='ur'" + 
 			"			where DATE_FORMAT(urequest_startdate,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')    " + 
 			"			and DATE_FORMAT(urequest_startdate,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') " + 
 			"			and scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned' " + 
 			"			and scalar_user like 'EXT%' " + 
+			"			and agent.is_active=1 "+
 			"           and e.ref is null;",
 			 nativeQuery=true)
 	public int getTicketCount(@Param("month") int month);
@@ -30,6 +33,8 @@ public interface MonthlyURPerfAllRepository extends CrudRepository<PerformanceOv
 	@Query(value="select " + 
 			"	count(1) " + 
 			"			from staging_userrequest   ur " + 
+			"				 LEFT JOIN agent    " + 
+			"	 			   ON ur.scalar_user = agent.NAME    " + 
 			"				 left join ticket_exception e " + 
 			"                  on ur.scalar_urequestref = e.ref and e.type='ur' " + 
 			"where DATE_FORMAT(urequest_startdate,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') "+   
@@ -38,6 +43,7 @@ public interface MonthlyURPerfAllRepository extends CrudRepository<PerformanceOv
 			//"and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
 			//"or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
 			"and urequest_slattopassed='no'  "+
+			"and agent.is_active=1 "+
 			"and scalar_user like 'EXT%' and e.ref is null"+
 			";", nativeQuery=true)
 	public int getAchievedTicketCount(@Param("month") int month);
@@ -45,6 +51,8 @@ public interface MonthlyURPerfAllRepository extends CrudRepository<PerformanceOv
 	@Query(value="select " + 
 			"	count(1) " + 
 			"			from staging_userrequest   ur " + 
+			"				 LEFT JOIN agent    " + 
+			"	 			   ON ur.scalar_user = agent.NAME    " + 
 			"				 left join ticket_exception e " + 
 			"                  on ur.scalar_urequestref = e.ref and e.type='ur' " +
 			"where DATE_FORMAT(urequest_startdate,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') "+   
@@ -53,6 +61,7 @@ public interface MonthlyURPerfAllRepository extends CrudRepository<PerformanceOv
 			//"and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
 			//"or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
 			"and urequest_slattopassed='yes'  "+
+			"and agent.is_active=1 "+
 			"and scalar_user like 'EXT%' and e.ref is null "+
 			";", nativeQuery=true)
 	public int getMissedTicketCount(@Param("month") int month);

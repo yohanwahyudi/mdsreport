@@ -32,13 +32,17 @@ public class BatchMDSMtdPerformance extends QuartzJobBean {
 
 		logger.info("Batch itop mds performance started.......");
 		
-		executeBatch();
+		try {
+			executeBatch();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
 		logger.info("Batch itop mds performance ended.......");
 
 	}
 	
-	public void executeBatch() {
+	public void executeBatch() throws InterruptedException {
 		
 		incidentProcess(ctx);
 		sdProcess(ctx);
@@ -61,12 +65,14 @@ public class BatchMDSMtdPerformance extends QuartzJobBean {
 
 	}
 
-	private void sdProcess(AnnotationConfigApplicationContext ctx) {
+	private void sdProcess(AnnotationConfigApplicationContext ctx) throws InterruptedException {
 
 		logger.info("start sd process");
 
 		PopulateServiceDesk populateSD = ctx.getBean(PopulateServiceDesk.class);
 		populateSD.populate();
+		
+//		Thread.sleep(30000);
 
 		MtdPerformanceSD sdPerformance = ctx.getBean(MtdPerformanceSD.class);
 		sdPerformance.populate();
@@ -75,12 +81,16 @@ public class BatchMDSMtdPerformance extends QuartzJobBean {
 
 	}
 
-	private void urProcess(AnnotationConfigApplicationContext ctx) {
+	private void urProcess(AnnotationConfigApplicationContext ctx) throws InterruptedException {
 
 		logger.info("start ur process");
+		
+//		Thread.sleep(10000);
 
 		PopulateUserRequest populateUR = ctx.getBean(PopulateUserRequest.class);
 		populateUR.populate();
+		
+//		Thread.sleep(30000);
 
 		MtdPerformanceUR urPerformance = ctx.getBean(MtdPerformanceUR.class);
 		urPerformance.populate();

@@ -45,7 +45,12 @@ public class MtdPerformanceUR {
 	}
 	
 	public void populate() {
+		logger.info("Start populate performance ur mtd...");
 		
+		allDAO.insertPerformance(getPerformanceOverall());
+		agentDAO.insertPerformance(getPerformanceAgentList());
+		
+		logger.info("finish populate performance ur mtd...");
 	}
 	
 	public PerformanceOverall getPerformanceOverall() {
@@ -55,6 +60,9 @@ public class MtdPerformanceUR {
 		int missedCount = allDAO.getMissedTicketCount();
 		float achievement = (getAchievementTicket(new BigDecimal(achievedCount), new BigDecimal(ticketCount)))
 				.floatValue();
+		
+		logger.debug("UR get performance overall");
+		logger.debug("total: "+ticketCount+"-"+"achieved: "+achievedCount+"-"+"missed: "+missedCount+"-"+"achievement:"+achievement);
 
 		PerformanceOverall poUseThis = new PerformanceOverall();
 		PerformanceOverall poExisting = allDAO.getPerformance();
@@ -97,6 +105,9 @@ public class MtdPerformanceUR {
 			int totalTicket = ((BigInteger) object[4]).intValue();
 			float achievement = (getAchievementTicket(new BigDecimal(totalAchieved), new BigDecimal(totalTicket)))
 					.floatValue();
+			
+			logger.debug("UR get performance agent");
+			logger.debug("total: "+totalTicket+"-"+"achieved: "+totalAchieved+"-"+"missed: "+totalMissed+"-"+"achievement:"+achievement);
 
 			PerformanceAgent perfAgent = new PerformanceAgent();
 			perfAgent.setDivision(division);

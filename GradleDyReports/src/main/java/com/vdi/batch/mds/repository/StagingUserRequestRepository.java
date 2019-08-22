@@ -24,13 +24,35 @@ public interface StagingUserRequestRepository extends CrudRepository<StagingUser
 	
 	@Query(value="select " + 
 			"	* " + 
-			"from staging_userrequest " + 
-			"where DATE_FORMAT(urequest_startdate,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') "+   
-			"and DATE_FORMAT(urequest_startdate,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
-			"and scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned' "+
-			"and scalar_user like 'EXT%' "+
+			"from staging_userrequest ur " +
+			"	    		 LEFT JOIN agent    " + 
+			"	 			   ON ur.scalar_user = agent.NAME    " + 
+			"				 left join ticket_exception e" + 
+			"                  on ur.scalar_urequestref = e.ref and e.type='ur'" + 
+			"where DATE_FORMAT(ur.urequest_startdate,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') "+   
+			"and DATE_FORMAT(ur.urequest_startdate,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			"and ur.scalar_previousvalue in ('escalated_tto','new') and ur.scalar_newvalue = 'assigned' "+
+			"and ur.scalar_user like 'EXT%' "+
+			"and agent.is_active=1 "+
+			"and e.ref is null "+
 			"order by urequest_slattopassed DESC "+
 			";", nativeQuery=true)
 	public List<StagingUserRequest> getAllIncidentByMonth(@Param("month") int month);
+	
+	@Query(value="select " + 
+			"	* " + 
+			"from staging_userrequest ur" + 
+			"	    		 LEFT JOIN agent    " + 
+			"	 			   ON ur.scalar_user = agent.NAME    " + 
+			"				 left join ticket_exception e" + 
+			"                  on ur.scalar_urequestref = e.ref and e.type='ur'" + 
+			"where DATE_FORMAT(ur.urequest_startdate,'%Y-%m-01') >= DATE_FORMAT(NOW(),'%Y-%m-01') "+   
+			"and ur.scalar_previousvalue in ('escalated_tto','new') and ur.scalar_newvalue = 'assigned' "+
+			"and ur.scalar_user like 'EXT%' "+
+			"and agent.is_active=1 "+
+			"and e.ref is null "+
+			"order by ur.urequest_slattopassed DESC "+
+			";", nativeQuery=true)
+	public List<StagingUserRequest> getAllIncidentByMtd();
 
 }

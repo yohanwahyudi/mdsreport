@@ -31,7 +31,7 @@ public interface MtdURPerfAgentRepository extends CrudRepository<PerformanceAgen
 			"	WHERE "+
 			"    scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
 			"	AND agent.is_active=1 "+
-			"	and urequest_startdate >= DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
+			"	and DATE_FORMAT(urequest_startdate,'%Y-%m-01 00:00:00') >= DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
 			"	AND staging.scalar_user like 'EXT%' "+
 			"	and e.ref is null "+
 			"	GROUP  BY staging.scalar_user    " + 
@@ -51,7 +51,7 @@ public interface MtdURPerfAgentRepository extends CrudRepository<PerformanceAgen
 			"    scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
 			"	AND agent.is_active=1 "+
 			"	AND staging.urequest_slattopassed = 'no'   " + 
-			"	and urequest_startdate >= DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
+			"	and DATE_FORMAT(urequest_startdate,'%Y-%m-01 00:00:00') >= DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
 			"	AND staging.scalar_user like 'EXT%' "+
 			"	and e.ref is null "+
 			"    GROUP BY staging.scalar_user  " + 
@@ -71,7 +71,7 @@ public interface MtdURPerfAgentRepository extends CrudRepository<PerformanceAgen
 			"    scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
 			"	AND agent.is_active=1 "+
 			"	AND staging.urequest_slattopassed = 'yes'   " + 
-			"	and urequest_startdate >= DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
+			"	and DATE_FORMAT(urequest_startdate,'%Y-%m-01 00:00:00') >= DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')  "+
 			"	AND staging.scalar_user like 'EXT%' "+
 			"	and e.ref is null "+
 			"   GROUP BY staging.scalar_user  " + 

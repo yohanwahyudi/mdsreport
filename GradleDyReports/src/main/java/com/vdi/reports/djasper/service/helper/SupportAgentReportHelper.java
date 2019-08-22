@@ -35,6 +35,16 @@ public class SupportAgentReportHelper {
 	private PerfAgentDAOService agentWeeklyPerformance;
 
 	@Autowired
+	@Qualifier("mtdPerfAllDao")
+	private PerfAllDAOService allMtdPerformance;
+	@Autowired
+	@Qualifier("mtdPerfTeamDao")
+	private PerfTeamDAOService teamMtdPerformance;
+	@Autowired
+	@Qualifier("mtdPerfAgentDao")
+	private PerfAgentDAOService agentMtdPerformance;
+	
+	@Autowired
 	@Qualifier("monthlyPerfAllDAO")
 	private PerfAllDAOService allMonthlyPerformance;
 	@Autowired
@@ -158,6 +168,55 @@ public class SupportAgentReportHelper {
 
 		return this.weeklyReport;
 	}
+	
+	private void setMtdReport() {
+
+		this.currentMonth = timeTools.getCurrentMonth();
+		this.currentWeek = timeTools.getCurrentWeekYear();
+		this.prevMonth = currentMonth - 1;
+		this.prevWeek = currentWeek - 1;
+
+		List<SummaryReport> summaryList = new ArrayList<SummaryReport>();
+		PerformanceOverall perfAll = allMtdPerformance.getPerformance();
+		Integer totalTicket = perfAll.getTotalTicket();
+		Integer totalAchieved = perfAll.getTotalAchieved();
+		Integer totalMissed = perfAll.getTotalMissed();
+		Float achievement = perfAll.getAchievement();
+
+		summaryList.add(new SummaryReport("Ticket Total", totalTicket.toString()));
+		summaryList.add(new SummaryReport("Ticket Achieved", totalAchieved.toString()));
+		summaryList.add(new SummaryReport("Ticket Missed", totalMissed.toString()));
+		summaryList.add(new SummaryReport("Achievement", achievement.toString() + "%"));
+
+		List<PerformanceTeam> performanceTeamList = teamMtdPerformance.getPerformance();
+		List<PerformanceAgent> performanceAgentList = agentMtdPerformance.getPerformance();
+
+		// incident
+		List<Incident> supportAgentMissedList = saIncidentReport.getMissedIncidentByMtd();
+		List<Incident> supportAgentPendingList = saIncidentReport.getPendingIncidentByMtd();
+		List<Incident> supportAgentAssignedList = saIncidentReport.getAssignedIncidentByMtd();
+		List<Incident> supportAgentIncidentList = saIncidentReport.getAllIncidentByMtd();
+
+		MasterReport report = new MasterReport();
+		report.setOverallAchievementList(summaryList);
+		report.setPerformanceTeamList(performanceTeamList);
+		report.setPerformanceSuportAgentList(performanceAgentList);
+		report.setSupportAgentPendingList(supportAgentPendingList);
+		report.setSupportAgentAssignList(supportAgentAssignedList);
+		report.setSupportAgentMissedList(supportAgentMissedList);
+		report.setSupportAgentIncidentList(supportAgentIncidentList);
+
+		logger.debug("totalTicket: " + totalTicket);
+
+		this.monthlyReport = report;
+	}
+
+	public MasterReport getMtdReport() {
+
+		setMtdReport();
+
+		return this.monthlyReport;
+	}
 
 	private void setMonthlyReport() {
 
@@ -197,6 +256,8 @@ public class SupportAgentReportHelper {
 		report.setSupportAgentIncidentList(supportAgentIncidentList);
 
 		logger.debug("totalTicket: " + totalTicket);
+		
+		this.monthlyReport = new MasterReport();
 
 		this.monthlyReport = report;
 	}

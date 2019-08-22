@@ -32,7 +32,7 @@ import net.sf.jasperreports.engine.JRException;
 
 public class BatchMDSMtdReport extends QuartzJobBean {
 
-	private final String periodMonthly = PropertyNames.CONSTANT_REPORT_PERIOD_MONTHLY;
+	private final String period = PropertyNames.CONSTANT_REPORT_PERIOD_MTD;
 	private final Logger logger = LogManager.getLogger(BatchMDSMtdReport.class);
 
 	private AnnotationConfigApplicationContext ctx;
@@ -40,6 +40,7 @@ public class BatchMDSMtdReport extends QuartzJobBean {
 	private String currentMonthStr;
 	private Integer currentYear;
 	private Integer currentMonthInt;
+	private Integer currentDate;
 
 	public BatchMDSMtdReport() {
 
@@ -52,33 +53,38 @@ public class BatchMDSMtdReport extends QuartzJobBean {
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
 		logger.info("Batch itop mds MTD report started.......");
 
-		// populate MTD performance
-		populatePerformance();
+		if (currentDate != 1) {
 
-		// create report
-		String fileName = getMtdFileName();
-		String path = getMtdReportPath();
-		String subject = getSubject();
-		
-		ReportService rpt = ctx.getBean("itopPerformanceReport", ReportService.class);
-		createReport(rpt, path, fileName, periodMonthly);
+			// populate MTD performance
+			try {
+				populatePerformance();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 
-		// send email
-		String[] fileNameArray = { fileName };
-		String[] file = new String[] {};
-		
-		if (file != null && file.length > 0) {
-			fileNameArray = new String[] { fileName, file[0], file[1], file[2] };
+			// create report
+			String fileName = getMtdFileName();
+			String path = getMtdReportPath();
+			String subject = getSubject();
+
+			logger.info("creating report for period : " + period);
+			ReportService rpt = ctx.getBean("itopPerformanceReport", ReportService.class);
+			createReport(rpt, path, fileName, period);
+
+			// send email
+			sendEmail(rpt, path, fileName, period, subject);
+
+			closeDataSource();
+
+		} else {
+			logger.info("skip MTD report for first day of month");
 		}
-		sendEmail(rpt, path, fileNameArray, periodMonthly, subject);
-
-		closeDataSource();
 
 		logger.info("Batch itop mds MTD report finished.......");
 
 	}
 
-	private void populatePerformance() {
+	private void populatePerformance() throws InterruptedException {
 
 		BatchMDSMtdPerformance batchMDSMtdPerformance = new BatchMDSMtdPerformance();
 		batchMDSMtdPerformance.executeBatch();
@@ -103,21 +109,16 @@ public class BatchMDSMtdReport extends QuartzJobBean {
 		}
 	}
 
-	private void sendEmail(ReportService rpt, String path, String[] fileNameArray, String period, String subject) {
+	private void sendEmail(ReportService rpt, String path, String fileName, String period, String subject) {
 		try {
 
 			Map<String, Object> mapObject = getMapObject(rpt.getPerformanceReport(period));
 
-			List<FileSystemResource> fsrList = new ArrayList<FileSystemResource>();
-			for (String fileName : fileNameArray) {
-				File file = new File(path + fileName);
-				FileSystemResource fileResource = new FileSystemResource(file);
-
-				fsrList.add(fileResource);
-			}
+			File file = new File(path + fileName);
+			FileSystemResource fileResource = new FileSystemResource(file);
 
 			MailService mailService = ctx.getBean("mailService", MailService.class);
-			mailService.sendEmail(mapObject, "fm_mailItopReportMDSMTD.txt", fsrList, subject);
+			mailService.sendEmail(mapObject, "fm_mailItopReportMDSMTD.txt", fileResource, subject);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -125,18 +126,20 @@ public class BatchMDSMtdReport extends QuartzJobBean {
 	}
 
 	public void setDateTime() {
-		
+
 		TimeTools timeTools = new TimeTools();
-		
+
 		this.currentMonthInt = timeTools.getCurrentMonth();
 		this.currentMonthStr = timeTools.getCurrentMonthString();
 		this.currentYear = timeTools.getCurrentYear();
-		
-		logger.info("currentMonthInt: "+currentMonthInt);
-		logger.info("currentMonthStr: "+currentMonthStr);
-		logger.info("currentYear: "+currentYear);
+		this.currentDate = timeTools.getCurrentDate();
+
+		logger.info("currentMonthInt: " + currentMonthInt);
+		logger.info("currentMonthStr: " + currentMonthStr);
+		logger.info("currentYear: " + currentYear);
+		logger.info("currentDate: " + currentDate);
 	}
-	
+
 	private void closeDataSource() {
 
 		HikariDataSource hds = ctx.getBean("dataSource", HikariDataSource.class);

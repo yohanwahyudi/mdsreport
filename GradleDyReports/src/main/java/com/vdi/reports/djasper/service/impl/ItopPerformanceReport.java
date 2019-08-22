@@ -57,6 +57,7 @@ public class ItopPerformanceReport implements ReportService {
 	private int weekInWeeklyMonthly;
 
 	private MasterReport weeklyReport;
+	private MasterReport mtdReport;
 	private MasterReport monthlyReport;
 	
 	private Boolean isWeeklyinMonthlyReport;
@@ -89,6 +90,14 @@ public class ItopPerformanceReport implements ReportService {
 				master.setSubtitle("WEEK " + prevWeekMonth + " - " + currentMonthStr.toUpperCase() + " " + currentYear);
 				masterReport = weeklyReport;				
 			}
+			
+		} else if (period.equalsIgnoreCase(PropertyNames.CONSTANT_REPORT_PERIOD_MTD)) {
+			
+			logger.info("report period: "+period);
+			
+			master.setSubtitle(currentMonthStr.toUpperCase() + " " + currentYear);
+			
+			masterReport = mtdReport;
 			
 		} else {
 			
@@ -267,6 +276,50 @@ public class ItopPerformanceReport implements ReportService {
 		
 		this.weeklyReport = weeklyReport;
 	}
+	
+	private void setMtdReport() {
+
+		// block1 combine sd+sa overall performance
+		MasterReport sdReport = new MasterReport();
+		sdReport = sdReportHelper.getMtdReport();
+		MasterReport saReport = new MasterReport();
+		saReport = saReportHelper.getMtdReport();
+
+		List<SummaryReport> sdOverallReport = sdReport.getOverallAchievementList();
+		List<SummaryReport> saOverallReport = saReport.getOverallAchievementList();
+		List<SummaryReport> combineOverallReport = new ArrayList<SummaryReport>();
+		
+		for(SummaryReport a:saOverallReport) {
+			logger.info(a.getName());
+		}
+		
+		for (int i = 0; i < sdOverallReport.size(); i++) {
+			String name = sdOverallReport.get(i).getName();
+			String value1 = sdOverallReport.get(i).getValue();
+			String value2 = saOverallReport.get(i).getValue();
+			
+			logger.info("name: "+name+" value1: "+value1+" value2: "+value2);
+			
+			combineOverallReport.add(new SummaryReport(name, value1, value2));
+			
+		}
+		
+		// set value
+		MasterReport monthlyReport = new MasterReport();
+		monthlyReport.setOverallAchievementList(combineOverallReport);
+		monthlyReport.setServiceDeskAchievementList(sdReport.getServiceDeskAchievementList());
+		monthlyReport.setPerformanceTeamList(saReport.getPerformanceTeamList());
+		monthlyReport.setPerformanceServiceDeskAgentList(sdReport.getPerformanceServiceDeskAgentList());
+		monthlyReport.setPerformanceSuportAgentList(saReport.getPerformanceSuportAgentList());
+		monthlyReport.setSupportAgentMissedList(saReport.getSupportAgentMissedList());
+		monthlyReport.setSupportAgentPendingList(saReport.getSupportAgentPendingList());
+		monthlyReport.setSupportAgentAssignList(saReport.getSupportAgentAssignList());
+		monthlyReport.setServiceDeskIncidentList(sdReport.getServiceDeskIncidentList());
+		monthlyReport.setUserRequestTicketList(sdReport.getUserRequestTicketList());
+		monthlyReport.setSupportAgentIncidentList(saReport.getSupportAgentIncidentList());
+		
+		this.mtdReport = monthlyReport;
+	}
 
 	private void setMonthlyReport() {
 
@@ -318,13 +371,29 @@ public class ItopPerformanceReport implements ReportService {
 	public List<MasterReport> getPerformanceReport(String period) throws Exception {
 
 		if (period.equalsIgnoreCase(PropertyNames.CONSTANT_REPORT_PERIOD_WEEKLY)) {
+			
+			logger.info("itop performance report weekly");
 
 			setWeeklyReport();
 			List<MasterReport> weeklyReportList = new ArrayList<MasterReport>();
 			weeklyReportList.add(weeklyReport);
 			return weeklyReportList;
 
+		} else if (period.equalsIgnoreCase(PropertyNames.CONSTANT_REPORT_PERIOD_MTD)) {
+			
+			logger.info("itop performance report mtd");
+			
+			setMtdReport();
+			List<MasterReport> mtdReportList = new ArrayList<MasterReport>();
+			mtdReportList.add(mtdReport);
+			
+			logger.info("mtdReportList: "+ mtdReportList);
+			
+			return mtdReportList;			
+			
 		} else if (period.equalsIgnoreCase(PropertyNames.CONSTANT_REPORT_PERIOD_MONTHLY)) {
+			
+			logger.info("itop performance report monthly");
 
 			setMonthlyReport();
 			List<MasterReport> monthlyReportList = new ArrayList<MasterReport>();

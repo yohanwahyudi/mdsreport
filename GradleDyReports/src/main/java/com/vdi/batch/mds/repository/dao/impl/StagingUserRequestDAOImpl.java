@@ -67,4 +67,10 @@ public class StagingUserRequestDAOImpl implements StagingUserRequestDAOService{
 		return repo.getAllIncidentByMonth(month);
 	}
 
+	@Override
+	public List<StagingUserRequest> getAllIncidentByMtd() {
+		
+		return repo.getAllIncidentByMtd();
+	}
+
 }

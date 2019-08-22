@@ -92,6 +92,7 @@ public final class PropertyNames {
 	public static final String ESCALATED_TTR = "Escalated TTR";
 	public static final String CONSTANT_REPORT_PERIOD_WEEKLY = "weekly";
 	public static final String CONSTANT_REPORT_PERIOD_MONTHLY = "monthly";
+	public static final String CONSTANT_REPORT_PERIOD_MTD = "mtd";
 	public static final String LAST_MONTH = "LAST_MONTH";
 	
 	//constant day

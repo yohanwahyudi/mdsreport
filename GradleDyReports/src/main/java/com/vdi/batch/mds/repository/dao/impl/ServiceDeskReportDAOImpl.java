@@ -30,6 +30,12 @@ public class ServiceDeskReportDAOImpl implements ServiceDeskReportDAO{
 		return repo.getAllIncidentByMonth(month);
 	}
 
+	@Override
+	public List<StagingServiceDesk> getAllIncidentByMtd() {
+		
+		return repo.getAllIncidentByMtd();
+	}
+
 	
 	
 }
