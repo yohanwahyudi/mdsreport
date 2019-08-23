@@ -22,7 +22,7 @@
 	</bean>
 	<bean id="cronTriggerBatchItopBatchUpdateAgents" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="BatchUpdateAgents" />
-		<property name="cronExpression" value="0 0 11 * * ? *" />
+		<property name="cronExpression" value="0 0 8 * * ? *" />
 	</bean>	
 	
 	<!-- Cron Trigger for populate data Incident, Servicedesk, Userrequest -->
@@ -85,8 +85,26 @@
 	<bean id="cronTriggerBatchItopMDSMonthlyPerformance" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="BatchItopMDSMonthlyPerformance" />
 		<property name="cronExpression" value="0 15 11 1 * ?" />
-		<!--<property name="cronExpression" value="0 34 11 * * ? *" />-->
+		<!--<property name="cronExpression" value="0 59 11 * * ? *" />-->
 	</bean>	
+	
+	<!-- Cron for calculate performance MTD--> 
+	<bean name="BatchMDSMtdPerformance" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass" value="com.vdi.batch.mds.BatchMDSMtdPerformance" />
+	</bean>
+	<bean id="cronTriggerBatchMDSMtdPerformance" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="BatchMDSMtdPerformance" />
+		<property name="cronExpression" value="0 14 9,10,15,16,18 * * ? *" />
+	</bean>
+	
+	<!-- Cron for calculate Report MTD--> 
+	<bean name="BatchMDSMtdReport" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass" value="com.vdi.batch.mds.BatchMDSMtdReport" />
+	</bean>
+	<bean id="cronTriggerBatchMDSMtdReport" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="BatchMDSMtdReport" />
+		<property name="cronExpression" value="0 15 11 ? * MON" />
+	</bean>
 	
 	<!-- End calculate performance -->
 	
@@ -107,6 +125,9 @@
 				
 				<ref bean="cronTriggerBatchItopMDSWeeklyPerformance" />
 				<ref bean="cronTriggerBatchItopMDSMonthlyPerformance" />
+				
+				<ref bean="cronTriggerBatchMDSMtdPerformance" />
+				<ref bean="cronTriggerBatchMDSMtdReport" />			
 	
 			</list>
 		</property>
