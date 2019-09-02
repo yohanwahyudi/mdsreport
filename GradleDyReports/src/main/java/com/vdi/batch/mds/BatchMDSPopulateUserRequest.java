@@ -22,23 +22,32 @@ public class BatchMDSPopulateUserRequest extends QuartzJobBean{
 		logger.info("Execute BatchMDSPopulateUserRequest......");
 		
 		ctx = new AnnotationConfigApplicationContext(AppConfig.class);
-		PopulateUserRequest populateUserRequest = ctx.getBean(PopulateUserRequest.class);
-		populateUserRequest.populate();
 		
+		try {
+			PopulateUserRequest populateUserRequest = ctx.getBean(PopulateUserRequest.class);
+			populateUserRequest.populate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			closeDataSource();
+		}		
+		
+		logger.info("Execute BatchMDSPopulateUserRequest finished......");
+
+	}
+
+	private void closeDataSource() {
+
 		HikariDataSource hds = ctx.getBean("dataSource", HikariDataSource.class);
 		logger.info("close datasource");
-		logger.info(hds.getPoolName()+"-"+hds.getJdbcUrl());
+		logger.info(hds.getPoolName() + "-" + hds.getJdbcUrl());
 		try {
 			hds.close();
 		} catch (Exception e) {
 			logger.info("Error closing datasource ");
 			e.printStackTrace();
 		}
-		
-		logger.info("Execute BatchMDSPopulateUserRequest finished......");
 
 	}
-
-	
 	
 }

@@ -27,11 +27,19 @@ public class BatchMDSPopulateServiceDesk extends QuartzJobBean{
 			populateServiceDesk.populate();
 		} catch (Throwable e) {
 			e.printStackTrace();
+		} finally {
+			closeDataSource();
 		}
 		
+
+		logger.info("Execute BatchMDSPopulateServiceDesk finished......");
+	}
+
+	private void closeDataSource() {
+
 		HikariDataSource hds = ctx.getBean("dataSource", HikariDataSource.class);
 		logger.info("close datasource");
-		logger.info(hds.getPoolName()+"-"+hds.getJdbcUrl());
+		logger.info(hds.getPoolName() + "-" + hds.getJdbcUrl());
 		try {
 			hds.close();
 		} catch (Exception e) {
@@ -39,9 +47,6 @@ public class BatchMDSPopulateServiceDesk extends QuartzJobBean{
 			e.printStackTrace();
 		}
 
-		logger.info("Execute BatchMDSPopulateServiceDesk finished......");
 	}
-
-	
 	
 }

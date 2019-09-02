@@ -23,22 +23,34 @@ public class BatchMDSPopulateURYTD extends QuartzJobBean {
 		logger.info("Execute BatchMDSPopulateURYTD......");
 
 		ctx = new AnnotationConfigApplicationContext(AppConfig.class);
-		PopulateUserRequestYTD populateUR = ctx.getBean(PopulateUserRequestYTD.class);
+		try {
+			PopulateUserRequestYTD populateUR = ctx.getBean(PopulateUserRequestYTD.class);
+			populateUR.populate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			closeDataSource();
+		}
 		
-		populateUR.populate();
 		
+		
+		
+		logger.info("Execute BatchMDSPopulateURYTD finished......");
+
+
+	}
+	
+	private void closeDataSource() {
+
 		HikariDataSource hds = ctx.getBean("dataSource", HikariDataSource.class);
 		logger.info("close datasource");
-		logger.info(hds.getPoolName()+"-"+hds.getJdbcUrl());
+		logger.info(hds.getPoolName() + "-" + hds.getJdbcUrl());
 		try {
 			hds.close();
 		} catch (Exception e) {
 			logger.info("Error closing datasource ");
 			e.printStackTrace();
 		}
-		
-		logger.info("Execute BatchMDSPopulateURYTD finished......");
-
 
 	}
 

@@ -36,6 +36,10 @@ public class BatchMDSMtdPerformance extends QuartzJobBean {
 			executeBatch();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				closeDataSource();
+			} catch (Exception e) {e.printStackTrace();}
 		}
 
 		logger.info("Batch itop mds performance ended.......");
@@ -47,8 +51,6 @@ public class BatchMDSMtdPerformance extends QuartzJobBean {
 		incidentProcess(ctx);
 		sdProcess(ctx);
 		urProcess(ctx);
-
-		closeDataSource();
 		
 	}
 

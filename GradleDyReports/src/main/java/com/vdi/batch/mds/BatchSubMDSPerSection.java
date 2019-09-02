@@ -13,6 +13,7 @@ import com.vdi.configuration.AppConfig;
 import com.vdi.reports.ReportExporter;
 import com.vdi.reports.djasper.service.ReportService;
 import com.vdi.tools.TimeTools;
+import com.zaxxer.hikari.HikariDataSource;
 
 import net.sf.jasperreports.engine.JRException;
 
@@ -32,49 +33,60 @@ public class BatchSubMDSPerSection {
 		logger.info("Batch mds per section monthly report started.......");
 
 		ctx = new AnnotationConfigApplicationContext(AppConfig.class);
-
-		TimeTools timeTools = ctx.getBean(TimeTools.class);
-		AppConfig appConfig = ctx.getBean(AppConfig.class);
-		String path = appConfig.getMdsReportPath();
-		
-		int currentYear;
-		if(timeTools.getCurrentMonth()!=1) {
-			currentYear = timeTools.getCurrentYear();
-		} else {
-			currentYear = timeTools.getCurrentYear() - 1;
-		}
-		
-		String fileSection = "/" + "VDI_ITOP_Section_Contribution_" + timeTools.getPrevMonthString() + "_"
-				+ currentYear + ".pdf";
-		String fileProblem = "/" + "VDI_ITOP_Problem_Contribution_" + timeTools.getPrevMonthString() + "_"
-				+ currentYear + ".pdf";
-		String fileChange = "/" + "VDI_ITOP_Change_Contribution_" + timeTools.getPrevMonthString() + "_"
-				+ currentYear + ".pdf";
-		String[] fileArray = new String[]{fileSection, fileProblem, fileChange}; 
-
 		try {
-			populateProblemChange(ctx);
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
+			TimeTools timeTools = ctx.getBean(TimeTools.class);
+			AppConfig appConfig = ctx.getBean(AppConfig.class);
+			String path = appConfig.getMdsReportPath();
+			
+			int currentYear;
+			if(timeTools.getCurrentMonth()!=1) {
+				currentYear = timeTools.getCurrentYear();
+			} else {
+				currentYear = timeTools.getCurrentYear() - 1;
+			}
+			
+			String fileSection = "/" + "VDI_ITOP_Section_Contribution_" + timeTools.getPrevMonthString() + "_"
+					+ currentYear + ".pdf";
+			String fileProblem = "/" + "VDI_ITOP_Problem_Contribution_" + timeTools.getPrevMonthString() + "_"
+					+ currentYear + ".pdf";
+			String fileChange = "/" + "VDI_ITOP_Change_Contribution_" + timeTools.getPrevMonthString() + "_"
+					+ currentYear + ".pdf";
+			String[] fileArray = new String[]{fileSection, fileProblem, fileChange}; 
+	
+			try {
+				populateProblemChange(ctx);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			
+			ReportService rpt = ctx.getBean("appTeamPerformanceReportService", ReportService.class);
+			createReport(rpt, path+fileSection);
+			ctx.close();
+	
+			ctx = new AnnotationConfigApplicationContext(AppConfig.class);
+			rpt = ctx.getBean("problemDedicatedReportService", ReportService.class);
+			createReport(rpt, path+fileProblem);
+			ctx.close();
+			
+			ctx = new AnnotationConfigApplicationContext(AppConfig.class);
+			rpt = ctx.getBean("changeDedicatedReportService", ReportService.class);
+			createReport(rpt, path+fileChange);
+			ctx.close();
+			
+			logger.info("Batch mds per section monthly report finished.......");
+			
+			return fileArray;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} //finally {
+//			closeDataSource();
+//		}
 		
-		ReportService rpt = ctx.getBean("appTeamPerformanceReportService", ReportService.class);
-		createReport(rpt, path+fileSection);
-		ctx.close();
-
-		ctx = new AnnotationConfigApplicationContext(AppConfig.class);
-		rpt = ctx.getBean("problemDedicatedReportService", ReportService.class);
-		createReport(rpt, path+fileProblem);
-		ctx.close();
 		
-		ctx = new AnnotationConfigApplicationContext(AppConfig.class);
-		rpt = ctx.getBean("changeDedicatedReportService", ReportService.class);
-		createReport(rpt, path+fileChange);
-		ctx.close();
 		
-		logger.info("Batch mds per section monthly report finished.......");
+		return null;
 		
-		return fileArray;
 	}
 	
 	private void populateProblemChange(AnnotationConfigApplicationContext ctx) throws Exception {
@@ -96,6 +108,20 @@ public class BatchSubMDSPerSection {
 		} catch (JRException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	private void closeDataSource() {
+
+		HikariDataSource hds = ctx.getBean("dataSource", HikariDataSource.class);
+		logger.info("close datasource");
+		logger.info(hds.getPoolName() + "-" + hds.getJdbcUrl());
+		try {
+			hds.close();
+		} catch (Exception e) {
+			logger.info("Error closing datasource ");
 			e.printStackTrace();
 		}
 

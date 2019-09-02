@@ -66,92 +66,92 @@ public class BatchItopMDSMonthlyReport extends QuartzJobBean {
 		logger.info("Batch itop mds monthly report started.......");
 
 		ctx = new AnnotationConfigApplicationContext(AppConfig.class);
-		
-		TimeTools timeTools = ctx.getBean(TimeTools.class);		
-		this.currentWeekYear = timeTools.getCurrentWeekYear();
-		this.currentWeekMonth = timeTools.getCurrentWeekMonth();
-		this.currentMonth = timeTools.getCurrentMonth();
-		this.previousMonth = currentMonth-1;
-		
-		this.currentDateStr = timeTools.getCurrentDateStr();
-		this.currentMonthStr = timeTools.getCurrentMonthString();
-		this.prevMonthStr = timeTools.getPrevMonthString();
-
-		if(currentMonth == 1) {
-			this.currentYearInt = timeTools.getCurrentYear() - 1;
-		} else {
-			this.currentYearInt = timeTools.getCurrentYear();
-		}
-		
-		AppConfig appConfig = ctx.getBean(AppConfig.class);
-		String path = appConfig.getMdsReportPath();
-		String fileNameMonthly = getFileNameMonthly();
-
-		ReportService rpt = ctx.getBean("itopPerformanceReport", ReportService.class);
-		//populate performance monthly
 		try {
-			populatePerformance(ctx);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} catch (Throwable e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		createReport(rpt, path, fileNameMonthly, periodMonthly);
-		
-		// populate performance weekly
-/*		if (currentMonth != 1) {
-			String filenameWeekly;
-			Integer weeklyWeekMonth;
-			Integer weeklyWeekYear;
-			if (currentDateStr.equalsIgnoreCase(PropertyNames.DAY_STR_MONDAY)) {
-				logger.info("MONDAY.. ");
-
-				weeklyWeekYear = currentWeekYear - 1;
-				weeklyWeekMonth = timeTools.getEndWeekOfMonth(currentYearInt, previousMonth);
-				filenameWeekly = getFileNameWeekly(weeklyWeekMonth);
+			TimeTools timeTools = ctx.getBean(TimeTools.class);		
+			this.currentWeekYear = timeTools.getCurrentWeekYear();
+			this.currentWeekMonth = timeTools.getCurrentWeekMonth();
+			this.currentMonth = timeTools.getCurrentMonth();
+			this.previousMonth = currentMonth-1;
+			
+			this.currentDateStr = timeTools.getCurrentDateStr();
+			this.currentMonthStr = timeTools.getCurrentMonthString();
+			this.prevMonthStr = timeTools.getPrevMonthString();
+	
+			if(currentMonth == 1) {
+				this.currentYearInt = timeTools.getCurrentYear() - 1;
 			} else {
-				logger.info("Else day.. ");
-
-				weeklyWeekYear = currentWeekYear;
-				weeklyWeekMonth = currentWeekMonth;
-				filenameWeekly = getFileNameWeekly(weeklyWeekMonth);
+				this.currentYearInt = timeTools.getCurrentYear();
 			}
 			
-			ctx.close();		
-			ctx = new AnnotationConfigApplicationContext(AppConfig.class);
-			rpt = ctx.getBean("itopPerformanceReport", ReportService.class);
+			AppConfig appConfig = ctx.getBean(AppConfig.class);
+			String path = appConfig.getMdsReportPath();
+			String fileNameMonthly = getFileNameMonthly();
+	
+			ReportService rpt = ctx.getBean("itopPerformanceReport", ReportService.class);
+			//populate performance monthly
+			try {
+				populatePerformance(ctx);
+			} catch (Exception e) {
+				e.printStackTrace();
+			} catch (Throwable e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
-			populateWeeklyPerformance(ctx, weeklyWeekYear, previousMonth);
-			createReport(rpt, path, filenameWeekly, periodWeekly, previousMonth, weeklyWeekMonth);
 			
+			createReport(rpt, path, fileNameMonthly, periodMonthly);
 			
-		} else {
-			logger.info("Skip Weekly reports...");
-		}
-*/
-		String[] file = new String[] {};
-		try {
-			BatchSubMDSPerSection subBatch = ctx.getBean(BatchSubMDSPerSection.class);
-			file = subBatch.createReport();
+			// populate performance weekly
+	/*		if (currentMonth != 1) {
+				String filenameWeekly;
+				Integer weeklyWeekMonth;
+				Integer weeklyWeekYear;
+				if (currentDateStr.equalsIgnoreCase(PropertyNames.DAY_STR_MONDAY)) {
+					logger.info("MONDAY.. ");
+	
+					weeklyWeekYear = currentWeekYear - 1;
+					weeklyWeekMonth = timeTools.getEndWeekOfMonth(currentYearInt, previousMonth);
+					filenameWeekly = getFileNameWeekly(weeklyWeekMonth);
+				} else {
+					logger.info("Else day.. ");
+	
+					weeklyWeekYear = currentWeekYear;
+					weeklyWeekMonth = currentWeekMonth;
+					filenameWeekly = getFileNameWeekly(weeklyWeekMonth);
+				}
+				
+				ctx.close();		
+				ctx = new AnnotationConfigApplicationContext(AppConfig.class);
+				rpt = ctx.getBean("itopPerformanceReport", ReportService.class);
+				
+				populateWeeklyPerformance(ctx, weeklyWeekYear, previousMonth);
+				createReport(rpt, path, filenameWeekly, periodWeekly, previousMonth, weeklyWeekMonth);
+				
+				
+			} else {
+				logger.info("Skip Weekly reports...");
+			}
+	*/
+			String[] file = new String[] {};
+			try {
+				BatchSubMDSPerSection subBatch = ctx.getBean(BatchSubMDSPerSection.class);
+				file = subBatch.createReport();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}		
+			
+			//send email
+			String[] fileNameArray= {fileNameMonthly};		
+			if(file!=null && file.length>0) {
+				fileNameArray = new String[]{fileNameMonthly, file[0], file[1], file[2]};
+			}
+			
+			sendEmail(rpt, path, fileNameArray, periodMonthly);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}		
-		
-		//send email
-		String[] fileNameArray= {fileNameMonthly};		
-		if(file!=null && file.length>0) {
-			fileNameArray = new String[]{fileNameMonthly, file[0], file[1], file[2]};
+		} finally {
+			closeDataSource();
 		}
-		
-		sendEmail(rpt, path, fileNameArray, periodMonthly);
-		
-		HikariDataSource ds = ctx.getBean("dataSource", HikariDataSource.class);
-		logger.info("close datasource");
-		logger.info(ds.getPoolName()+"-"+ds.getJdbcUrl());
-		ds.close();
 
 		logger.info("Batch itop mds monthly report finished.......");
 	}
@@ -287,6 +287,20 @@ public class BatchItopMDSMonthlyReport extends QuartzJobBean {
 	
 	private String getFileNameMonthly() {
 		return "VDI_ITOP_Performance_" + prevMonthStr + "_" + this.currentYearInt + ".pdf";
+	}
+	
+	private void closeDataSource() {
+
+		HikariDataSource hds = ctx.getBean("dataSource", HikariDataSource.class);
+		logger.info("close datasource");
+		logger.info(hds.getPoolName() + "-" + hds.getJdbcUrl());
+		try {
+			hds.close();
+		} catch (Exception e) {
+			logger.info("Error closing datasource ");
+			e.printStackTrace();
+		}
+
 	}
 
 }
