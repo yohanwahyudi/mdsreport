@@ -95,7 +95,7 @@
 	</bean>
 	<bean id="cronTriggerBatchMDSMtdReport" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="BatchMDSMtdReport" />
-		<property name="cronExpression" value="0 27 12 * * ? *" />
+		<property name="cronExpression" value="0 9 16 * * ? *" />
 	</bean>
 	
 	<!-- Cron for calculate performance monthly--> 

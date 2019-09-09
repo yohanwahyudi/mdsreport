@@ -1,0 +1,195 @@
+<html>
+<head>
+	
+</head>
+    <body>
+    
+    
+    	<p style="font-family:calibri,serif;">Dear All,</p><br />
+
+        <div style="font-family:calibri,serif;">
+            MTD (Month To Date) VDI performance based on ITOP ${period.currMonthStr} ${period.currYearStr}:<br />
+            Achievement for service desk incident is <b>${sla.value1}</b> and support agent <b>${sla.value2}</b>. <br />
+            
+            Attached also activity for junior developer. <BR />
+        </div>
+        
+        <div style="font-family:calibri,serif;">
+        	
+        	<p>Below is a list of exception ticket:</p>
+        		
+        	<table style="width:400;font-family:cambria; border-collapse: collapse;">
+        	<tr style="font-size:14; text-align:left; border:1px solid; background-color: #f2bd2b; color:#ffffff">
+        		<th style="border:1px solid black; padding: 4px;">Ref</th>
+				<th style="border:1px solid black; padding: 4px;">type</th>
+				<th style="border:1px solid black; padding: 4px;">Reason</th>
+        	</tr>        	
+				<#if exceptionThisMonth?has_content>
+					<#assign size=exceptionThisMonth?size>
+				        <#list exceptionThisMonth as exception>							        	
+				        		<tr style="font-size:13; text-align:left; padding: 4px; border:1px solid;">
+						        	<td style="border:1px solid black; padding: 4px;"><b>${exception.ref}</b></td>
+						        	<td style="border:1px solid black; padding: 4px;"><b>${exception.type}</b></td>
+						        	<td style="border:1px solid black; padding: 4px;"><b>${exception.reason}</b></td>
+				        		</tr>			        		
+				        	
+						</#list>
+				</#if>
+        	
+        	</table>
+        
+        </div>
+        
+        <br />
+        <div style="overflow-x:auto;">
+	        <div style="font-family:calibri,serif;">
+	           <ol>
+	           		<li><b>Overall Achievement (Target: 98%)</b></li>
+	           			<table style="width:400;font-family:cambria; border-collapse: collapse;">
+	          				 <tr style="font-size:14; text-align:left; border:1px solid; background-color: #f2bd2b; color:#ffffff">
+					        	<th style="border:1px solid black; padding: 4px;">Name</th>
+					        	<th style="border:1px solid black; padding: 4px;">Service Desk</th>
+					        	<th style="border:1px solid black; padding: 4px;">Support Agent</th>
+					        </tr>
+					        
+							<#if overall?has_content>
+					        	<#assign overallSize=overall?size>
+							        <#list overall as overall>							        	
+							        		<tr style="font-size:13; text-align:left; padding: 4px; border:1px solid;">
+									        	<td style="border:1px solid black; padding: 4px;"><b>${overall.name}</b></td>
+									        	<td style="border:1px solid black; padding: 4px;"><b>${overall.value1}</b></td>
+									        	<td style="border:1px solid black; padding: 4px;"><b>${overall.value2}</b></td>
+							        		</tr>			        		
+							        	
+									</#list>
+							</#if>
+					        
+	          			</table>
+	          			<br /> 		
+	           		<li><b>Service Desk Achievement (Target: 98%)</b></li>
+						<table style="width:400;font-family:cambria; border-collapse: collapse;">
+	          				 <tr style="font-size:14; text-align:left; border:1px solid; background-color: #f2bd2b; color:#ffffff">
+					        	<th style="border:1px solid black; padding: 4px;">Name</th>
+					        	<th style="border:1px solid black; padding: 4px;">Incident</th>
+					        	<th style="border:1px solid black; padding: 4px;">User Request</th>
+					        	<th style="border:1px solid black; padding: 4px;">Total</th>
+					        </tr>
+					        
+							<#if sdAchievement?has_content>
+					        	<#assign sdAchievementSize=sdAchievement?size>
+							        <#list sdAchievement as sd>							        	
+							        		<tr style="font-size:13; text-align:left; padding: 4px; border:1px solid;">
+									        	<td style="border:1px solid black; padding: 4px;"><b>${sd.name}</b></td>
+									        	<td style="border:1px solid black; padding: 4px;"><b>${sd.value1}</b></td>
+									        	<td style="border:1px solid black; padding: 4px;"><b>${sd.value2}</b></td>
+									        	<td style="border:1px solid black; padding: 4px;"><b>${sd.value3}</b></td>
+							        		</tr>			        									        	
+									</#list>
+							</#if>
+          			 	</table>	
+          			 	<br />
+	           		
+	           		<li><b>Support Agent Team Achievement (Target: 98%)</b></li>
+		           		<table style="width:700;font-family:cambria; border-collapse: collapse;">
+		          				 <tr style="font-size:14; text-align:left; border:1px solid; background-color: #f2bd2b; color:#ffffff">
+						        	<th style="border:1px solid black; padding: 4px;">Team</th>
+						        	<th style="border:1px solid black; padding: 4px;">Ticket Achieved</th>
+						        	<th style="border:1px solid black; padding: 4px;">Ticket Missed</th>
+						        	<th style="border:1px solid black; padding: 4px;">Ticket Total</th>
+						        	<th style="border:1px solid black; padding: 4px;">Achievement</th>
+						        </tr>
+						        
+								<#if perfTeam?has_content>
+						        	<#assign perfTeamSize=perfTeam?size>
+								        <#list perfTeam as team>							        	
+								        		<tr style="font-size:13; text-align:left; padding: 4px; border:1px solid;">
+										        	<td style="border:1px solid black; padding: 4px;"><b>${team.teamName}</b></td>
+										        	<td style="border:1px solid black; padding: 4px;"><b>${team.totalAchieved}</b></td>
+										        	<td style="border:1px solid black; padding: 4px;"><b>${team.totalMissed}</b></td>
+										        	<td style="border:1px solid black; padding: 4px;"><b>${team.totalTicket}</b></td>
+										        	<td style="border:1px solid black; padding: 4px;"><b>${team.achievement} %</b></td>
+								        		</tr>			        		
+								        	
+										</#list>
+								</#if>
+						        
+		          			</table>
+		          			<br />
+		          		<#if missed?has_content>
+		          			<b>Missed Ticket</b>
+		          			<table style="width:1000;font-family:cambria; border-collapse: collapse;">
+		          				 <tr style="font-size:14; text-align:left; border:1px solid; background-color: #f2bd2b; color:#ffffff">
+						        	<th style="border:1px solid black; padding: 4px;">Ref</th>
+						        	<th style="border:1px solid black; padding: 4px;">Title</th>
+						        	<th style="border:1px solid black; padding: 4px;">Agent</th>
+						        	<th style="border:1px solid black; padding: 4px;">Start Date</th>
+						        	<th style="border:1px solid black; padding: 4px;">Close Date</th>
+						        	<th style="border:1px solid black; padding: 4px;">Status</th>
+						    	</tr>
+						    	<#assign missedSize=missed?size>
+								<#list missed as missed>							        	
+								<tr style="font-size:13; text-align:left; padding: 4px; border:1px solid;">
+							       	<td style="border:1px solid black; padding: 4px;">${missed.ref}</b></td>
+							      	<td style="border:1px solid black; padding: 4px;">${missed.title}</td>
+							       	<td style="border:1px solid black; padding: 4px;">${missed.agent_fullname}</td>
+							       	<td style="border:1px solid black; padding: 4px;">${missed.start_date}</td>
+							       	<td style="border:1px solid black; padding: 4px;">${missed.close_date}</td>
+							       	<td style="border:1px solid black; padding: 4px;">${missed.status}</td>
+								</tr>			        									        	
+								</#list>
+							</table>
+		          		</#if>
+		          		
+		          		<#if pending?has_content>
+		          			<b>Pending Ticket</b>
+		          			<table style="width:1000;font-family:cambria; border-collapse: collapse;">
+		          				 <tr style="font-size:14; text-align:left; border:1px solid; background-color: #f2bd2b; color:#ffffff">
+						        	<th style="border:1px solid black; padding: 4px;">Ref</th>
+						        	<th style="border:1px solid black; padding: 4px;">Title</th>
+						        	<th style="border:1px solid black; padding: 4px;">Agent</th>
+						        	<th style="border:1px solid black; padding: 4px;">Start Date</th>
+						        	<th style="border:1px solid black; padding: 4px;">Pending Reason</th>
+						    	</tr>
+						    	<#assign pendingSize=pending?size>
+							    <#list pending as pending>							        	
+							    <tr style="font-size:13; text-align:left; padding: 4px; border:1px solid;">
+								   	<td style="border:1px solid black; padding: 4px;"><b>${pending.ref}</td>
+									<td style="border:1px solid black; padding: 4px;">${pending.title}</td>
+								  	<td style="border:1px solid black; padding: 4px;">${pending.agent_fullname}</td>
+								   	<td style="border:1px solid black; padding: 4px;">${pending.start_date}</td>
+								   	<td style="border:1px solid black; padding: 4px;">${pending.pending_reason}</td>
+							    </tr>			        									        	
+								</#list>
+							</table>
+		          		</#if>
+		          		
+		          		<#if assigned?has_content>
+		          			<b>Assigned Ticket</b>
+		          			<table style="width:1000;font-family:cambria; border-collapse: collapse;">
+		          				 <tr style="font-size:14; text-align:left; border:1px solid; background-color: #f2bd2b; color:#ffffff">
+						        	<th style="border:1px solid black; padding: 4px;">Ref</th>
+						        	<th style="border:1px solid black; padding: 4px;">Title</th>
+						        	<th style="border:1px solid black; padding: 4px;">Agent</th>
+						        	<th style="border:1px solid black; padding: 4px;">Start Date</th>
+						    	</tr>
+						    	<#assign assignedSize=assigned?size>
+							    <#list assigned as assigned>							        	
+							    <tr style="font-size:13; text-align:left; padding: 4px; border:1px solid;">
+								   	<td style="border:1px solid black; padding: 4px;"><b>${assigned.ref}</td>
+									<td style="border:1px solid black; padding: 4px;">${assigned.title}</td>
+								  	<td style="border:1px solid black; padding: 4px;">${assigned.agent_fullname}</td>
+								   	<td style="border:1px solid black; padding: 4px;">${assigned.start_date}</td>
+							    </tr>			        									        	
+								</#list>
+							</table>
+		          		</#if>
+	           </ol>
+	        </div>
+    	</div>
+    	<br />
+        <br />
+        
+        <span><p style="font-family:calibri,serif;">Regards, </p></span>
+        <span><p style="font-family:calibri,serif;">SLA Team</p></span><br /><br />
+    </body>
+</html>

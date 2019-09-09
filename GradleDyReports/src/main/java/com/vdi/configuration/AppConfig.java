@@ -144,16 +144,16 @@ public final class AppConfig {
 	public JavaMailSender getMailSenderDev() {
 		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
-		mailSender.setHost("smtp.gmail.com");
+		mailSender.setHost("smtp.mailtrap.io");
 		mailSender.setPort(465);
-		mailSender.setUsername("vdichangemanagement@gmail.com");
-		mailSender.setPassword("Visionet123");
+		mailSender.setUsername("6d71cdff4589ef");
+		mailSender.setPassword("e536eb3a1dd84e");
 
 		Properties javaMailProperties = new Properties();
 //		javaMailProperties.put("mail.debug", "true");
 		javaMailProperties.put("mail.smtp.auth", "true");
 //		javaMailProperties.put("mail.smtp.starttls.enable", "true");
-		javaMailProperties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+		//javaMailProperties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 		javaMailProperties.put("mail.smtp.port", "465");
 		javaMailProperties.put("mail.mime.multipart.allowempty", "true");
 
