@@ -11,7 +11,7 @@
 	<bean id="cronTriggerBatchMDSDailyJob" 
                 class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="BatchMDSDailyJob" />
-		<property name="cronExpression" value="0 0 10,15,18 * * ? *" />
+		<property name="cronExpression" value="0 6 10,12,18 * * ? *" />
 		<!--<property name="cronExpression" value="0/35 * * * * ? *" />-->
 		<!--<property name="cronExpression" value="0 0 15 ? * MON-FRI" />-->
 	</bean>
@@ -32,7 +32,7 @@
 	</bean>
 	<bean id="cronTriggerBatchMDSPopulateIncidentJob" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="BatchMDSPopulateIncidentJob" />
-		<property name="cronExpression" value="0 1 14 * * ? *" />
+		<property name="cronExpression" value="0 7 12 * * ? *" />
 	</bean>
 	
 	<bean name="BatchMDSPopulateServiceDesk" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
@@ -40,7 +40,7 @@
 	</bean>
 	<bean id="cronTriggerBatchMDSPopulateServiceDeskJob" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="BatchMDSPopulateServiceDesk" />
-		<property name="cronExpression" value="0 39 13 * * ? *" />
+		<property name="cronExpression" value="0 8 12 * * ? *" />
 	</bean>
 	
 	<bean name="BatchMDSPopulateUserRequest" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
@@ -48,7 +48,7 @@
 	</bean>
 	<bean id="cronTriggerBatchMDSPopulateUserRequestJob" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="BatchMDSPopulateUserRequest" />
-		<property name="cronExpression" value="0 40 13 * * ? *" />
+		<property name="cronExpression" value="0 11 13 * * ? *" />
 	</bean>	
 	
 	<bean name="BatchPopulateProblemChange" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
@@ -56,7 +56,7 @@
 	</bean>
 	<bean id="cronTriggerBatchPopulateProblemChangeJob" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="BatchPopulateProblemChange" />
-		<property name="cronExpression" value="0 41 13 * * ? *" />
+		<property name="cronExpression" value="0 12 13 * * ? *" />
 	</bean>	
 	
 	<bean name="BatchMDSPopulateURYTD" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
@@ -64,7 +64,7 @@
 	</bean>
 	<bean id="cronTriggerBatchMDSPopulateURYTDJob" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="BatchMDSPopulateURYTD" />
-		<property name="cronExpression" value="0 41 13 * * ? *" />
+		<property name="cronExpression" value="0 13 13 * * ? *" />
 	</bean>	
 		
 	<!-- End populate data -->

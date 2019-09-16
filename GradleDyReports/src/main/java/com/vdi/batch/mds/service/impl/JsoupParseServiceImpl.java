@@ -417,7 +417,7 @@ public class JsoupParseServiceImpl implements JsoupParseService {
 		incident.setAgent_fullname(row.get(14));
 		incident.setTeam(row.get(15));
 		incident.setTeam_name(row.get(16));
-		incident.setDescription(sanitize.getSanitizedString(row.get(17),4000));
+		//incident.setDescription(sanitize.getSanitizedString(row.get(17),4000));
 		incident.setOrigin(row.get(18));
 		incident.setLastpending_date(row.get(19));
 		incident.setLastpending_time(row.get(20));
@@ -452,7 +452,7 @@ public class JsoupParseServiceImpl implements JsoupParseService {
 		incident.setPerson_org_short(row.get(47));
 		incident.setPerson_org_name(row.get(48));
 		incident.setUser_satisfaction(row.get(49));
-		incident.setUser_comment(sanitize.getSanitizedString(row.get(50), 4000));
+		//incident.setUser_comment(sanitize.getSanitizedString(row.get(50), 4000));
 		incident.setResolution_date(row.get(51));
 		incident.setResolution_time(row.get(52));
 		incident.setHotflag(row.get(53));

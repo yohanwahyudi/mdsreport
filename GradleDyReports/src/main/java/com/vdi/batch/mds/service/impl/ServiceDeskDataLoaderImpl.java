@@ -188,7 +188,7 @@ public class ServiceDeskDataLoaderImpl implements ItopMDSDataLoaderService{
 		sdStaging.setIncident_teamName(row.get(24));
 		sdStaging.setIncident_team(row.get(25));
 		
-		sdStaging.setIncident_description(sanitize.getSanitizedString(row.get(26), 4000));
+		//sdStaging.setIncident_description(sanitize.getSanitizedString(row.get(26), 4000));
 		
 		sdStaging.setIncident_status(row.get(27));
 		sdStaging.setIncident_priority(row.get(28));
@@ -212,7 +212,7 @@ public class ServiceDeskDataLoaderImpl implements ItopMDSDataLoaderService{
 		sdStaging.setIncident_ttrDeadline(row.get(44));
 		sdStaging.setIncident_resolutiondelay(row.get(45));
 		
-		sdStaging.setIncident_solution(sanitize.getSanitizedString(row.get(46), 4000));
+		//sdStaging.setIncident_solution(sanitize.getSanitizedString(row.get(46), 4000));
 		
 		sdStaging.setIncident_tto(row.get(47));
 		sdStaging.setIncident_ttr(row.get(48));
@@ -223,7 +223,7 @@ public class ServiceDeskDataLoaderImpl implements ItopMDSDataLoaderService{
 		
 		sdStaging.setIncident_usersatisfaction(row.get(52));
 		
-		sdStaging.setIncident_usercomment(sanitize.getSanitizedString(row.get(53), 4000));
+		//sdStaging.setIncident_usercomment(sanitize.getSanitizedString(row.get(53), 4000));
 		
 		return sdStaging;
 	}

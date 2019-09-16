@@ -380,7 +380,7 @@ public class ItopMDSDataLoaderServiceImpl implements ItopMDSDataLoaderService {
 		staging.setTeam(row.get(15));
 		staging.setTeam_name(row.get(16));
 		
-		staging.setDescription(sanitize.getSanitizedString(row.get(17), 4000));
+		//staging.setDescription(sanitize.getSanitizedString(row.get(17), 4000));
 
 		staging.setOrigin(row.get(18));
 		staging.setLastpending_date(row.get(19));
@@ -411,7 +411,7 @@ public class ItopMDSDataLoaderServiceImpl implements ItopMDSDataLoaderService {
 		staging.setTto(row.get(42));
 		staging.setTtr(row.get(43));
 
-		staging.setSolution(sanitize.getSanitizedString(row.get(44), 4000));
+		//staging.setSolution(sanitize.getSanitizedString(row.get(44), 4000));
 
 		staging.setPerson_full_name(row.get(45));
 		
@@ -428,7 +428,8 @@ public class ItopMDSDataLoaderServiceImpl implements ItopMDSDataLoaderService {
 //		if (userComment.length() > 4000) {
 //			userComment = userComment.substring(0, 4000);
 //		}
-		staging.setUser_comment(sanitize.getSanitizedString(row.get(50), 4000));
+		
+		//staging.setUser_comment(sanitize.getSanitizedString(row.get(50), 4000));
 		
 		staging.setResolution_date(row.get(51));
 		staging.setResolution_time(row.get(52));

@@ -192,7 +192,7 @@ public class UserRequestDataLoaderImpl implements ItopMDSDataLoaderService {
 		ur.setUrequest_teamname(row.get(26));
 		ur.setUrequest_team(row.get(27));
 
-		ur.setUrequest_description(sanitize.getSanitizedString(row.get(28), 4000));
+		//ur.setUrequest_description(sanitize.getSanitizedString(row.get(28), 4000));
 
 		ur.setUrequest_status(row.get(29));
 		ur.setUrequest_priority(row.get(30));
@@ -215,7 +215,7 @@ public class UserRequestDataLoaderImpl implements ItopMDSDataLoaderService {
 		ur.setUrequest_ttrdeadline(row.get(45));
 		ur.setUrequest_resolutiondelay(row.get(46));
 
-		ur.setUrequest_solution(sanitize.getSanitizedString(row.get(47), 4000));
+		//ur.setUrequest_solution(sanitize.getSanitizedString(row.get(47), 4000));
 
 		ur.setUrequest_tto(row.get(48));
 		ur.setUrequest_ttr(row.get(49));
@@ -224,7 +224,7 @@ public class UserRequestDataLoaderImpl implements ItopMDSDataLoaderService {
 		ur.setPerson_organization(row.get(52));
 		ur.setUrequest_usersatisfaction(row.get(53));
 
-		ur.setUrequest_usercomment(sanitize.getSanitizedString(row.get(54), 4000));
+		//ur.setUrequest_usercomment(sanitize.getSanitizedString(row.get(54), 4000));
 
 		ur.setUrequest_servicename(row.get(55));
 

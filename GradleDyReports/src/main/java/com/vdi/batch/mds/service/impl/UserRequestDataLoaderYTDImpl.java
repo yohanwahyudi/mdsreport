@@ -199,10 +199,10 @@ public class UserRequestDataLoaderYTDImpl implements ItopMDSDataLoaderService{
 		ur.setTtrDeadline(row.get(33));
 		ur.setTicketSubClass(row.get(34));
 		
-		ur.setSolution(sanitize.getSanitizedString(row.get(35), 4000));
+		//ur.setSolution(sanitize.getSanitizedString(row.get(35), 4000));
 		
 		ur.setUserSatisfaction(row.get(36));
-		ur.setUserComment(sanitize.getSanitizedString(row.get(37), 4000));
+		//ur.setUserComment(sanitize.getSanitizedString(row.get(37), 4000));
 		ur.setServiceName(row.get(38));
 
 		return ur;

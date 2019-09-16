@@ -72,37 +72,51 @@ public interface IncidentRepository extends CrudRepository<Incident, Long>{
 	
 	@Query(value="select " + 
 			"	* " + 
-			"from incident " + 
-			"where DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(NOW(),'%Y-%m-01')  "+   
+			"from incident i " + 
+			"left outer join ticket_exception e "+
+			"on i.ref=e.ref and e.type='sa' "+
+			"where DATE_FORMAT(i.start_date,'%Y-%m-01') >= DATE_FORMAT(NOW(),'%Y-%m-01')  "+   
 			"and agent_fullname like 'EXT%' "+
+			"and e.ref is null "+
 			"order by ttr_passed desc"+
 			";", nativeQuery=true)
 	public List<Incident> getAllIncidentByMtd();
 	
 	@Query(value="select " + 
 			"	* " + 
-			"from incident " + 
-			"where DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(NOW(),'%Y-%m-01') "+   
+			"from incident i " + 
+			"left outer join ticket_exception e "+
+			"on i.ref=e.ref and e.type='sa' "+
+			"where DATE_FORMAT(i.start_date,'%Y-%m-01') >= DATE_FORMAT(NOW(),'%Y-%m-01')  "+   
 			"and agent_fullname like 'EXT%' "+
+			"and e.ref is null "+
 			"and status in ('assigned') "+
 			";", nativeQuery=true)
 	public List<Incident> getAssignedIncidentByMtd();
 	
 	@Query(value="select " + 
 			"	* " + 
-			"from incident " + 
-			"where DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(NOW(),'%Y-%m-01') "+   
+			"from incident i " + 
+			"left outer join ticket_exception e "+
+			"on i.ref=e.ref and e.type='sa' "+
+			"where DATE_FORMAT(i.start_date,'%Y-%m-01') >= DATE_FORMAT(NOW(),'%Y-%m-01')  "+   
 			"and agent_fullname like 'EXT%' "+
+			"and e.ref is null "+
 			"and ttr_passed='yes' "+
+			"order by ttr_passed desc"+
 			";", nativeQuery=true)
 	public List<Incident> getMissedIncidentByMtd();
 	
 	@Query(value="select " + 
 			"	* " + 
-			"from incident " + 
-			"where DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(NOW(),'%Y-%m-01') "+   
+			"from incident i " + 
+			"left outer join ticket_exception e "+
+			"on i.ref=e.ref and e.type='sa' "+
+			"where DATE_FORMAT(i.start_date,'%Y-%m-01') >= DATE_FORMAT(NOW(),'%Y-%m-01')  "+   
 			"and agent_fullname like 'EXT%' "+
+			"and e.ref is null "+
 			"and ttr_passed='no' "+
+			"order by ttr_passed desc"+
 			";", nativeQuery=true)
 	public List<Incident> getAchievedIncidentByMtd();
 	
@@ -117,33 +131,41 @@ public interface IncidentRepository extends CrudRepository<Incident, Long>{
 	
 	@Query(value="select " + 
 			"	* " + 
-			"from incident " + 
-			"where DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') and "+   
-			"DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			"from incident i " +  
+			"left outer join ticket_exception e "+
+			"on i.ref=e.ref and e.type='sa' "+
+			"where DATE_FORMAT(i.start_date,'%Y-%m-01') >= DATE_FORMAT(NOW(),'%Y-%m-01')  and"+   
+			"DATE_FORMAT(i.start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"and agent_fullname like 'EXT%' "+
-			//"and team_name not like '%SUPPLIER PORTAL%' "+
-			//"and status in ('closed','resolved') "+
+			"and e.ref is null "+
 			"order by ttr_passed desc"+
 			";", nativeQuery=true)
 	public List<Incident> getAllIncidentByMonth(@Param("month") int month);
 	
-	@Query(value="select " + 
-			"	* " + 
-			"from incident " + 
-			"where DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') "+   
-			"and DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
-			"and agent_fullname like 'EXT%' "+
-			"and status in ('assigned') "+
-			//"and team_name not like '%SUPPLIER PORTAL%' "+
+	@Query(value=
+			"select " + 
+					"	* " + 
+					"from incident i " +  
+					"left outer join ticket_exception e "+
+					"on i.ref=e.ref and e.type='sa' "+
+					"where DATE_FORMAT(i.start_date,'%Y-%m-01') >= DATE_FORMAT(NOW(),'%Y-%m-01')  and"+   
+					"DATE_FORMAT(i.start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+					"and agent_fullname like 'EXT%' "+
+					"and e.ref is null "+
+					"and status in ('assigned') "+
 			";", nativeQuery=true)
 	public List<Incident> getAssignedIncidentByMonth(@Param("month") int month);
 	
 	@Query(value="select " + 
 			"	* " + 
-			"from incident " + 
-			"where DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') "+   
-			"and DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			"from incident i " +  
+			"left outer join ticket_exception e "+
+			"on i.ref=e.ref and e.type='sa' "+
+			"where DATE_FORMAT(i.start_date,'%Y-%m-01') >= DATE_FORMAT(NOW(),'%Y-%m-01')  and"+   
+			"DATE_FORMAT(i.start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"and agent_fullname like 'EXT%' "+
+			"and e.ref is null "+
+			"and status in ('assigned') "+
 			"and ttr_passed='yes' "+
 			//"and team_name not like '%SUPPLIER PORTAL%' "+
 			";", nativeQuery=true)
@@ -151,10 +173,14 @@ public interface IncidentRepository extends CrudRepository<Incident, Long>{
 	
 	@Query(value="select " + 
 			"	* " + 
-			"from incident " + 
-			"where DATE_FORMAT(start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') "+   
-			"and DATE_FORMAT(start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
+			"from incident i " +  
+			"left outer join ticket_exception e "+
+			"on i.ref=e.ref and e.type='sa' "+
+			"where DATE_FORMAT(i.start_date,'%Y-%m-01') >= DATE_FORMAT(NOW(),'%Y-%m-01')  and"+   
+			"DATE_FORMAT(i.start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"and agent_fullname like 'EXT%' "+
+			"and e.ref is null "+
+			"and status in ('assigned') "+
 			"and ttr_passed='no' "+
 			//"and team_name not like '%SUPPLIER PORTAL%' "+
 			";", nativeQuery=true)
