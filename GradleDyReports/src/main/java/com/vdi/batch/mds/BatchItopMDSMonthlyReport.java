@@ -16,6 +16,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+import com.vdi.batch.mds.helper.ExceptionTicketHelper;
 import com.vdi.batch.mds.helper.PopulateIncident;
 import com.vdi.batch.mds.helper.PopulateServiceDesk;
 import com.vdi.batch.mds.helper.PopulateUserRequest;
@@ -277,6 +278,9 @@ public class BatchItopMDSMonthlyReport extends QuartzJobBean {
 		mapObject.put("missed", missed);
 		mapObject.put("pending", pending);
 		mapObject.put("assigned", assigned);
+		
+		ExceptionTicketHelper helper = ctx.getBean("exceptionTicketHelper", ExceptionTicketHelper.class);
+		mapObject.put("exceptionLastMonth", helper.getExceptionLastMonth());
 
 		return mapObject;
 	}
