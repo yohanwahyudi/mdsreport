@@ -39,11 +39,11 @@ public class MailServiceImpl implements MailService{
 	private final Logger logger = LogManager.getLogger(MailServiceImpl.class);
 	
 	@Autowired
-	@Qualifier("mailSenderDev")
+	@Qualifier("mailSender")
 	JavaMailSender mailSender;
 	
 	@Autowired
-	@Qualifier("mailSender")
+	@Qualifier("mailSenderDev")
 	JavaMailSender mailSenderDev;
 	
 	@Autowired

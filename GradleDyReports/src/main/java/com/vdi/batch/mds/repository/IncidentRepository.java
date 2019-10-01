@@ -134,7 +134,7 @@ public interface IncidentRepository extends CrudRepository<Incident, Long>{
 			"from incident i " +  
 			"left outer join ticket_exception e "+
 			"on i.ref=e.ref and e.type='sa' "+
-			"where DATE_FORMAT(i.start_date,'%Y-%m-01') >= DATE_FORMAT(NOW(),'%Y-%m-01')  and"+   
+			"where DATE_FORMAT(i.start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')  and "+   
 			"DATE_FORMAT(i.start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"and agent_fullname like 'EXT%' "+
 			"and e.ref is null "+
@@ -148,7 +148,7 @@ public interface IncidentRepository extends CrudRepository<Incident, Long>{
 					"from incident i " +  
 					"left outer join ticket_exception e "+
 					"on i.ref=e.ref and e.type='sa' "+
-					"where DATE_FORMAT(i.start_date,'%Y-%m-01') >= DATE_FORMAT(NOW(),'%Y-%m-01')  and"+   
+					"where DATE_FORMAT(i.start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')  and "+   
 					"DATE_FORMAT(i.start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 					"and agent_fullname like 'EXT%' "+
 					"and e.ref is null "+
@@ -161,11 +161,10 @@ public interface IncidentRepository extends CrudRepository<Incident, Long>{
 			"from incident i " +  
 			"left outer join ticket_exception e "+
 			"on i.ref=e.ref and e.type='sa' "+
-			"where DATE_FORMAT(i.start_date,'%Y-%m-01') >= DATE_FORMAT(NOW(),'%Y-%m-01')  and"+   
+			"where DATE_FORMAT(i.start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')  and "+   
 			"DATE_FORMAT(i.start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"and agent_fullname like 'EXT%' "+
 			"and e.ref is null "+
-			"and status in ('assigned') "+
 			"and ttr_passed='yes' "+
 			//"and team_name not like '%SUPPLIER PORTAL%' "+
 			";", nativeQuery=true)
@@ -176,11 +175,10 @@ public interface IncidentRepository extends CrudRepository<Incident, Long>{
 			"from incident i " +  
 			"left outer join ticket_exception e "+
 			"on i.ref=e.ref and e.type='sa' "+
-			"where DATE_FORMAT(i.start_date,'%Y-%m-01') >= DATE_FORMAT(NOW(),'%Y-%m-01')  and"+   
+			"where DATE_FORMAT(i.start_date,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')  and "+   
 			"DATE_FORMAT(i.start_date,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"and agent_fullname like 'EXT%' "+
 			"and e.ref is null "+
-			"and status in ('assigned') "+
 			"and ttr_passed='no' "+
 			//"and team_name not like '%SUPPLIER PORTAL%' "+
 			";", nativeQuery=true)

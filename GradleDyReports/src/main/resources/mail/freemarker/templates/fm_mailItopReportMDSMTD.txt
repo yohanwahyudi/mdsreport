@@ -182,7 +182,7 @@
 		          		</#if>
 		          		
 		          		<li> <b>Below is a list of exception ticket:</b>	
-				        	<table style="width:400;font-family:cambria; border-collapse: collapse;" id="tblException">
+				        	<table style="width:700;font-family:cambria; border-collapse: collapse;" id="tblException">
 				        	<thead>
 					        	<tr style="font-size:14; text-align:left; border:1px solid; background-color: #f2bd2b; color:#ffffff">
 									<th style="border:1px solid black; padding: 4px;">type</th>
