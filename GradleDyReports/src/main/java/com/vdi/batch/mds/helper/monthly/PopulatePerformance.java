@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 import com.vdi.batch.mds.repository.dao.PerfAgentDAOService;
 import com.vdi.batch.mds.repository.dao.PerfAllDAOService;
 import com.vdi.batch.mds.repository.dao.PerfTeamDAOService;
+import com.vdi.batch.mds.repository.dao.PerformanceAgentService;
+import com.vdi.batch.mds.repository.dao.PerformanceTeamService;
 import com.vdi.model.performance.PerformanceAgent;
 import com.vdi.model.performance.PerformanceOverall;
 import com.vdi.model.performance.PerformanceTeam;
@@ -39,6 +41,12 @@ public class PopulatePerformance {
 	private PerfAgentDAOService agentDAO;
 	
 	@Autowired
+	private PerformanceTeamService performanceTeamService;
+	
+	@Autowired
+	private PerformanceAgentService performanceAgentService;
+	
+	@Autowired
 	private TimeTools timeTools;
 	
 	private Integer currentMonth;
@@ -57,7 +65,10 @@ public class PopulatePerformance {
 		
 		allDAO.insertPerformance(getPerformanceOverall());
 		teamDAO.insertPerformance(getPerformanceTeamList());
-		agentDAO.insertPerformance(getPerformanceAgentList());		
+		agentDAO.insertPerformance(getPerformanceAgentList());	
+		
+		performanceTeamService.deleteUnassignedTeam();
+		performanceAgentService.deleteUnassignedAgent();
 		
 		logger.info("Finished populate performance monthly...");
 	}
