@@ -51,10 +51,10 @@ public interface StagingRepository extends CrudRepository<Staging, Long>{
 	public void insertToIncidentTable();
 	
 	@Query(value="select " + 
-			"	agent_fullname, team_name " + 
+			"	agent_fullname, team_name, email, person_org_name  " + 
 			"from " + 
-			"	(select agent_fullname,team_name from incident group by agent_fullname) AS agentIncident " + 
-			"where agentIncident.agent_fullname not in (select name from agent group by name)", nativeQuery=true)
+			"	(select agent_fullname,team_name, email, person_org_name from incident group by agent_fullname) AS agentIncident " + 
+			"where agent_fullname not in (select name from agent group by name) and agent_fullname like 'EXT%' ", nativeQuery=true)
 	public List<Object[]> getUnregisteredAgent();
 	
 	@Query(value="delete from incident  " + 
