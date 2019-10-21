@@ -181,6 +181,7 @@
 							<BR />
 		          		</#if>
 		          		
+		          		<#if exceptionThisMonth?has_content>
 		          		<li> <b>Below is a list of exception ticket:</b>	
 				        	<table style="width:700;font-family:cambria; border-collapse: collapse;" id="tblException">
 				        	<thead>
@@ -191,7 +192,6 @@
 					        	</tr>
 					        </thead>
 					        <tbody>        	
-								<#if exceptionThisMonth?has_content>
 									<#assign size=exceptionThisMonth?size>
 								        <#list exceptionThisMonth as exception>							        	
 								        		<tr style="font-size:13; text-align:left; padding: 4px; border:1px solid;">
@@ -201,10 +201,10 @@
 								        		</tr>			        		
 								        	
 										</#list>
-								</#if>
 				        	</tbody>
 				        	</table>
 				        </li>
+				        </#if>
 		          		
 	           </ol>
 	        </div>
