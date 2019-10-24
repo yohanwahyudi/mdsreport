@@ -167,6 +167,8 @@ public class ChangeDataLoaderImpl implements ItopMDSDataLoaderService {
 
 	private Change mapChange(List<String> row) {
 		
+		System.out.println(row);
+		
 		Change change = new Change();
 		change.setRef(row.get(0));
 		change.setTitle(row.get(1));
@@ -189,9 +191,9 @@ public class ChangeDataLoaderImpl implements ItopMDSDataLoaderService {
 //		change.setRelated_incident_list(row.get(19));
 //		change.setRelated_problems_list(row.get(20));
 //		change.setRelated_request_list(row.get(21));
-		change.setCreation_date(row.get(25));
-		change.setCreation_time(row.get(26));
-		change.setUserinfo(row.get(27));
+		change.setCreation_date(row.get(23));
+		change.setCreation_time(row.get(24));
+		change.setUserinfo(row.get(25));
 
 		return change;
 	}
