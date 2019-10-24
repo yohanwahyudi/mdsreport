@@ -2,10 +2,13 @@ package com.vdi.batch.mds.repository.dao.impl;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.vdi.batch.mds.repository.PerformanceTeamRepository;
 import com.vdi.batch.mds.repository.dao.PerformanceTeamService;
 import com.vdi.model.performance.PerformanceTeam;
 
+@Service
 public class PerformanceTeamServiceImpl implements PerformanceTeamService{
 	
 	private PerformanceTeamRepository performanceTeamRepository;

@@ -44,6 +44,9 @@ public class Change {
 	private String related_incident_list;
 	private String related_problems_list;
 	private String related_request_list;
+	private String creation_date;
+	private String creation_time;
+	private String userinfo;
 	
 	@Column(name="created_dt")
 	@CreationTimestamp
@@ -199,6 +202,24 @@ public class Change {
 	}
 	public void setEnd_time(String end_time) {
 		this.end_time = end_time;
+	}
+	public String getCreation_date() {
+		return creation_date;
+	}
+	public String getCreation_time() {
+		return creation_time;
+	}
+	public String getUserinfo() {
+		return userinfo;
+	}
+	public void setCreation_date(String creation_date) {
+		this.creation_date = creation_date;
+	}
+	public void setCreation_time(String creation_time) {
+		this.creation_time = creation_time;
+	}
+	public void setUserinfo(String userinfo) {
+		this.userinfo = userinfo;
 	}
 
 }
