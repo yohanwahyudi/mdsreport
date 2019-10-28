@@ -13,7 +13,7 @@ public interface PerformanceTeamRepository extends CrudRepository<PerformanceTea
 	 */
 	@Query(value = "delete from perf_team  " + 
 			"where category='sa' and period='monthly' " + 
-			"and date_format(created_dt, '%Y-%m') = date_format(str_to_date('2019-08','%Y-%m'), '%Y-%m') " + 
+			"and date_format(created_dt, '%Y-%m') = date_format(str_to_date(now(),'%Y-%m'), '%Y-%m') " + 
 			"and teamName not in ( " + 
 			"	select " + 
 			"		agent.division " + 
@@ -21,7 +21,7 @@ public interface PerformanceTeamRepository extends CrudRepository<PerformanceTea
 			"	inner join agent  " + 
 			"	on incident.agent_fullname=agent.name " + 
 			"	where " + 
-			"	DATE_FORMAT(str_to_date(start_date, '%Y-%m-%d'),'%Y-%m') = DATE_FORMAT(str_to_date('2019-08','%Y-%m'),'%Y-%m') " + 
+			"	DATE_FORMAT(str_to_date(start_date, '%Y-%m-%d'),'%Y-%m') = DATE_FORMAT(str_to_date(now(),'%Y-%m'),'%Y-%m') " + 
 			"	group by agent.division " + 
 			");", nativeQuery=true)
 	public void deleteUnassignedTeam();

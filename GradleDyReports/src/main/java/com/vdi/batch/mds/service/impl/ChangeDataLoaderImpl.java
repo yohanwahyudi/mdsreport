@@ -167,8 +167,6 @@ public class ChangeDataLoaderImpl implements ItopMDSDataLoaderService {
 
 	private Change mapChange(List<String> row) {
 		
-		System.out.println(row);
-		
 		Change change = new Change();
 		change.setRef(row.get(0));
 		change.setTitle(row.get(1));
