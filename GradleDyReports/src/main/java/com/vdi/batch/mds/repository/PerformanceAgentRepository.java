@@ -14,9 +14,13 @@ public interface PerformanceAgentRepository extends CrudRepository<PerformanceAg
 	@Query(value = " delete from perf_agent where category='sa' and period='monthly' " + 
 			"and date_format(created_dt, '%Y-%m') = date_format(now(), '%Y-%m') " + 
 			"and agentName not in ( " + 
-			"	select agent_fullname from incident " + 
+			"	select agent_fullname from incident " +
+			"		left join ticket_exception e " +
+			"			ON incident.ref = e.ref " +
+			"				AND e.type = 'sa'	 " +
 			"		where " + 
-			"			DATE_FORMAT(str_to_date(start_date, '%Y-%m-%d'),'%Y-%m') = DATE_FORMAT(now(),'%Y-%m') " + 
+			"			DATE_FORMAT(str_to_date(start_date, '%Y-%m-%d'),'%Y-%m') = DATE_FORMAT(now(),'%Y-%m') " +
+			"			AND e.ref is null " +
 			"		group by agent_fullname " + 
 			");", nativeQuery=true)
 	public void deleteUnassignedAgent();
