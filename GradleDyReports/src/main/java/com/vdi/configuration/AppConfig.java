@@ -67,6 +67,8 @@ public final class AppConfig {
 	private final String mdsHttpUrl;
 	private final String mdsHttpSdUrl;
 	private final String mdsHttpUrUrl;
+	private final String mdsHttpPendingIncidentUrl;
+	private final String mdsHttpOpenIncidentUrl;
 	private final String mdsHttpProblemUrl;
 	private final String mdsHttpChangeUrl;
 	private final String mdsHttpURYtdUrl;
@@ -92,6 +94,8 @@ public final class AppConfig {
 		this.mdsHttpUrl = env.getRequiredProperty(PropertyNames.MDS_HTTP_URL, String.class);
 		this.mdsHttpSdUrl = env.getRequiredProperty(PropertyNames.MDS_HTTP_SD_URL, String.class);
 		this.mdsHttpUrUrl = env.getRequiredProperty(PropertyNames.MDS_HTTP_UR_URL, String.class);
+		this.mdsHttpPendingIncidentUrl = env.getRequiredProperty(PropertyNames.MDS_HTTP_PENDING_INCIDENT_URL);
+		this.mdsHttpOpenIncidentUrl = env.getRequiredProperty(PropertyNames.MDS_HTTP_OPEN_INCIDENT_URL);
 		this.mdsHttpProblemUrl = env.getRequiredProperty(PropertyNames.MDS_HTTP_PROBLEM_URL, String.class);
 		this.mdsHttpChangeUrl = env.getRequiredProperty(PropertyNames.MDS_HTTP_CHANGE_URL, String.class);
 		this.mdsHttpURYtdUrl = env.getRequiredProperty(PropertyNames.MDS_HTTP_UR_YTD_URL, String.class);
@@ -376,6 +380,14 @@ public final class AppConfig {
 
 	public String getMdsReportPath() {
 		return mdsReportPath;
+	}
+
+	public String getMdsHttpPendingIncidentUrl() {
+		return mdsHttpPendingIncidentUrl;
+	}
+
+	public String getMdsHttpOpenIncidentUrl() {
+		return mdsHttpOpenIncidentUrl;
 	}
 
 }
