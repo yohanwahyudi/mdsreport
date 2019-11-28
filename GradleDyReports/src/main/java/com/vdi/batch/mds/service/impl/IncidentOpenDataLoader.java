@@ -16,16 +16,16 @@ import org.springframework.stereotype.Service;
 
 import com.vdi.batch.mds.service.ItopMDSDataLoaderService;
 import com.vdi.configuration.AppConfig;
-import com.vdi.model.IncidentPending;
+import com.vdi.model.IncidentOpen;
 import com.vdi.tools.IOToolsService;
 import com.vdi.tools.component.SanitizeString;
 
-@Service("incidentPendingDLService")
-public class IncidentPendingDataLoader implements ItopMDSDataLoaderService {
+@Service("incidentOpenDLService")
+public class IncidentOpenDataLoader implements ItopMDSDataLoaderService {
 	
-	private final static Logger logger = LogManager.getLogger(IncidentPendingDataLoader.class);
+	private final static Logger logger = LogManager.getLogger(IncidentOpenDataLoader.class);
 	
-	private List<IncidentPending> allPendingList;
+	private List<IncidentOpen> allPendingList;
 	
 	@Autowired
 	private IOToolsService ioToolsService;
@@ -49,7 +49,7 @@ public class IncidentPendingDataLoader implements ItopMDSDataLoaderService {
 	public List<List<String>> loadTrToListVisionetByUrl() {
 		
 		List<List<String>> records = new ArrayList<List<String>>();
-		Elements rows = parseTableTr(ioToolsService.readUrl(appConfig.getMdsHttpPendingIncidentUrl()));
+		Elements rows = parseTableTr(ioToolsService.readUrl(appConfig.getMdsHttpOpenIncidentUrl()));
 		
 		if (rows != null && rows.size() > 0) {
 
@@ -132,32 +132,32 @@ public class IncidentPendingDataLoader implements ItopMDSDataLoaderService {
 	}
 	
 	@Override
-	public List getStagingAllByURL() {
+	public List<IncidentOpen> getStagingAllByURL() {
 		
 		List<List<String>> input = loadTrToListVisionetByUrl();
 		
-		logger.info("pending incident size:" +input.size());
+		logger.info("Open incident size:" +input.size());
 		
-		List<IncidentPending> temp = mapListToStaging(input);
+		List<IncidentOpen> temp = mapListToStaging(input);
 		
-		allPendingList = new ArrayList<IncidentPending>();
+		allPendingList = new ArrayList<IncidentOpen>();
 		
 		for (Iterator<?> iterator = (Iterator<?>) temp.iterator(); iterator.hasNext();) {
-			IncidentPending pending = (IncidentPending) iterator.next();
+			IncidentOpen pending = (IncidentOpen) iterator.next();
 			allPendingList.add(pending);
 		}
 		
 		return allPendingList;
 	}
 	
-	public List<IncidentPending>mapListToStaging(List<?> input) {
+	public List<IncidentOpen>mapListToStaging(List<?> input) {
 		
-		List<IncidentPending> temp = new ArrayList<IncidentPending>();
+		List<IncidentOpen> temp = new ArrayList<IncidentOpen>();
 		
 		for (Iterator<ArrayList> iterator = (Iterator<ArrayList>) input.iterator(); iterator.hasNext();) {
 			List<String> row = iterator.next();
 			
-			IncidentPending pending = new IncidentPending();
+			IncidentOpen pending = new IncidentOpen();
 			pending = mapIncidentPending(row);
 			temp.add(pending);
 			
@@ -167,15 +167,15 @@ public class IncidentPendingDataLoader implements ItopMDSDataLoaderService {
 		
 	}
 	
-	public IncidentPending mapIncidentPending(List<String> row) {
+	public IncidentOpen mapIncidentPending(List<String> row) {
 		
-		IncidentPending pending = new IncidentPending();
+		IncidentOpen pending = new IncidentOpen();
 		pending.setRef(row.get(0));
 		pending.setOrganizationName(row.get(1));
 		pending.setCallerLastName(row.get(2));
 		pending.setTeamEmail(row.get(3));
 		pending.setAgentLastName(row.get(4));
-		pending.setTitle(row.get(5));
+		pending.setTitle(sanitize.getSanitizedString(row.get(5), 255));
 		//pending.setDescription(row.get(6));
 		pending.setStartDate(row.get(7));
 		pending.setStartTime(row.get(8));
@@ -207,7 +207,7 @@ public class IncidentPendingDataLoader implements ItopMDSDataLoaderService {
 		pending.setResolutionDelay(row.get(34));
 		pending.setResolutionCode(row.get(35));
 		pending.setSolution(row.get(36));
-		pending.setPendingReason(row.get(37));
+		pending.setPendingReason(sanitize.getSanitizedString(row.get(37), 4000));
 		pending.setParentIncidentRef(row.get(38));
 		pending.setParentProblemRef(row.get(39));
 		pending.setParentChangeRef(row.get(40));

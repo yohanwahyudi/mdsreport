@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import com.vdi.model.Incident;
 import com.vdi.model.staging.Staging;
 
 @Repository

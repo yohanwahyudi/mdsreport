@@ -25,8 +25,10 @@ public class PopulateIncidentTest {
 //		TimeTools timeTools = ctx.getBean(TimeTools.class);
 		
 //		try {
-			populate.populate();
+//			populate.populate();
 //			populateSd.populate();
+		
+		populate.populate();
 			
 			
 //		} catch (Exception e) {

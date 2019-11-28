@@ -17,10 +17,10 @@ import com.vdi.batch.mds.helper.PopulateUserRequestYTD;
 import com.vdi.batch.mds.repository.dao.StagingIncidentDAOService;
 import com.vdi.batch.mds.repository.dao.StagingUReqYTDDAOService;
 import com.vdi.batch.mds.service.ItopMDSDataLoaderService;
-import com.vdi.batch.mds.service.impl.IncidentPendingDataLoader;
+import com.vdi.batch.mds.service.impl.IncidentOpenDataLoader;
 import com.vdi.batch.mds.service.impl.UserRequestDataLoaderYTDImpl;
 import com.vdi.configuration.AppConfig;
-import com.vdi.model.IncidentPending;
+import com.vdi.model.IncidentOpen;
 import com.vdi.model.staging.Staging;
 import com.vdi.model.staging.StagingUserRequestYTD;
 
@@ -32,12 +32,12 @@ public class iTopLoaderTest {
 	public static void main(String args[]) throws IllegalArgumentException, IllegalAccessException {
 		annotationCtx = new AnnotationConfigApplicationContext(AppConfig.class);
 
-		ItopMDSDataLoaderService itopMDSLoadData = annotationCtx.getBean("incidentPendingDLService", IncidentPendingDataLoader.class);
+		ItopMDSDataLoaderService itopMDSLoadData = annotationCtx.getBean("incidentOpenDLService", IncidentOpenDataLoader.class);
 		
-		List<IncidentPending> allStagingList = new ArrayList<IncidentPending>();
+		List<IncidentOpen> allStagingList = new ArrayList<IncidentOpen>();
 		allStagingList = itopMDSLoadData.getStagingAllByURL();
 
-		IncidentPending staging = allStagingList.get(0);
+		IncidentOpen staging = allStagingList.get(0);
 
 		for(Field field : staging.getClass().getDeclaredFields()) {
 			field.setAccessible(true);

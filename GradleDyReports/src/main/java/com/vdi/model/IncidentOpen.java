@@ -1,6 +1,6 @@
 package com.vdi.model;
 
-public class IncidentPending {
+public class IncidentOpen {
 	
 	private String ref;
 	private String organizationName;

@@ -89,6 +89,7 @@ public final class PropertyNames {
 
 	// constant
 	// ITOP Status
+	public static final String CLOSED = "Closed";
 	public static final String PENDING = "Pending";
 	public static final String ASSIGNED = "Assigned";
 	public static final String ESCALATED_TTR = "Escalated TTR";
