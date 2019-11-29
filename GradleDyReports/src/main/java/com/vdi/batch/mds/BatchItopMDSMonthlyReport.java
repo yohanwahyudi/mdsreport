@@ -27,6 +27,7 @@ import com.vdi.batch.mds.service.MailService;
 import com.vdi.configuration.AppConfig;
 import com.vdi.configuration.PropertyNames;
 import com.vdi.model.Incident;
+import com.vdi.model.IncidentOpen;
 import com.vdi.model.Period;
 import com.vdi.model.performance.PerformanceTeam;
 import com.vdi.reports.ReportExporter;
@@ -280,7 +281,10 @@ public class BatchItopMDSMonthlyReport extends QuartzJobBean {
 		mapObject.put("assigned", assigned);
 		
 		ExceptionTicketHelper helper = ctx.getBean("exceptionTicketHelper", ExceptionTicketHelper.class);
-		mapObject.put("exceptionLastMonth", helper.getExceptionLastMonth());
+		//mapObject.put("exceptionLastMonth", helper.getExceptionLastMonth());
+		
+		List<IncidentOpen> open = helper.constructedException(PropertyNames.CONSTANT_REPORT_PERIOD_MONTHLY);
+		mapObject.put("exceptionLastMonth", open);
 
 		return mapObject;
 	}

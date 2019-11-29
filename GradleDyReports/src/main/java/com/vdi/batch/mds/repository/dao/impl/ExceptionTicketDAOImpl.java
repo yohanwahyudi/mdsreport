@@ -25,4 +25,19 @@ public class ExceptionTicketDAOImpl implements ExceptionTicketDAOService{
 		return exceptionRepository.getExceptionTicketLastMonth();
 	}
 
+	@Override
+	public List<Object[]> getExceptionTicketForMonth() {
+		return exceptionRepository.getExceptionTicketForMonth();
+	}
+
+	@Override
+	public List<Object[]> getExceptionTicketForLastMonth() {
+		return exceptionRepository.getExceptionTicketForLastMonth();
+	}
+
+	@Override
+	public List<Object[]> getExceptionTicketByMonthYear(int month, int year) {
+		return exceptionRepository.getExceptionTicketByMonthYear(month, year);
+	}
+
 }

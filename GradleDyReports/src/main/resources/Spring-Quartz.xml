@@ -86,7 +86,7 @@
 	</bean>
 	<bean id="cronTriggerBatchMDSMtdPerformance" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="BatchMDSMtdPerformance" />
-		<property name="cronExpression" value="0 50 15 * * ? *" />
+		<property name="cronExpression" value="0 58 15 * * ? *" />
 	</bean>
 	
 	<!-- Cron for calculate Report MTD--> 
@@ -95,7 +95,7 @@
 	</bean>
 	<bean id="cronTriggerBatchMDSMtdReport" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="BatchMDSMtdReport" />
-		<property name="cronExpression" value="0 23 17 * * ? *" />
+		<property name="cronExpression" value="0 1 16 * * ? *" />
 	</bean>
 	
 	<!-- Cron for calculate performance monthly--> 
@@ -106,7 +106,7 @@
 		<property name="jobDetail" ref="BatchItopMDSMonthlyPerformance" />
 		<!-- <property name="cronExpression" value="0 0 10 1 * ?" /> -->
 		<!-- <property name="cronExpression" value="0 0 12 ? * MON#1 *" /> -->
-		<property name="cronExpression" value="0 38 16 * * ? *" />
+		<property name="cronExpression" value="0 37 16 * * ? *" />
 	</bean>	
 	
 	
