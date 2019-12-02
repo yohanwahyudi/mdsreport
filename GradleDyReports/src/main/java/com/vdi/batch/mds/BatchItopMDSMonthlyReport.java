@@ -96,7 +96,6 @@ public class BatchItopMDSMonthlyReport extends QuartzJobBean {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} catch (Throwable e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			

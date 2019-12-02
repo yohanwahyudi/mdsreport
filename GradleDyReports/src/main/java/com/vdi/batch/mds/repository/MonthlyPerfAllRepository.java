@@ -74,7 +74,7 @@ public interface MonthlyPerfAllRepository extends CrudRepository<PerformanceOver
 					"			  " + 
 					"             where     " + 
 					"				ttr_passed='no' "+  
-					"			  	date_format(start_date, '%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01')       " + 
+					"			  	and date_format(start_date, '%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01')       " + 
 					"			  	and date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')      " + 
 					"			  	and agent_fullname like 'EXT%'      " + 
 					"			 	and agent.is_active=1    " + 
@@ -107,7 +107,7 @@ public interface MonthlyPerfAllRepository extends CrudRepository<PerformanceOver
 					"			  " + 
 					"             where     " + 
 					"				ttr_passed='yes' "+  
-					"			  	date_format(start_date, '%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01')       " + 
+					"			  	and date_format(start_date, '%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01')       " + 
 					"			  	and date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')      " + 
 					"			  	and agent_fullname like 'EXT%'      " + 
 					"			 	and agent.is_active=1    " + 

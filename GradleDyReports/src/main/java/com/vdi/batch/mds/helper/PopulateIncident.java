@@ -237,10 +237,10 @@ public class PopulateIncident {
 		similar.retainAll(localRefNo);
 		diff.removeAll(newRefNo); 
 		
-		System.out.println("localRefNo: " +localRefNo);
-		System.out.println("diff: "+ diff);
-		System.out.println("diff: "+ diff.size());
-		System.out.println("similar: "+similar);
+//		System.out.println("localRefNo: " +localRefNo);
+//		System.out.println("diff: "+ diff);
+//		System.out.println("diff: "+ diff.size());
+//		System.out.println("similar: "+similar);
 		
 		Map<String, Iterable<Incident>> map = new HashMap<>();
 		if(diff!=null && diff.size()>0) {
@@ -289,10 +289,12 @@ public class PopulateIncident {
 		
 		Iterator<Incident> iter = similar.iterator();
 		while(iter.hasNext()) {
-			String ref = iter.next().getRef();
+			Incident localIncident = new Incident();
+			localIncident = iter.next();
+			
+			String ref = localIncident.getRef();
 			if(refList.contains(ref)) {
-				Incident localIncident = new Incident();
-				localIncident = iter.next();
+				
 				
 				IncidentOpen open = new IncidentOpen();
 				open = mapNewList.get(ref);
