@@ -67,6 +67,11 @@ public final class AppConfig {
 	private final String mdsHttpUrl;
 	private final String mdsHttpSdUrl;
 	private final String mdsHttpUrUrl;
+	private final String mdsHttpPendingIncidentUrl;
+	private final String mdsHttpOpenIncidentUrl;
+	private final String mdsHttpProblemUrl;
+	private final String mdsHttpChangeUrl;
+	private final String mdsHttpURYtdUrl;
 	private final String mdsCsvAgentDelimiters;
 	private final String mdsCsvAgentFile;
 
@@ -89,6 +94,11 @@ public final class AppConfig {
 		this.mdsHttpUrl = env.getRequiredProperty(PropertyNames.MDS_HTTP_URL, String.class);
 		this.mdsHttpSdUrl = env.getRequiredProperty(PropertyNames.MDS_HTTP_SD_URL, String.class);
 		this.mdsHttpUrUrl = env.getRequiredProperty(PropertyNames.MDS_HTTP_UR_URL, String.class);
+		this.mdsHttpPendingIncidentUrl = env.getRequiredProperty(PropertyNames.MDS_HTTP_PENDING_INCIDENT_URL);
+		this.mdsHttpOpenIncidentUrl = env.getRequiredProperty(PropertyNames.MDS_HTTP_OPEN_INCIDENT_URL);
+		this.mdsHttpProblemUrl = env.getRequiredProperty(PropertyNames.MDS_HTTP_PROBLEM_URL, String.class);
+		this.mdsHttpChangeUrl = env.getRequiredProperty(PropertyNames.MDS_HTTP_CHANGE_URL, String.class);
+		this.mdsHttpURYtdUrl = env.getRequiredProperty(PropertyNames.MDS_HTTP_UR_YTD_URL, String.class);
 		this.mailHost = env.getRequiredProperty(PropertyNames.MAIL_HOST, String.class);
 		this.mailPort = env.getRequiredProperty(PropertyNames.MAIL_PORT, Integer.class);
 		this.mailFrom = env.getRequiredProperty(PropertyNames.MAIL_FROM, String.class);
@@ -138,16 +148,16 @@ public final class AppConfig {
 	public JavaMailSender getMailSenderDev() {
 		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
-		mailSender.setHost("smtp.gmail.com");
+		mailSender.setHost("smtp.mailtrap.io");
 		mailSender.setPort(465);
-		mailSender.setUsername("vdichangemanagement@gmail.com");
-		mailSender.setPassword("Visionet123");
+		mailSender.setUsername("6d71cdff4589ef");
+		mailSender.setPassword("e536eb3a1dd84e");
 
 		Properties javaMailProperties = new Properties();
 //		javaMailProperties.put("mail.debug", "true");
 		javaMailProperties.put("mail.smtp.auth", "true");
 //		javaMailProperties.put("mail.smtp.starttls.enable", "true");
-		javaMailProperties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+		//javaMailProperties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 		javaMailProperties.put("mail.smtp.port", "465");
 		javaMailProperties.put("mail.mime.multipart.allowempty", "true");
 
@@ -191,7 +201,7 @@ public final class AppConfig {
 		dataSourceConfig.addDataSourceProperty(PropertyNames.HIKARI_CACHESERVERCONFIGURATION, env.getRequiredProperty(PropertyNames.HIKARI_CACHESERVERCONFIGURATION));
 		dataSourceConfig.addDataSourceProperty(PropertyNames.HIKARI_ELIDESETAUTOCOMMITS, env.getRequiredProperty(PropertyNames.HIKARI_ELIDESETAUTOCOMMITS));
 		dataSourceConfig.addDataSourceProperty(PropertyNames.HIKARI_MAINTAINTIMESTATS, env.getRequiredProperty(PropertyNames.HIKARI_MAINTAINTIMESTATS));
-		
+		dataSourceConfig.setLeakDetectionThreshold(TimeUnit.SECONDS.toMillis(env.getRequiredProperty(PropertyNames.HIKARI_SETMAXIMUMLIFETIME, Integer.class)));
 		return new HikariDataSource(dataSourceConfig);
 	}
 
@@ -320,6 +330,14 @@ public final class AppConfig {
 		return mdsHttpUrl;
 	}
 
+	public String getMdsHttpProblemUrl() {
+		return mdsHttpProblemUrl;
+	}
+
+	public String getMdsHttpChangeUrl() {
+		return mdsHttpChangeUrl;
+	}
+
 	public String getMdsCsvAgentDelimiters() {
 		return mdsCsvAgentDelimiters;
 	}
@@ -340,6 +358,10 @@ public final class AppConfig {
 		return mdsHttpUrUrl;
 	}
 
+	public String getMdsHttpURYtdUrl() {
+		return mdsHttpURYtdUrl;
+	}
+
 	public String[] getServicedeskPerson() {
 		return servicedeskPerson;
 	}
@@ -358,6 +380,14 @@ public final class AppConfig {
 
 	public String getMdsReportPath() {
 		return mdsReportPath;
+	}
+
+	public String getMdsHttpPendingIncidentUrl() {
+		return mdsHttpPendingIncidentUrl;
+	}
+
+	public String getMdsHttpOpenIncidentUrl() {
+		return mdsHttpOpenIncidentUrl;
 	}
 
 }

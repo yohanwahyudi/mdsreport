@@ -8,5 +8,6 @@ public interface ServiceDeskReportDAO {
 	
 	public List<StagingServiceDesk> getAllIncidentByWeek(int month, int week);
 	public List<StagingServiceDesk> getAllIncidentByMonth(int month);
+	public List<StagingServiceDesk> getAllIncidentByMtd();
 
 }

@@ -43,6 +43,19 @@ public class ServiceDeskReportHelper {
 	private PerfAgentDAOService agentURWeeklyPerformance;
 
 	@Autowired
+	@Qualifier("mtdSdPerfAllDao")
+	private PerfAllDAOService allMtdPerformance;
+	@Autowired
+	@Qualifier("mtdSdPerfAgentDao")
+	private PerfAgentDAOService agentMtdPerformance;
+	@Autowired
+	@Qualifier("mtdUrPerfAllDao")
+	private PerfAllDAOService allUrMtdPerformance;
+	@Autowired
+	@Qualifier("mtdUrPerfAgentDao")
+	private PerfAgentDAOService agentUrMtdPerformance;
+	
+	@Autowired
 	@Qualifier("monthlySDPerfAllDAO")
 	private PerfAllDAOService allMonthlyPerformance;
 	@Autowired
@@ -106,7 +119,7 @@ public class ServiceDeskReportHelper {
 		return weeklyReport;
 	}
 	
-private void setWeeklyReport(int month) {
+	private void setWeeklyReport(int month) {
 		
 		this.currentMonth = month;
 		this.currentWeek = timeTools.getCurrentWeekYear();
@@ -145,6 +158,28 @@ private void setWeeklyReport(int month) {
 
 	public MasterReport getMonthlyReport() {
 		setMonthlyReport();
+
+		return monthlyReport;
+	}
+	
+	private void setMtdReport() {
+
+		this.currentMonth = timeTools.getCurrentMonth();
+		this.currentWeek = timeTools.getCurrentWeekYear();
+		this.prevMonth = currentMonth - 1;
+		this.prevWeek = currentWeek - 1;
+		
+		monthlyReport = new MasterReport();
+		monthlyReport.setOverallAchievementList(getOverallMtdAchievement());
+		monthlyReport.setServiceDeskAchievementList(getServiceDeskMtdAchievement());
+		monthlyReport.setPerformanceServiceDeskAgentList(getSdAgentMtdPerformance());
+		monthlyReport.setServiceDeskIncidentList(getSdMtdReport().getServiceDeskIncidentList());
+		monthlyReport.setUserRequestTicketList(getUrMtdReport().getUserRequestTicketList());
+
+	}
+	
+	public MasterReport getMtdReport() {
+		setMtdReport();
 
 		return monthlyReport;
 	}
@@ -304,6 +339,195 @@ private void setWeeklyReport(int month) {
 		return sdAgentPerformance;
 
 	}
+	
+	private List<SummaryReport> getOverallMtdAchievement() {
+		MasterReport sdMonthly = getSdMtdReport();
+		MasterReport urMonthly = getUrMtdReport();
+
+		Map<Object, Object> sdSummary = sdMonthly.getMapValue();
+		Integer sdTotalTicket = (Integer) sdSummary.get("totalTicket");
+		Integer sdAchievedTicket = (Integer) sdSummary.get("totalAchieved");
+		Integer sdMissedTicket = (Integer) sdSummary.get("totalMissed");
+
+		Map<Object, Object> urSummary = urMonthly.getMapValue();
+		Integer urTotalTicket = (Integer) urSummary.get("totalTicket");
+		Integer urAchievedTicket = (Integer) urSummary.get("totalAchieved");
+		Integer urMissedTicket = (Integer) urSummary.get("totalMissed");
+
+		logger.debug("mapsd : " + sdSummary);
+		logger.debug("mapur : " + urSummary);
+
+		List<SummaryReport> overallAchievementList = new ArrayList<SummaryReport>();
+		Integer totalTicket = sdTotalTicket + urTotalTicket;
+		Integer totalAchieved = sdAchievedTicket + urAchievedTicket;
+		Integer totalMissed = sdMissedTicket + urMissedTicket;
+		Float achievement = calculateAchievement(totalAchieved, totalTicket).floatValue();
+		overallAchievementList.add(new SummaryReport("Ticket Total", totalTicket.toString()));
+		overallAchievementList.add(new SummaryReport("Ticket Achieved", totalAchieved.toString()));
+		overallAchievementList.add(new SummaryReport("Ticket Missed", totalMissed.toString()));
+		overallAchievementList.add(new SummaryReport("Achievement", achievement.toString() + "%"));
+
+		return overallAchievementList;
+	}
+	
+	private List<SummaryReport> getServiceDeskMtdAchievement() {
+
+		MasterReport sdMtd = getSdMtdReport();
+		MasterReport urMtd = getUrMtdReport();
+
+		Map<Object, Object> sdSummary = sdMtd.getMapValue();
+		Integer sdTotalTicket = (Integer) sdSummary.get("totalTicket");
+		Integer sdAchievedTicket = (Integer) sdSummary.get("totalAchieved");
+		Integer sdMissedTicket = (Integer) sdSummary.get("totalMissed");
+		Float sdAchievement = (Float) sdSummary.get("achievement");
+
+		Map<Object, Object> urSummary = urMtd.getMapValue();
+		Integer urTotalTicket = (Integer) urSummary.get("totalTicket");
+		Integer urAchievedTicket = (Integer) urSummary.get("totalAchieved");
+		Integer urMissedTicket = (Integer) urSummary.get("totalMissed");
+		Float urAchievement = (Float) urSummary.get("achievement");
+
+		List<SummaryReport> serviceDeskAchievementList = new ArrayList<SummaryReport>();
+		Integer totalTicket = sdTotalTicket + urTotalTicket;
+		Integer totalAchieved = sdAchievedTicket + urAchievedTicket;
+		Integer totalMissed = sdMissedTicket + urMissedTicket;
+		Float achievement = calculateAchievement(totalAchieved, totalTicket).floatValue();
+		serviceDeskAchievementList.add(new SummaryReport("Ticket Total", sdTotalTicket.toString(),
+				urTotalTicket.toString(), totalTicket.toString()));
+		serviceDeskAchievementList.add(new SummaryReport("Ticket Achieved", sdAchievedTicket.toString(),
+				urAchievedTicket.toString(), totalAchieved.toString()));
+		serviceDeskAchievementList.add(new SummaryReport("Ticket Missed", sdMissedTicket.toString(),
+				urMissedTicket.toString(), totalMissed.toString()));
+		serviceDeskAchievementList.add(new SummaryReport("Achievement", sdAchievement.toString() + "%",
+				urAchievement.toString() + "%", achievement.toString() + "%"));
+
+		return serviceDeskAchievementList;
+	}
+	
+	private List<PerformanceAgent> getSdAgentMtdPerformance() {
+
+		String[] personArray = appConfig.getServicedeskPerson();
+		String otherDcuName = appConfig.getServicedeskOtherTeam();
+
+		List<PerformanceAgent> sdAgent = getSdMtdReport().getPerformanceServiceDeskAgentList();
+		List<PerformanceAgent> urAgent = getUrMtdReport().getPerformanceUserRequestAgentList();
+
+		for (PerformanceAgent a : sdAgent) {
+			logger.debug("sdlist agent debug " + a.getAgentName());
+		}
+
+		// loop through servicedesk
+		logger.debug("Loop through SD");
+		Map<String, PerformanceAgent> mapSdPersons = new HashMap<String, PerformanceAgent>();
+		for (String person : personArray) {
+			logger.debug("person sd: " + person);
+			for (PerformanceAgent agent : sdAgent) {
+				logger.debug("personsd " + agent.getAgentName());
+				if (person.trim().equalsIgnoreCase(agent.getAgentName().trim())) {
+					mapSdPersons.put(agent.getAgentName(), agent);
+				}
+				// break;
+			}
+		}
+		Iterator<Map.Entry<String, PerformanceAgent>> sdIterator = mapSdPersons.entrySet().iterator();
+		int totalSdPersonTicket = 0;
+		int achievedSdPersonTicket = 0;
+		int missedSdPersonTicket = 0;
+		
+		logger.debug("sd person ticket");
+		while (sdIterator.hasNext()) {
+			Map.Entry<String, PerformanceAgent> entry = sdIterator.next();
+			totalSdPersonTicket = totalSdPersonTicket + entry.getValue().getTotalTicket();
+			achievedSdPersonTicket = achievedSdPersonTicket + entry.getValue().getTotalAchieved();
+			missedSdPersonTicket = missedSdPersonTicket + entry.getValue().getTotalMissed();
+			
+			logger.debug("total: "+totalSdPersonTicket+"-"+"achieved: "+achievedSdPersonTicket+"-"+"missed: "+missedSdPersonTicket);
+		}
+		logger.debug("mapsdpersons: " + mapSdPersons);
+
+		// loop through userrequest
+		logger.debug("Loop through user request");
+		Map<String, PerformanceAgent> mapUrPersons = new HashMap<String, PerformanceAgent>();
+		for (String person : personArray) {
+			logger.debug("person ur: " + person);
+			for (PerformanceAgent agent : urAgent) {
+				if (person.trim().equalsIgnoreCase(agent.getAgentName().trim())) {
+					mapUrPersons.put(agent.getAgentName(), agent);
+				}
+				// break;
+			}
+		}
+		Iterator<Map.Entry<String, PerformanceAgent>> urIterator = mapUrPersons.entrySet().iterator();
+		int totalUrPersonTicket = 0;
+		int achievedUrPersonTicket = 0;
+		int missedUrPersonTicket = 0;
+		
+		logger.debug("sd person ticket");
+		while (urIterator.hasNext()) {
+			Map.Entry<String, PerformanceAgent> entry = urIterator.next();
+			totalUrPersonTicket = totalUrPersonTicket + entry.getValue().getTotalTicket();
+			achievedUrPersonTicket = achievedUrPersonTicket + entry.getValue().getTotalAchieved();
+			missedUrPersonTicket = missedUrPersonTicket + entry.getValue().getTotalMissed();
+			
+			logger.debug("total: "+totalUrPersonTicket+"-"+"achieved: "+achievedUrPersonTicket+"-"+"missed: "+missedUrPersonTicket);
+		}
+		logger.debug("mapurpersons: " + mapUrPersons);
+
+		// calculate other team
+		MasterReport sd = getSdMtdReport();
+		MasterReport ur = getUrMtdReport();
+
+		Map<Object, Object> sdSummary = sd.getMapValue();
+		Integer sdTotalTicket = (Integer) sdSummary.get("totalTicket");
+		Integer sdAchievedTicket = (Integer) sdSummary.get("totalAchieved");
+		Integer sdMissedTicket = (Integer) sdSummary.get("totalMissed");
+
+		Map<Object, Object> urSummary = ur.getMapValue();
+		Integer urTotalTicket = (Integer) urSummary.get("totalTicket");
+		Integer urAchievedTicket = (Integer) urSummary.get("totalAchieved");
+		Integer urMissedTicket = (Integer) urSummary.get("totalMissed");
+
+		Integer totalTicket = sdTotalTicket + urTotalTicket;
+		Integer totalAchieved = sdAchievedTicket + urAchievedTicket;
+		Integer totalMissed = sdMissedTicket + urMissedTicket;
+
+		int totalDCUTicket = totalTicket - (totalSdPersonTicket + totalUrPersonTicket);
+		int achievedDCUTicket = totalAchieved - (achievedSdPersonTicket + achievedUrPersonTicket);
+		int missedDCUTicket = totalMissed - (missedSdPersonTicket + missedUrPersonTicket);
+		float achievementDCU = calculateAchievement(achievedDCUTicket, totalDCUTicket).floatValue();
+		
+		logger.debug("sd summary");
+		logger.debug("total: "+sdTotalTicket+"-"+"achieved: "+sdAchievedTicket+"-"+"missed: "+sdMissedTicket);
+		logger.debug("ur summary");
+		logger.debug("total: "+urTotalTicket+"-"+"achieved: "+urAchievedTicket+"-"+"missed: "+urMissedTicket);
+		logger.debug("ur+sd");
+		logger.debug("total: "+totalTicket+"-"+"achieved: "+totalAchieved+"-"+"missed: "+totalMissed);
+		logger.debug("totalDCUTicket: "+totalDCUTicket+"-"+"achievedDCUTicket: "+achievedDCUTicket+"-"+"missedDCUTicket: "+missedDCUTicket+"achievementDCU: "+achievementDCU);
+
+		// populate data
+		List<PerformanceAgent> sdAgentPerformance = new ArrayList<PerformanceAgent>();
+		for (String person : personArray) {
+
+			if (mapSdPersons.get(person) != null) {
+
+				int achieved = mapSdPersons.get(person).getTotalAchieved()
+						+ mapUrPersons.get(person).getTotalAchieved();
+				int missed = mapSdPersons.get(person).getTotalMissed() + mapUrPersons.get(person).getTotalMissed();
+				int total = mapSdPersons.get(person).getTotalTicket() + mapUrPersons.get(person).getTotalTicket();
+				float achievement = calculateAchievement(achieved, total).floatValue();
+				
+				logger.debug("inside personarray");
+				logger.debug("total: "+total+"-"+"achieved: "+achieved+"-"+"missed: "+missed+"achievement: "+achievement);
+
+				sdAgentPerformance.add(new PerformanceAgent(person, achieved, missed, total, achievement));
+			}
+		}
+		sdAgentPerformance.add(
+				new PerformanceAgent(otherDcuName, achievedDCUTicket, missedDCUTicket, totalDCUTicket, achievementDCU));
+
+		return sdAgentPerformance;
+
+	}
 
 	private List<SummaryReport> getOverallMonthlyAchievement() {
 		MasterReport sdMonthly = getSdMonthlyReport();
@@ -428,7 +652,7 @@ private void setWeeklyReport(int month) {
 			achievedUrPersonTicket = achievedUrPersonTicket + entry.getValue().getTotalAchieved();
 			missedUrPersonTicket = missedUrPersonTicket + entry.getValue().getTotalMissed();
 		}
-		logger.debug("mapurpersons: " + mapUrPersons);
+		logger.info("mapurpersons: " + mapUrPersons);
 
 		// calculate other team
 		MasterReport sd = getSdMonthlyReport();
@@ -452,6 +676,14 @@ private void setWeeklyReport(int month) {
 		int achievedDCUTicket = totalAchieved - (achievedSdPersonTicket + achievedUrPersonTicket);
 		int missedDCUTicket = totalMissed - (missedSdPersonTicket + missedUrPersonTicket);
 		float achievementDCU = calculateAchievement(achievedDCUTicket, totalDCUTicket).floatValue();
+		
+		logger.debug("sd summary");
+		logger.debug("total: "+sdTotalTicket+"-"+"achieved: "+sdAchievedTicket+"-"+"missed: "+sdMissedTicket);
+		logger.debug("ur summary");
+		logger.debug("total: "+urTotalTicket+"-"+"achieved: "+urAchievedTicket+"-"+"missed: "+urMissedTicket);
+		logger.debug("ur+sd");
+		logger.debug("total: "+totalTicket+"-"+"achieved: "+totalAchieved+"-"+"missed: "+totalMissed);
+		logger.debug("totalDCUTicket: "+totalDCUTicket+"-"+"achievedDCUTicket: "+achievedDCUTicket+"-"+"missedDCUTicket: "+missedDCUTicket+"achievementDCU: "+achievementDCU);
 
 		// populate data
 		List<PerformanceAgent> sdAgentPerformance = new ArrayList<PerformanceAgent>();
@@ -576,13 +808,71 @@ private void setWeeklyReport(int month) {
 		map.put("totalMissed", totalMissedUR);
 		map.put("achievement", achievementUR);
 
-		logger.debug("map ur: " + map);
+		logger.info("map ur: " + map);
 
 		List<PerformanceAgent> performanceAgentURList = new ArrayList<PerformanceAgent>();
 		performanceAgentURList = agentURMonthlyPerformance.getPerformance(0, currentMonth);
 
 		List<StagingUserRequest> userRequestIncidentList = new ArrayList<StagingUserRequest>();
 		userRequestIncidentList = urReport.getAllIncidentByMonth(prevMonth);
+
+		MasterReport reportUR = new MasterReport();
+		reportUR.setPerformanceUserRequestAgentList(performanceAgentURList);
+		reportUR.setUserRequestTicketList(userRequestIncidentList);
+		reportUR.setMapValue(map);
+
+		return reportUR;
+
+	}
+	
+	private MasterReport getSdMtdReport() {
+
+		PerformanceOverall perfAll = allMtdPerformance.getPerformance();
+		Integer totalTicket = perfAll.getTotalTicket();
+		Integer totalAchieved = perfAll.getTotalAchieved();
+		Integer totalMissed = perfAll.getTotalMissed();
+		Float achievement = perfAll.getAchievement();
+
+		Map<Object, Object> map = new HashMap<Object, Object>();
+		map.put("totalTicket", totalTicket);
+		map.put("totalAchieved", totalAchieved);
+		map.put("totalMissed", totalMissed);
+		map.put("achievement", achievement);
+
+		List<PerformanceAgent> performanceAgentSDList = agentMtdPerformance.getPerformance();
+		List<StagingServiceDesk> serviceDeskIncidentList = sdReport.getAllIncidentByMtd();
+
+		MasterReport reportSD = new MasterReport();
+		reportSD.setPerformanceServiceDeskAgentList(performanceAgentSDList);
+		reportSD.setServiceDeskIncidentList(serviceDeskIncidentList);
+		reportSD.setMapValue(map);
+
+		return reportSD;
+
+	}
+
+	private MasterReport getUrMtdReport() {
+
+		// get data from userrequest
+		PerformanceOverall perfURAll = allUrMtdPerformance.getPerformance();
+		Integer totalTicketUR = perfURAll.getTotalTicket();
+		Integer totalAchievedUR = perfURAll.getTotalAchieved();
+		Integer totalMissedUR = perfURAll.getTotalMissed();
+		Float achievementUR = perfURAll.getAchievement();
+
+		Map<Object, Object> map = new HashMap<Object, Object>();
+		map.put("totalTicket", totalTicketUR);
+		map.put("totalAchieved", totalAchievedUR);
+		map.put("totalMissed", totalMissedUR);
+		map.put("achievement", achievementUR);
+
+		logger.debug("map ur: " + map);
+
+		List<PerformanceAgent> performanceAgentURList = new ArrayList<PerformanceAgent>();
+		performanceAgentURList = agentUrMtdPerformance.getPerformance();
+
+		List<StagingUserRequest> userRequestIncidentList = new ArrayList<StagingUserRequest>();
+		userRequestIncidentList = urReport.getAllIncidentByMtd();
 
 		MasterReport reportUR = new MasterReport();
 		reportUR.setPerformanceUserRequestAgentList(performanceAgentURList);

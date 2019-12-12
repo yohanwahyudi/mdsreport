@@ -17,7 +17,7 @@ public class CsvTest {
 	
 	public static void main(String args[]) {
 		
-		String file = System.getProperty("user.dir")+File.separator+"test.csv";
+//		String file = System.getProperty("user.dir")+File.separator+"test.csv";
 		String delimiters = ";";
 		
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(AppConfig.class);
@@ -29,7 +29,7 @@ public class CsvTest {
 		try {
 			populate.populate();
 			
-			System.out.println(file);
+//			System.out.println(file);
 			System.out.println(parse.readHeader());
 			System.out.println(parse.readRows());
 			

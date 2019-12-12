@@ -146,8 +146,8 @@ public class PopulateURPerformance {
 			perfAgent.setCategory("ur");
 			perfAgent.setAchievement(achievement);
 
-			logger.info("agentName: "+agentName);
-			logger.info("total: "+totalTicket);
+			//logger.info("agentName: "+agentName);
+			//logger.info("total: "+totalTicket);
 			
 			newPerfList.add(perfAgent);
 			newPerfMap.put(agentName, perfAgent);

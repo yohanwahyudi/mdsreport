@@ -30,6 +30,9 @@ public class StagingAgent {
 	private String organization_name;
 	private String resource;
 	
+	@Column(name="is_active")
+	private Integer isActive;
+	
 	@Column(name="created_dt")
 	@CreationTimestamp
 	private LocalDateTime createdDate;
@@ -82,6 +85,12 @@ public class StagingAgent {
 	}
 	public void setDivision(String division) {
 		this.division = division;
+	}
+	public Integer getIsActive() {
+		return isActive;
+	}
+	public void setIsActive(Integer isActive) {
+		this.isActive = isActive;
 	}
 	
 	

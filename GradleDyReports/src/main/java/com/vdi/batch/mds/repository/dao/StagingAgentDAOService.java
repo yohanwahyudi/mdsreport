@@ -10,4 +10,6 @@ public interface StagingAgentDAOService extends BaseDAOService{
 	public void resetSequenceTo1();
 	public void disableSafeUpdates();
 	public void enableSafeUpdates();
+	public void updateAgentTableMaster();
+	public void insertAgentTableMaster();
 }

@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class TestMap {
 	
-	public static void main(String args[]) {
+	public static void main(String args[]) throws InterruptedException {
 		Map<String, Integer> map1 = new HashMap<String, Integer>();
 		
 		map1.put("a", 1);
@@ -21,7 +21,10 @@ public class TestMap {
 			Map.Entry<String, Integer> entry = iterator.next();
 			
 			System.out.println(entry.getKey()+":"+entry.getValue());
+			Thread.sleep(5000);
 		}
+		
+		System.out.println("finish");
 	}
 
 }

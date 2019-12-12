@@ -12,6 +12,12 @@ public interface IncidentReportDAOService {
 	public List<Incident> getAchievedIncidentByWeek(int month, int week); 
 	public List<Incident> getMissedIncidentByWeek(int month, int week); 
 	
+	public List<Incident> getAllIncidentByMtd(); 
+	public List<Incident> getAssignedIncidentByMtd(); 
+	public List<Incident> getPendingIncidentByMtd(); 
+	public List<Incident> getAchievedIncidentByMtd(); 
+	public List<Incident> getMissedIncidentByMtd(); 
+	
 	public List<Incident> getAllIncidentByMonth(int month); 
 	public List<Incident> getAssignedIncidentByMonth(int month); 
 	public List<Incident> getPendingIncidentByMonth(int month); 

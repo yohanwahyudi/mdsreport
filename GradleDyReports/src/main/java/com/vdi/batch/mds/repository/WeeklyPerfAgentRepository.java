@@ -27,7 +27,7 @@ public interface WeeklyPerfAgentRepository extends CrudRepository<PerformanceAge
 			"				year(start_date)=year(curdate()) "+   
 			"				AND month(start_date)= :month "+
 			"				AND week(start_date,3)= :week "+
-			"				AND status in ('closed','resolved') "+
+			//"				AND status in ('closed','resolved') "+
 			"        GROUP  BY incident.agent_fullname " + 
 			"        ORDER  BY division, " + 
 			"                  agent_fullname ASC) one " + 
@@ -41,7 +41,7 @@ public interface WeeklyPerfAgentRepository extends CrudRepository<PerformanceAge
 			"							year(start_date)=year(curdate()) "+   
 			"							AND month(start_date)= :month "+
 			"							AND week(start_date,3)= :week "+
-			"							AND status in ('closed','resolved') "+
+			//"							AND status in ('closed','resolved') "+
 			"                         	AND ttr_passed = 'no' " + 
 			"                  GROUP  BY incident.agent_fullname " + 
 			"                  ORDER  BY division, " + 
@@ -57,7 +57,7 @@ public interface WeeklyPerfAgentRepository extends CrudRepository<PerformanceAge
 			"							year(start_date)=year(curdate()) "+   
 			"							AND month(start_date)= :month "+
 			"							AND week(start_date,3)= :week "+
-			"							AND status in ('closed','resolved') "+
+			//"							AND status in ('closed','resolved') "+
 			"                         	AND ttr_passed = 'yes' " + 
 			"                  GROUP  BY incident.agent_fullname " + 
 			"                  ORDER  BY division, " + 
@@ -108,7 +108,8 @@ public interface WeeklyPerfAgentRepository extends CrudRepository<PerformanceAge
 			"        FROM   incident incident " + 
 			"               JOIN agent " + 
 			"                 ON incident.agent_fullname = agent.NAME " + 
-			"        WHERE  Yearweek(start_date, 3) = Yearweek(Curdate(), 3) AND status IN ( 'closed', 'resolved' ) " + 
+			"        WHERE  Yearweek(start_date, 3) = Yearweek(Curdate(), 3) AND "+
+			//"				status IN ( 'closed', 'resolved' ) " + 
 			"        GROUP  BY incident.agent_fullname " + 
 			"        ORDER  BY division, " + 
 			"                  agent_fullname ASC) one " + 
@@ -118,8 +119,9 @@ public interface WeeklyPerfAgentRepository extends CrudRepository<PerformanceAge
 			"                  FROM   incident incident " + 
 			"                         JOIN agent " + 
 			"                           ON incident.agent_fullname = agent.NAME " + 
-			"                  WHERE  status IN ( 'closed', 'resolved' ) " + 
-			"                         AND ttr_passed = 'no' " + 
+			"                  WHERE  "+
+			//"						  status IN ( 'closed', 'resolved' ) " + 
+			"                         ttr_passed = 'no' " + 
 			"                         AND Yearweek(start_date, 3) = Yearweek(Curdate(), 3) " + 
 			"                  GROUP  BY incident.agent_fullname " + 
 			"                  ORDER  BY division, " + 
@@ -131,8 +133,9 @@ public interface WeeklyPerfAgentRepository extends CrudRepository<PerformanceAge
 			"                  FROM   incident incident " + 
 			"                         JOIN agent " + 
 			"                           ON incident.agent_fullname = agent.NAME " + 
-			"                  WHERE  status IN ( 'closed', 'resolved' ) " + 
-			"                         AND ttr_passed = 'yes' " + 
+			"                  WHERE  "+
+			//"						  status IN ( 'closed', 'resolved' ) " + 
+			"                         ttr_passed = 'yes' " + 
 			"                         AND Yearweek(start_date, 3) = Yearweek(Curdate(), 3) " + 
 			"                  GROUP  BY incident.agent_fullname " + 
 			"                  ORDER  BY division, " + 

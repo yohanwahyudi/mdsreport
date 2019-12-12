@@ -75,7 +75,10 @@ public class Incident {
 	private String person_org_short;
 	private String person_org_name;
 	private String user_satisfaction;
+	
+	@Column(length=4000)
 	private String user_comment;
+	
 	private String resolution_date;
 	private String resolution_time;
 	private String hotflag;

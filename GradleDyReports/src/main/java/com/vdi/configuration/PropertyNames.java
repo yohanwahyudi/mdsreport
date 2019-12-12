@@ -19,6 +19,11 @@ public final class PropertyNames {
 	public static final String MDS_HTTP_URL = "mds.http.url";
 	public static final String MDS_HTTP_SD_URL = "mds.http.sd.url";
 	public static final String MDS_HTTP_UR_URL = "mds.http.ur.url";
+	public static final String MDS_HTTP_PROBLEM_URL = "mds.http.problem.url";
+	public static final String MDS_HTTP_CHANGE_URL = "mds.http.change.url";
+	public static final String MDS_HTTP_UR_YTD_URL = "mds.http.ur.ytd.url";
+	public static final String MDS_HTTP_OPEN_INCIDENT_URL = "mds.http.open.incident.url";
+	public static final String MDS_HTTP_PENDING_INCIDENT_URL = "mds.http.pending.incident.url";
 	public static final String MDS_EMAIL_DAILY_SUBJECT = "mds.daily.email.subject";
 	public static final String MDS_DAILY_REPORT_PATH = "mds.daily.report.path";
 
@@ -72,6 +77,7 @@ public final class PropertyNames {
 	public static final String HIKARI_SETLEAKDETECTIONTHRESHOLD="hikari.setleakdetectionthreshold";
 	public static final String HIKARI_SETIDLETIMEOUT="hikari.setidletimeout";
 	public static final String HIKARI_SETMAXIMUMPOOLSIZE="hikari.setmaximumpoolsize";
+	public static final String HIKARI_SETMAXIMUMLIFETIME="hikari.setmaximumlifetime";
 	
 	// hibernate tweak
 	public static final String PROPERTY_NAME_HIBERNATE_JDBC_BATCH_SIZE = "hibernate.jdbc.batch_size";
@@ -83,11 +89,13 @@ public final class PropertyNames {
 
 	// constant
 	// ITOP Status
+	public static final String CLOSED = "Closed";
 	public static final String PENDING = "Pending";
 	public static final String ASSIGNED = "Assigned";
 	public static final String ESCALATED_TTR = "Escalated TTR";
 	public static final String CONSTANT_REPORT_PERIOD_WEEKLY = "weekly";
 	public static final String CONSTANT_REPORT_PERIOD_MONTHLY = "monthly";
+	public static final String CONSTANT_REPORT_PERIOD_MTD = "mtd";
 	public static final String LAST_MONTH = "LAST_MONTH";
 	
 	//constant day

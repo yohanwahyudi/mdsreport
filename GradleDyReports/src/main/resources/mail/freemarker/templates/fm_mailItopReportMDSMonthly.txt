@@ -1,5 +1,20 @@
 <html>
 <head>
+
+<style type="text/css">
+	table {
+		border-collapse: collapse;
+	}
+
+	th, td {
+		border: 1px solid black;
+		padding:5px;
+	}
+
+	.hidden{
+		display:none;
+	}
+</style>
 	
 </head>
     <body>
@@ -12,6 +27,10 @@
             Achievement for service desk incident is <b>${sla.value1}</b> and support agent <b>${sla.value2}</b>. <br />
             
             Attached also activity for junior developer.
+            
+            <#if exceptionLastMonth?has_content>
+            <p>We have ${exceptionLastMonth?size} exception tickets, details can be seen below.</p>
+            </#if>
         </div>
         <br />
         <div style="overflow-x:auto;">
@@ -77,9 +96,9 @@
 								        <#list perfTeam as team>							        	
 								        		<tr style="font-size:13; text-align:left; padding: 4px; border:1px solid;">
 										        	<td style="border:1px solid black; padding: 4px;"><b>${team.teamName}</b></td>
-										        	<td style="border:1px solid black; padding: 4px;"><b>${team.totalTicket}</b></td>
 										        	<td style="border:1px solid black; padding: 4px;"><b>${team.totalAchieved}</b></td>
 										        	<td style="border:1px solid black; padding: 4px;"><b>${team.totalMissed}</b></td>
+										        	<td style="border:1px solid black; padding: 4px;"><b>${team.totalTicket}</b></td>
 										        	<td style="border:1px solid black; padding: 4px;"><b>${team.achievement} %</b></td>
 								        		</tr>			        		
 								        	
@@ -155,7 +174,37 @@
 							    </tr>			        									        	
 								</#list>
 							</table>
+							<BR />
 		          		</#if>
+		          	
+		          	<#if exceptionLastMonth?has_content>	
+		          	<li> <b>Below is a list of exception ticket:</b>	
+				        	<table style="width:700;font-family:cambria; border-collapse: collapse;" id="tblException">
+				        	<tr style="font-size:14; text-align:left; border:1px solid; background-color: #f2bd2b; color:#ffffff">
+				        			<th style="border:1px solid black; padding: 4px;">Date</th>
+									<th style="border:1px solid black; padding: 4px;">Ref</th>
+									<th style="border:1px solid black; padding: 4px;">Agent</th>
+									<th style="border:1px solid black; padding: 4px;">Category</th>
+									<th style="border:1px solid black; padding: 4px;">Type</th>
+									<th style="border:1px solid black; padding: 4px;">Reason</th>
+				        	</tr>        	
+								
+									<#assign size=exceptionLastMonth?size>
+								        <#list exceptionLastMonth as exception>							        	
+								        		<tr style="font-size:13; text-align:left; padding: 4px; border:1px solid;">										        	
+										        	<td style="border:1px solid black; padding: 4px;"><b>${exception.startDate}</b></td>
+										        	<td style="border:1px solid black; padding: 4px;"><b>${exception.ref}</b></td>
+										        	<td style="border:1px solid black; padding: 4px;"><b>${exception.agentFullname}</b></td>
+										        	<td style="border:1px solid black; padding: 4px;"><b>${exception.service}</b></td>
+										        	<td style="border:1px solid black; padding: 4px;"><b>${exception.serviceSubcategory}</b></td>
+										        	<td style="border:1px solid black; padding: 4px;"><b>${exception.description}</b></td>
+								        		</tr>			        		
+								        	
+										</#list>
+				        	
+				        	</table>
+				        </li>
+				        </#if>
 	           </ol>
 	        </div>
     	</div>
@@ -164,5 +213,8 @@
         
         <span><p style="font-family:calibri,serif;">Regards, </p></span>
         <span><p style="font-family:calibri,serif;">SLA Team</p></span><br /><br />
+        
+        
+        
     </body>
 </html>

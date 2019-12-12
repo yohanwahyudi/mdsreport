@@ -9,5 +9,6 @@ public interface StagingUserRequestDAOService extends BaseDAOService{
 	
 	public List<StagingUserRequest> getAllIncidentByWeek(int month, int week);
 	public List<StagingUserRequest> getAllIncidentByMonth(int month);
+	public List<StagingUserRequest> getAllIncidentByMtd();
 
 }

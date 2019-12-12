@@ -78,6 +78,36 @@ public class IncidentReportDAOImpl implements IncidentReportDAOService{
 		return incidentRepo.getMissedIncidentByMonth(month);
 	}
 
+	@Override
+	public List<Incident> getAllIncidentByMtd() {
+		
+		return incidentRepo.getAllIncidentByMtd();
+	}
+
+	@Override
+	public List<Incident> getAssignedIncidentByMtd() {
+		
+		return incidentRepo.getAssignedIncidentByMtd();
+	}
+
+	@Override
+	public List<Incident> getPendingIncidentByMtd() {
+		
+		return incidentRepo.getPendingIncidentByMtd();
+	}
+
+	@Override
+	public List<Incident> getAchievedIncidentByMtd() {
+		
+		return incidentRepo.getAchievedIncidentByMtd();
+	}
+
+	@Override
+	public List<Incident> getMissedIncidentByMtd() {
+		
+		return incidentRepo.getMissedIncidentByMtd();
+	}
+
 	
 	
 	

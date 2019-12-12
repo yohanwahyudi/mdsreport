@@ -33,9 +33,11 @@ import com.vdi.configuration.AppConfig;
 import com.vdi.configuration.PropertyNames;
 import com.vdi.model.Incident;
 import com.vdi.tools.IOToolsService;
+import com.vdi.tools.component.SanitizeString;
 
 @Service("jsoupParseServiceDailyMDS")
-//@ComponentScan({ "com.vdi.batch.mds.service", "com.vdi.tools", "com.vdi.configuration" })
+// @ComponentScan({ "com.vdi.batch.mds.service", "com.vdi.tools",
+// "com.vdi.configuration" })
 
 public class JsoupParseServiceImpl implements JsoupParseService {
 
@@ -50,6 +52,9 @@ public class JsoupParseServiceImpl implements JsoupParseService {
 
 	@Autowired
 	private AppConfig appConfig;
+	
+	@Autowired
+	private SanitizeString sanitize;
 
 	@Autowired
 	public JsoupParseServiceImpl(AppConfig appConfig) {
@@ -69,7 +74,7 @@ public class JsoupParseServiceImpl implements JsoupParseService {
 
 		List<List<String>> records = new ArrayList<List<String>>();
 		Elements rows = parseTableTr(ioToolsService.readUrl());
-		
+
 		if (rows != null && rows.size() > 0) {
 
 			String[] organization = appConfig.getOrganization();
@@ -81,7 +86,7 @@ public class JsoupParseServiceImpl implements JsoupParseService {
 			for (int i = 0; i < rows.size(); i++) {
 				Element row = rows.get(i);
 				Elements cols = row.select("td");
-						
+
 				if (organization1.equalsIgnoreCase((cols.get(organizationCol)).ownText())
 						|| organization2.equalsIgnoreCase((cols.get(organizationCol)).ownText())) {
 
@@ -150,8 +155,8 @@ public class JsoupParseServiceImpl implements JsoupParseService {
 			}
 		}
 
-		logger.debug("records: "+records.size());
-		
+		logger.debug("records: " + records.size());
+
 		return records;
 	}
 
@@ -243,7 +248,7 @@ public class JsoupParseServiceImpl implements JsoupParseService {
 		return records;
 	}
 
-	//@Bean(name="getIncidentAllByURLDaily")
+	// @Bean(name="getIncidentAllByURLDaily")
 	@Override
 	public List<Incident> getIncidentAllByURL() {
 		List<List<String>> input = jsoupTrToListVisionetByUrl();
@@ -278,15 +283,15 @@ public class JsoupParseServiceImpl implements JsoupParseService {
 						|| status.equalsIgnoreCase(PropertyNames.ESCALATED_TTR))) {
 					temp.add(incident);
 					added = Boolean.TRUE;
-					
-					//debug class with reflection
-//					for(Field field : incident.getClass().getDeclaredFields()) {
-//						field.setAccessible(true);
-//						String name = field.getName();
-//						Object val = field.get(incident);
-//						
-//						logger.debug(name+" : " +val);
-//					}
+
+					// debug class with reflection
+					// for(Field field : incident.getClass().getDeclaredFields()) {
+					// field.setAccessible(true);
+					// String name = field.getName();
+					// Object val = field.get(incident);
+					//
+					// logger.debug(name+" : " +val);
+					// }
 
 					// deadline line
 					deadlineList.add(incident);
@@ -297,9 +302,9 @@ public class JsoupParseServiceImpl implements JsoupParseService {
 							|| status.trim().equalsIgnoreCase(PropertyNames.PENDING)) {
 						if (!added) {
 							temp.add(incident);
-							if(incident.getStatus().equalsIgnoreCase(PropertyNames.PENDING)) {
+							if (incident.getStatus().equalsIgnoreCase(PropertyNames.PENDING)) {
 								pendingList.add(incident);
-							}else {
+							} else {
 								assignList.add(incident);
 							}
 						}
@@ -317,8 +322,8 @@ public class JsoupParseServiceImpl implements JsoupParseService {
 		return temp;
 
 	}
-	
-	//@Bean(name="getIncidentAllByFileDaily")
+
+	// @Bean(name="getIncidentAllByFileDaily")
 	@Override
 	public List<Incident> getIncidentAllByFile() {
 		List<List<String>> input = jsoupTrToListVisionetByFile();
@@ -363,14 +368,22 @@ public class JsoupParseServiceImpl implements JsoupParseService {
 							|| status.trim().equalsIgnoreCase(PropertyNames.PENDING)) {
 						if (!added) {
 							temp.add(incident);
-							if(incident.getStatus().equalsIgnoreCase(PropertyNames.PENDING)) {
+							added = Boolean.TRUE;
+							if (incident.getStatus().equalsIgnoreCase(PropertyNames.PENDING)) {
 								pendingList.add(incident);
-							}else {
+							} else {
 								assignList.add(incident);
 							}
 						}
 					}
+				}else {
+					if (status.trim().equalsIgnoreCase(PropertyNames.PENDING)) {
+						pendingList.add(incident);
+					} else if (status.trim().equalsIgnoreCase(PropertyNames.ASSIGNED)) {
+						assignList.add(incident);
+					}
 				}
+
 			} catch (ParseException e) {
 				e.printStackTrace();
 			} catch (Exception e) {
@@ -384,12 +397,11 @@ public class JsoupParseServiceImpl implements JsoupParseService {
 
 	}
 
-
 	public Incident mapIncident(List<String> row) {
 
 		Incident incident = new Incident();
 		incident.setRef(row.get(0));
-		incident.setTitle(row.get(1));
+		incident.setTitle(sanitize.getSanitizedString(row.get(1), 255));
 		incident.setStatus(row.get(2));
 		incident.setStart_date(row.get(3));
 		incident.setStart_time(row.get(4));
@@ -405,7 +417,7 @@ public class JsoupParseServiceImpl implements JsoupParseService {
 		incident.setAgent_fullname(row.get(14));
 		incident.setTeam(row.get(15));
 		incident.setTeam_name(row.get(16));
-		incident.setDescription(row.get(17));
+		//incident.setDescription(sanitize.getSanitizedString(row.get(17),4000));
 		incident.setOrigin(row.get(18));
 		incident.setLastpending_date(row.get(19));
 		incident.setLastpending_time(row.get(20));
@@ -434,11 +446,13 @@ public class JsoupParseServiceImpl implements JsoupParseService {
 		incident.setTtr(row.get(43));
 		incident.setSolution(row.get(44));
 		incident.setPerson_full_name(row.get(45));
-		incident.setEmail(row.get(46));
+
+		incident.setEmail(sanitize.getSanitizedString(row.get(46), 255));
+
 		incident.setPerson_org_short(row.get(47));
 		incident.setPerson_org_name(row.get(48));
 		incident.setUser_satisfaction(row.get(49));
-		incident.setUser_comment(row.get(50));
+		//incident.setUser_comment(sanitize.getSanitizedString(row.get(50), 4000));
 		incident.setResolution_date(row.get(51));
 		incident.setResolution_time(row.get(52));
 		incident.setHotflag(row.get(53));
@@ -487,18 +501,18 @@ public class JsoupParseServiceImpl implements JsoupParseService {
 	}
 
 	@Override
-	//@Bean
+	// @Bean
 	public List<Incident> getIncidentDeadline() {
-				
+
 		return deadlineList;
 	}
 
 	@Override
-	//@Bean
+	// @Bean
 	public List<Incident> getIncidentAssign() {
 		return assignList;
 	}
-	
+
 	@Override
 	public List<Incident> getIncidentPending() {
 		return pendingList;

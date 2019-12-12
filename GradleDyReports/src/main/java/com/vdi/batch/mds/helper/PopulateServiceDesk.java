@@ -31,7 +31,7 @@ public class PopulateServiceDesk {
 
 
 	@SuppressWarnings("unchecked")
-	public void addToStaging() throws Throwable {
+	public void addToStaging() {
 		
 		stagingList = new ArrayList<StagingServiceDesk>();
 		stagingList = load.getStagingAllByURL();
@@ -43,7 +43,7 @@ public class PopulateServiceDesk {
 	}
 
 
-	public void populate() throws Throwable {
+	public void populate() {
 		
 		// delete and reset sequence for staging table
 		stagingDAO.deleteEntity();

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import com.vdi.model.Incident;
 import com.vdi.model.staging.Staging;
 
 @Repository
@@ -36,7 +37,9 @@ public interface StagingRepository extends CrudRepository<Staging, Long>{
 			"incident.cumulated_pending=staging.cumulated_pending, incident.assignment_date=staging.assignment_date, incident.assignment_time=staging.assignment_time, " + 
 			"incident.agent_fullname=staging.agent_fullname, incident.agent_lastname=staging.agent_lastname, incident.agent=staging.agent, " + 
 			"incident.tto=staging.tto, incident.tto_passed=staging.tto_passed, incident.tto_deadline=staging.tto_deadline, " + 
-			"incident.ttr=staging.ttr, incident.ttr_passed=staging.ttr_passed, incident.ttr_deadline=staging.ttr_deadline", nativeQuery=true)
+			"incident.ttr=staging.ttr, incident.ttr_passed=staging.ttr_passed, incident.ttr_deadline=staging.ttr_deadline, incident.pending_reason=staging.pending_reason, " +
+			"incident.team_id=staging.team_id, incident.team_name=staging.team_name"
+			, nativeQuery=true)
 	public void updateIncidentTable();
 	
 	@Query(value="insert into incident " + 
@@ -49,10 +52,39 @@ public interface StagingRepository extends CrudRepository<Staging, Long>{
 	public void insertToIncidentTable();
 	
 	@Query(value="select " + 
-			"	agent_fullname, team_name " + 
+			"	agent_fullname, team_name, email, person_org_name  " + 
 			"from " + 
-			"	(select agent_fullname,team_name from incident group by agent_fullname) AS agentIncident " + 
-			"where agentIncident.agent_fullname not in (select name from agent group by name)", nativeQuery=true)
+			"	(select agent_fullname,team_name, email, person_org_name from incident group by agent_fullname) AS agentIncident " + 
+			"where agent_fullname not in (select name from agent group by name) and agent_fullname like 'EXT%' ", nativeQuery=true)
 	public List<Object[]> getUnregisteredAgent();
+	
+	@Query(value="delete from incident  " + 
+			"where  " + 
+			"	date_format(str_to_date(start_date, '%Y-%m-%d'), '%Y-%m')= date_format(curdate(), '%Y-%m') " + 
+			"and  " + 
+			"	ref not in  " + 
+			"	( " + 
+			"		select ref from staging_incident " + 
+			"		where  " + 
+			"		date_format(str_to_date(start_date, '%Y-%m-%d'), '%Y-%m')= date_format(curdate(), '%Y-%m') " + 
+			"	);", nativeQuery=true)
+	public void syncDelete();
+	
+	@Query(value="delete from incident    " + 
+			"			where    " + 
+			"				date_format(start_date,'%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01')   " + 
+			"			and   " + 
+			"				date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')    " + 
+			"			and    " + 
+			"				ref not in    " + 
+			"				(   " + 
+			"					select ref from staging_incident   " + 
+			"					where    " + 
+			"						date_format(start_date,'%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-01')   " + 
+			"					and   " + 
+			"						date_format(start_date, '%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')    " + 
+			"				);"
+			, nativeQuery=true)
+	public void syncDeletePrevMonth();
 
 }

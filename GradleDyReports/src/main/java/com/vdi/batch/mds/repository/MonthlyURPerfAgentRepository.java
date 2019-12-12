@@ -10,69 +10,120 @@ import com.vdi.model.performance.PerformanceAgent;
 
 public interface MonthlyURPerfAgentRepository extends CrudRepository<PerformanceAgent, Long>{
 
-	@Query(value="SELECT " + 
-			"	one.division, "+
-			"	one.agent,   " + 
-			"	IFNULL(two.achieved_ticket,0) AS achieved_ticket,  " + 
-			"   IFNULL(three.missed_ticket,0) AS missed_ticket,  " + 
-			"   IFNULL(one.total_ticket,0) AS total_ticket  " + 
-			"     " + 
-			"FROM ( " + 
-			"	SELECT   " + 
-			"		IFNULL(agent.division,'') AS division, "+
-			"		staging.scalar_user AS agent,    " + 
-			"		Count(staging.scalar_urequestref) AS total_ticket    " + 
-			"	FROM  staging_userrequest staging    " + 
-			"	LEFT JOIN agent    " + 
-			"	 ON staging.scalar_user = agent.NAME    " + 
-			"	WHERE "+
-			"    scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
-			"	and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
-			"	or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
-			"	AND year(urequest_startdate)=year(curdate()) "+   
-			"	AND month(urequest_startdate)= :month "+
-			"	AND staging.scalar_user like 'EXT%' "+
-			"	GROUP  BY staging.scalar_user    " + 
-			"	ORDER BY agent ASC  " + 
-			") one " + 
-			"LEFT JOIN (  " + 
-			"	SELECT  " + 
-			"		staging.scalar_user AS agent,  " + 
-			"        count(staging.scalar_urequestref) AS achieved_ticket  " + 
-			"    FROM  " + 
-			"		staging_userrequest staging  " + 
-			"	LEFT JOIN agent   " + 
-			"		ON agent.name = staging.scalar_user  " + 
-			"    WHERE " + 
-			"    scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
-			"	and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
-			"	or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
-			"	 AND staging.urequest_slattopassed = 'no'   " + 
-			"	 AND year(urequest_startdate)=year(curdate()) "+   
-			"	 AND month(urequest_startdate)= :month "+
-			"	 AND staging.scalar_user like 'EXT%' "+
-			"    GROUP BY staging.scalar_user  " + 
-			")	two  " + 
-			"	ON one.agent = two.agent  " + 
-			"LEFT JOIN (  " + 
-			"	SELECT  " + 
-			"		staging.scalar_user AS agent,  " + 
-			"        count(staging.scalar_urequestref) AS missed_ticket  " + 
-			"    FROM  " + 
-			"		staging_userrequest staging  " + 
-			"	LEFT JOIN agent   " + 
-			"		ON agent.name = staging.scalar_user  " + 
-			"    WHERE   " + 
-			"    scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'  " + 
-			"	and ((urequest_starttime>='08:30:00' and urequest_starttime<='12:00:00') "+
-			"	or (urequest_starttime>='13:00:00' and urequest_starttime<='17:30:00')) "+
-			"	 AND staging.urequest_slattopassed = 'yes'   " + 
-			"	 AND year(urequest_startdate)=year(curdate()) "+   
-			"	 AND month(urequest_startdate)= :month "+
-			"	 AND staging.scalar_user like 'EXT%' "+
-			"    GROUP BY staging.scalar_user  " + 
-			")	three                               " + 
-			"	ON one.agent = three.agent; ", nativeQuery=true)
+	@Query(value=" SELECT      " + 
+			"			 	one.division,    " + 
+			"			 	one.agent,        " + 
+			"			 	IFNULL(two.achieved_ticket,0) AS achieved_ticket,       " + 
+			"			    IFNULL(three.missed_ticket,0) AS missed_ticket,       " + 
+			"			    IFNULL(one.total_ticket,0) AS total_ticket       " + 
+			"			           " + 
+			"			 FROM (      " + 
+			"			 	SELECT        " + 
+			"			 		IFNULL(agent.division,'') AS division,    " + 
+			"			 		staging.scalar_user AS agent,         " + 
+			"			 		Count(1) AS total_ticket         " + 
+			"			 	FROM  staging_userrequest staging         " + 
+			"			 	LEFT JOIN agent         " + 
+			"			 	 ON staging.scalar_user = agent.NAME  " + 
+			"				left join       " + 
+			"									(      " + 
+			"										SELECT       " + 
+			"											ref      " + 
+			"										FROM       " + 
+			"											mds_itop.exception_ticket e      " + 
+			"										inner join       " + 
+			"											exception_header h      " + 
+			"											on e.exception_header_id = h.id      " + 
+			"										inner join exception_approval apprv      " + 
+			"											on h.approval_id = apprv.id      " + 
+			"										where      " + 
+			"											h.type_id=2      " + 
+			"											and h.category_id=2      " + 
+			"											and apprv.status_id=4      " + 
+			"									) e      " + 
+			"								  on e.ref = staging.scalar_urequestref	     " + 
+			"			 	WHERE    " + 
+			"			     scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'       " + 
+			"			 	AND agent.is_active=1    " + 
+			"			 	and DATE_FORMAT(urequest_startdate,'%Y-%m-01 00:00:00') < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')     " + 
+			"			 	and DATE_FORMAT(urequest_startdate,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')    " + 
+			"			 	AND staging.scalar_user like 'EXT%'    " + 
+			"			 	and e.ref is null    " + 
+			"			 	GROUP  BY staging.scalar_user         " + 
+			"			 	ORDER BY agent ASC       " + 
+			"			 ) one      " + 
+			"			 LEFT JOIN (       " + 
+			"			 	SELECT       " + 
+			"			 		staging.scalar_user AS agent,       " + 
+			"			         count(staging.scalar_urequestref) AS achieved_ticket       " + 
+			"			     FROM       " + 
+			"			 		staging_userrequest staging       " + 
+			"			 	LEFT JOIN agent        " + 
+			"			 		ON agent.name = staging.scalar_user       " + 
+			"			 	left join       " + 
+			"									(      " + 
+			"										SELECT       " + 
+			"											ref      " + 
+			"										FROM       " + 
+			"											mds_itop.exception_ticket e      " + 
+			"										inner join       " + 
+			"											exception_header h      " + 
+			"											on e.exception_header_id = h.id      " + 
+			"										inner join exception_approval apprv      " + 
+			"											on h.approval_id = apprv.id      " + 
+			"										where      " + 
+			"											h.type_id=2      " + 
+			"											and h.category_id=2      " + 
+			"											and apprv.status_id=4      " + 
+			"									) e      " + 
+			"								  on e.ref = staging.scalar_urequestref     " + 
+			"			     WHERE      " + 
+			"			     scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'       " + 
+			"			 	AND agent.is_active=1    " + 
+			"			 	AND staging.urequest_slattopassed = 'no'        " + 
+			"			 	and DATE_FORMAT(urequest_startdate,'%Y-%m-01 00:00:00') < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')     " + 
+			"			 	and DATE_FORMAT(urequest_startdate,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')    " + 
+			"			 	AND staging.scalar_user like 'EXT%'    " + 
+			"			 	and e.ref is null    " + 
+			"			     GROUP BY staging.scalar_user       " + 
+			"			 )	two       " + 
+			"			 	ON one.agent = two.agent       " + 
+			"			 LEFT JOIN (       " + 
+			"			 	SELECT       " + 
+			"			 		staging.scalar_user AS agent,       " + 
+			"			         count(staging.scalar_urequestref) AS missed_ticket       " + 
+			"			     FROM       " + 
+			"			 		staging_userrequest staging       " + 
+			"			 	LEFT JOIN agent        " + 
+			"			 		ON agent.name = staging.scalar_user       " + 
+			"			 	left join       " + 
+			"									(      " + 
+			"										SELECT       " + 
+			"											ref      " + 
+			"										FROM       " + 
+			"											mds_itop.exception_ticket e      " + 
+			"										inner join       " + 
+			"											exception_header h      " + 
+			"											on e.exception_header_id = h.id      " + 
+			"										inner join exception_approval apprv      " + 
+			"											on h.approval_id = apprv.id      " + 
+			"										where      " + 
+			"											h.type_id=2      " + 
+			"											and h.category_id=2      " + 
+			"											and apprv.status_id=4      " + 
+			"									) e      " + 
+			"								  on e.ref = staging.scalar_urequestref    " + 
+			"			     WHERE        " + 
+			"			     scalar_previousvalue in ('escalated_tto','new') and scalar_newvalue = 'assigned'       " + 
+			"			 	AND agent.is_active=1    " + 
+			"			 	AND staging.urequest_slattopassed = 'yes'        " + 
+			"			 	and DATE_FORMAT(urequest_startdate,'%Y-%m-01 00:00:00') < DATE_FORMAT(NOW(),'%Y-%m-01 00:00:00')     " + 
+			"			 	and DATE_FORMAT(urequest_startdate,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')    " + 
+			"			 	AND staging.scalar_user like 'EXT%'    " + 
+			"			 	and e.ref is null    " + 
+			"			    GROUP BY staging.scalar_user       " + 
+			"			 )	three                                    " + 
+			"			 	ON one.agent = three.agent;  ", nativeQuery=true)
 	public List<Object[]> getAgentTicket(@Param("month") int month);
 	
 	@Query(value="select " + 
@@ -85,5 +136,16 @@ public interface MonthlyURPerfAgentRepository extends CrudRepository<Performance
 			"AND category='ur' "+
 			";", nativeQuery=true)
 	public List<PerformanceAgent> getPerformanceThisMonth(@Param("month") int month);
+	
+	@Query(value="select " + 
+			"	* " + 
+			"from perf_agent " + 
+			"where "+
+			"year(created_dt)=year(curdate()) "+   
+			"AND month= month(curdate())-1 "+
+			"AND period='monthly'  "+
+			"AND category='ur' "+
+			";", nativeQuery=true)
+	public List<PerformanceAgent> getPerformanceThisMonth();
 	
 }

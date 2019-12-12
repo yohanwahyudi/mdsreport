@@ -1,0 +1,430 @@
+{
+	"Configuration": {
+		"name": "default",
+		"properties": {
+			"property": [
+				{
+					"name": "log-path",
+					"value": "logs"
+				},
+				{
+					"name": "archive",
+					"value": "${log-path}/archive"
+				}
+			]
+		},
+		"Appenders": {
+			"Console": {
+				"PatternLayout": {
+					"pattern": "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
+				},
+				"name": "Console-Appender",
+				"target": "SYSTEM_OUT"
+			},
+			"RollingFile": {
+				"name": "RollingFile-Appender",
+				"fileName": "${log-path}/app.log",
+				"filePattern": "${archive}/app-backup-%d{MMddyyyy-HHmmss}-%i.log.gz",
+				"PatternLayout": {
+					"pattern": "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
+				},
+				"Policies": {
+					"SizeBasedTriggeringPolicy": {
+						"size": "100 MB"
+					}
+				},
+				"DefaultRolloverStrategy": {
+					"max": "10"
+				}
+			},
+			"File": {
+				"name": "File-Appender",
+				"filename": "${log-path}/logfile.log",
+				"PatternLayout": {
+					"pattern": "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
+				}
+			}
+		},
+		"Loggers": {
+			"logger": {
+				"name": "org.springframework.core",
+				"level": "info",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "info"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "info"
+					}
+				]
+			},
+			"logger": {
+				"name": "org.springframework.context",
+				"level": "info",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "info"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "info"
+					}
+				]
+			},
+			"logger": {
+				"name": "org.springframework.beans.factory",
+				"level": "info",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "info"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "info"
+					}
+				]
+			},
+			"logger": {
+				"name": "org.apache.http",
+				"level": "info",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "info"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "info"
+					}
+				]
+			},
+			"logger": {
+				"name": "java.io",
+				"level": "error",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "error"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "error"
+					}
+				]
+			},
+			"logger": {
+				"name": "org.hibernate.persister",
+				"level": "error",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "error"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "error"
+					}
+				]
+			},
+			"logger": {
+				"name": "org.hibernate.event",
+				"level": "error",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "error"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "error"
+					}
+				]
+			},
+			"logger": {
+				"name": "org.hibernate.engine",
+				"level": "error",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "error"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "error"
+					}
+				]
+			},
+			"logger": {
+				"name": "org.hibernate.loader",
+				"level": "error",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "error"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "error"
+					}
+				]
+			},
+			"logger": {
+				"name": "org.hibernate.cfg.annotations",
+				"level": "error",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "error"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "error"
+					}
+				]
+			},
+			"logger": {
+				"name": "org.hibernate.loader.plan",
+				"level": "error",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "error"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "error"
+					}
+				]
+			},
+			"logger": {
+				"name": "org.hibernate.internal.util",
+				"level": "error",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "error"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "error"
+					}
+				]
+			},
+			"logger": {
+				"name": "org.hibernate.engine.jdbc.batch.internal.AbstractBatchImpl",
+				"level": "error",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "error"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "error"
+					},
+					{
+						"ref": "File-Appender",
+						"level": "error"
+					}
+				]
+			},
+			"logger": {
+				"name": "org.springframework.orm",
+				"level": "error",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "error"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "error"
+					}
+				]
+			},
+			"logger": {
+				"name": "com.vdi.batch.mds.service.impl.JsoupParseServiceImpl",
+				"level": "error",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "error"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "error"
+					}
+				]
+			},
+			"logger": {
+				"name": "org.hibernate.engine.jdbc.batch.internal",
+				"level": "error",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "error"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "error"
+					}
+				]
+			},
+			"logger": {
+				"name": "org.hibernate.engine.internal",
+				"level": "error",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "error"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "error"
+					}
+				]
+			},
+			"logger": {
+				"name": "org.hibernate.internal.util",
+				"level": "error",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "error"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "error"
+					}
+				]
+			},
+			"logger": {
+				"name": "org.hibernate.type",
+				"level": "error",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "error"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "error"
+					}
+				]
+			},
+			"logger": {
+				"name": "org.hibernate.persister.walking.spi",
+				"level": "error",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "error"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "error"
+					}
+				]
+			},
+			"logger": {
+				"name": "org.hibernate.cfg.annotations",
+				"level": "error",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "error"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "error"
+					}
+				]
+			},
+			"logger": {
+				"name": "org.hibernate.boot.internal",
+				"level": "error",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "error"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "error"
+					}
+				]
+			},
+			"logger": {
+				"name": "com.vdi.batch.mds.repository",
+				"level": "error",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "error"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "error"
+					}
+				]
+			},
+			"logger": {
+				"name": "com.vdi.model",
+				"level": "error",
+				"additivity": "false",
+				"appender-ref": [
+					{
+						"ref": "RollingFile-Appender",
+						"level": "error"
+					},
+					{
+						"ref": "File-Appender",
+						"level": "error"
+					},
+					{
+						"ref": "Console-Appender",
+						"level": "error"
+					}
+				]
+			},
+			"Root": {
+				"AppenderRef": [
+					{
+						"ref": "Console-Appender"
+					},
+					{
+						"ref": "RollingFile-Appender"
+					}
+				],
+				"level": "info"
+			}
+		}
+	}
+}
