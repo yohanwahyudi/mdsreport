@@ -314,5 +314,17 @@ public class PopulateIncident {
 		openIncidentService.saveAll(temp);
 		
 	}
+	
+	public int getDataLength() {
+		
+		int size=0;
+		try {
+			size = stagingList.size();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return size;
+	}
 
 }

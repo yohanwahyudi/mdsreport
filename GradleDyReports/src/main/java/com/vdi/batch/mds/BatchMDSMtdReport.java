@@ -54,32 +54,74 @@ public class BatchMDSMtdReport extends QuartzJobBean {
 
 	@Override
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-		logger.info("Batch itop mds MTD report started.......");
+//		logger.info("Batch itop mds MTD report started.......");
+//		
+//		try {
+//
+//			if (currentDate != 1) {
+//	
+//				// populate MTD performance
+//				try {
+//					populatePerformance();
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//	
+//				// create report
+//				String fileName = getMtdFileName();
+//				String path = getMtdReportPath();
+//				String subject = getSubject();
+//	
+//				logger.info("creating report for period : " + period);
+//				ReportService rpt = ctx.getBean("itopPerformanceReport", ReportService.class);
+//				createReport(rpt, path, fileName, period);
+//	
+//				// send email
+//				sendEmail(rpt, path, fileName, period, subject);
+//	
+//	
+//			} else {
+//				logger.info("skip MTD report for first day of month");
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//			closeDataSource();
+//		}
+//
+//		logger.info("Batch itop mds MTD report finished.......");
 		
+		executeBatch();
+
+	}
+	
+	public void executeBatch() {
+
+		logger.info("Batch itop mds MTD report started.......");
+
 		try {
 
 			if (currentDate != 1) {
-	
+
 				// populate MTD performance
 				try {
 					populatePerformance();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-	
+
 				// create report
 				String fileName = getMtdFileName();
 				String path = getMtdReportPath();
 				String subject = getSubject();
-	
+
 				logger.info("creating report for period : " + period);
 				ReportService rpt = ctx.getBean("itopPerformanceReport", ReportService.class);
 				createReport(rpt, path, fileName, period);
-	
+
 				// send email
 				sendEmail(rpt, path, fileName, period, subject);
-	
-	
+
 			} else {
 				logger.info("skip MTD report for first day of month");
 			}

@@ -156,6 +156,70 @@ public class BatchItopMDSMonthlyReport extends QuartzJobBean {
 
 		logger.info("Batch itop mds monthly report finished.......");
 	}
+	
+	public void executeBatch() {
+		
+		logger.info("Batch itop mds monthly report started.......");
+
+		ctx = new AnnotationConfigApplicationContext(AppConfig.class);
+		try {
+			TimeTools timeTools = ctx.getBean(TimeTools.class);		
+			this.currentWeekYear = timeTools.getCurrentWeekYear();
+			this.currentWeekMonth = timeTools.getCurrentWeekMonth();
+			this.currentMonth = timeTools.getCurrentMonth();
+			this.previousMonth = currentMonth-1;
+			
+			this.currentDateStr = timeTools.getCurrentDateStr();
+			this.currentMonthStr = timeTools.getCurrentMonthString();
+			this.prevMonthStr = timeTools.getPrevMonthString();
+	
+			if(currentMonth == 1) {
+				this.currentYearInt = timeTools.getCurrentYear() - 1;
+			} else {
+				this.currentYearInt = timeTools.getCurrentYear();
+			}
+			
+			AppConfig appConfig = ctx.getBean(AppConfig.class);
+			String path = appConfig.getMdsReportPath();
+			String fileNameMonthly = getFileNameMonthly();
+	
+			ReportService rpt = ctx.getBean("itopPerformanceReport", ReportService.class);
+			//populate performance monthly
+			try {
+				populatePerformance(ctx);
+			} catch (Exception e) {
+				e.printStackTrace();
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
+			
+			
+			createReport(rpt, path, fileNameMonthly, periodMonthly);
+			
+			String[] file = new String[] {};
+			try {
+				BatchSubMDSPerSection subBatch = ctx.getBean(BatchSubMDSPerSection.class);
+				file = subBatch.createReport();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}		
+			
+			//send email
+			String[] fileNameArray= {fileNameMonthly};		
+			if(file!=null && file.length>0) {
+				fileNameArray = new String[]{fileNameMonthly, file[0], file[1], file[2]};
+			}
+			
+			sendEmail(rpt, path, fileNameArray, periodMonthly);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			closeDataSource();
+		}
+
+		logger.info("Batch itop mds monthly report finished.......");
+		
+	}
 
 	private void populatePerformance(AnnotationConfigApplicationContext ctx) {
 		

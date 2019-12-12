@@ -41,13 +41,18 @@ public class PopulateProblemChange {
 		repo.deleteEntity(Problem.class);
 		
 		logger.info("Add to problem...");
-		repo.addAll(loadProblem.getStagingAllByURL());
+		problemList = new ArrayList<Problem>();
+		problemList = castList(Problem.class, loadProblem.getStagingAllByURL());
+		repo.addAll(problemList);
+//		repo.addAll(loadProblem.getStagingAllByURL());
+
 //		problemList = new ArrayList<Problem>();
 //		problemList = castList(Problem.class, loadProblem.getStagingAllByURL());
 //
 //		if (problemList != null && problemList.size() > 0) {
 //			repo.addAll(problemList);
 //		}
+
 	}
 
 	private void addToStagingChange() {
@@ -56,7 +61,12 @@ public class PopulateProblemChange {
 		repo.deleteEntity(Change.class);
 
 		logger.info("Add to Change...");
-		repo.addAll(loadChange.getStagingAllByURL());
+		changeList = new ArrayList<Change>();
+		changeList = castList(Change.class, loadChange.getStagingAllByURL());	
+		repo.addAll(changeList);
+		
+//		repo.addAll(loadChange.getStagingAllByURL());
+		
 //		changeList = new ArrayList<Change>();
 //		changeList = castList(Change.class, loadChange.getStagingAllByURL());		
 //
@@ -77,6 +87,30 @@ public class PopulateProblemChange {
 	public void populate() {
 		addToStagingProblem();
 		addToStagingChange();
+	}
+	
+	public int getProblemDataSize() {
+		
+		int size=0;
+		try {
+			size = problemList.size();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return size;
+	}
+	
+	public int getChangeDataSize() {
+		
+		int size=0;
+		try {
+			size = changeList.size();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return size;
 	}
 
 }

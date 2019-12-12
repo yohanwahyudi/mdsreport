@@ -42,9 +42,9 @@ public class MailServiceImpl implements MailService{
 	@Qualifier("mailSender")
 	JavaMailSender mailSender;
 	
-	@Autowired
-	@Qualifier("mailSenderDev")
-	JavaMailSender mailSenderDev;
+//	@Autowired
+//	@Qualifier("mailSenderDev")
+//	JavaMailSender mailSenderDev;
 	
 	@Autowired
 	Configuration freemarkerConfiguration;
