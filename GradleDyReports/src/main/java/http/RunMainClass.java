@@ -11,16 +11,15 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class RunMainClass {
 	
 	private static final Logger logger = LogManager.getLogger(RunMainClass.class);
-	//private static ClassPathXmlApplicationContext classPathXmlApplicationContext;
+	private static ClassPathXmlApplicationContext classPathXmlApplicationContext;
 	
 	public static void main(String args[]) {
 		
-		logger.info("RunMain Batch started...");			
+		logger.info("RunMain Batch started...");		
+		
 		SpringApplication.run(RunMainClass.class, args);
 		
-			
-		//classPathXmlApplicationContext = new ClassPathXmlApplicationContext("Spring-Quartz.xml");
-		
+		classPathXmlApplicationContext = new ClassPathXmlApplicationContext("Spring-Quartz.xml");
 
 	}
 
