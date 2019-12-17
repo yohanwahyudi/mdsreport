@@ -2,8 +2,25 @@ pipeline {
   agent any
   stages {
     stage('preparation') {
+      parallel {
+        stage('preparation') {
+          steps {
+            echo 'hello'
+          }
+        }
+
+        stage('') {
+          steps {
+            echo 'hello 2'
+          }
+        }
+
+      }
+    }
+
+    stage('stage1') {
       steps {
-        echo 'hello'
+        mail(subject: 'test', body: 'test', to: 'yohan.wahyudi@visionet.co.id')
       }
     }
 
