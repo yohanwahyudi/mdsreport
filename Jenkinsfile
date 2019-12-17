@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('preparation') {
       steps {
-        dir(path: 'GradleDyReports')
+        echo 'hello'
       }
     }
 
