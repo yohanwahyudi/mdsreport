@@ -33,6 +33,8 @@ public final class PropertyNames {
 
 	public static final String MAIL_HOST = "mail.host";
 	public static final String MAIL_PORT = "mail.port";
+	public static final String MAIL_USER = "mail.user";
+	public static final String MAIL_PASSWORD = "mail.password";
 	public static final String MAIL_FROM = "mail.from";
 	public static final String MAIL_TO = "mail.to";
 	public static final String MAIL_SLA_MGR = "mail.sla.manager";

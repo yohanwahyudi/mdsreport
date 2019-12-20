@@ -47,6 +47,8 @@ public final class AppConfig {
 	// MAIL CONFIG
 	private final String mailHost;
 	private final int mailPort;
+	private final String mailUser;
+	private final String mailPassword;
 	private final String mailFrom;
 	private final String[] mailToMdsDaily;
 	private final String mailMdsDailySubject;
@@ -101,6 +103,8 @@ public final class AppConfig {
 		this.mdsHttpURYtdUrl = env.getRequiredProperty(PropertyNames.MDS_HTTP_UR_YTD_URL, String.class);
 		this.mailHost = env.getRequiredProperty(PropertyNames.MAIL_HOST, String.class);
 		this.mailPort = env.getRequiredProperty(PropertyNames.MAIL_PORT, Integer.class);
+		this.mailUser = env.getRequiredProperty(PropertyNames.MAIL_USER, String.class);
+		this.mailPassword = env.getRequiredProperty(PropertyNames.MAIL_PASSWORD, String.class);
 		this.mailFrom = env.getRequiredProperty(PropertyNames.MAIL_FROM, String.class);
 		this.mailToMdsDaily = env.getRequiredProperty(PropertyNames.MDS_EMAIL_DAILY_TO, String[].class);
 		this.mailMdsDailySubject = env.getRequiredProperty(PropertyNames.MDS_EMAIL_DAILY_SUBJECT, String.class);
@@ -134,9 +138,12 @@ public final class AppConfig {
 
 		mailSender.setHost(mailHost);
 		mailSender.setPort(mailPort);
+		mailSender.setUsername(mailUser);
+		mailSender.setPassword(mailPassword);
 
 		Properties javaMailProperties = new Properties();
 //		javaMailProperties.put("mail.debug", "true");
+		javaMailProperties.put("mail.smtp.auth", "true");
 
 		mailSender.setJavaMailProperties(javaMailProperties);
 
