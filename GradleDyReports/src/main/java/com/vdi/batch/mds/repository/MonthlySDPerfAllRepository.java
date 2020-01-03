@@ -31,7 +31,9 @@ public interface MonthlySDPerfAllRepository extends CrudRepository<PerformanceOv
 			"					where      " + 
 			"						h.type_id=1      " + 
 			"						and h.category_id=2      " + 
-			"						and apprv.status_id=4      " + 
+			"						and apprv.status_id=4      " +
+			"						and DATE_FORMAT(start_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')      " +
+			"						and DATE_FORMAT(start_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')            " +
 			"				) e      " + 
 			"			  on e.ref = s.incident_ref   " + 
 			"			 where scalar_previousvalue in ('escalated_tto','new') AND scalar_newvalue = 'assigned'    " + 
@@ -59,6 +61,8 @@ public interface MonthlySDPerfAllRepository extends CrudRepository<PerformanceOv
 			"						h.type_id=1      " + 
 			"						and h.category_id=2      " + 
 			"						and apprv.status_id=4      " + 
+			"						and DATE_FORMAT(start_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')      " +
+			"						and DATE_FORMAT(start_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')            " +
 			"				) e      " + 
 			"			  on e.ref = s.incident_ref   " + 
 			"			 where scalar_previousvalue in ('escalated_tto','new') AND scalar_newvalue = 'assigned'    " + 
@@ -87,6 +91,8 @@ public interface MonthlySDPerfAllRepository extends CrudRepository<PerformanceOv
 			"						h.type_id=1      " + 
 			"						and h.category_id=2      " + 
 			"						and apprv.status_id=4      " + 
+			"						and DATE_FORMAT(start_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')      " +
+			"						and DATE_FORMAT(start_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')            " +
 			"				) e      " + 
 			"			  on e.ref = s.incident_ref   " + 
 			"			 where scalar_previousvalue in ('escalated_tto','new') AND scalar_newvalue = 'assigned'    " + 
@@ -96,8 +102,8 @@ public interface MonthlySDPerfAllRepository extends CrudRepository<PerformanceOv
 			"			 	   AND scalar_user like 'EXT%' AND e.ref is null; ", nativeQuery=true)
 	public int getMissedTicketCount();
 	
-	@Query(value="select * from perf_overall WHERE  month=month(curdate())-1 and "+
-			"year(created_dt)=year(curdate()) AND period='monthly' AND category='sd';", nativeQuery=true)
+	@Query(value="select * from perf_overall WHERE  DATE_FORMAT(created_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')  and "+
+			"DATE_FORMAT(created_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') AND period='monthly' AND category='sd';", nativeQuery=true)
 	public PerformanceOverall getPerformanceThisWeek();
 
 }

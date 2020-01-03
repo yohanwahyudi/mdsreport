@@ -95,9 +95,9 @@ public interface ExceptionTicketRepository extends CrudRepository<TicketExceptio
 			"where " + 
 			"	approve.status_id=4 " + 
 			"and " + 
-			"	month(header.created_dt) = :month " + 
+			"	month(ticket.start_dt) = :month " + 
 			"and " + 
-			"	year(header.created_dt) = :year " + 
+			"	year(ticket.start_dt) = :year " + 
 			"order by  " + 
 			"	cat.category desc, " + 
 			"    type.type asc " + 

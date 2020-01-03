@@ -38,7 +38,9 @@ public interface MonthlySDPerfAgentRepository extends CrudRepository<Performance
 			"										where      " + 
 			"											h.type_id=1      " + 
 			"											and h.category_id=2      " + 
-			"											and apprv.status_id=4      " + 
+			"											and apprv.status_id=4      " +
+			"											and DATE_FORMAT(start_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')      " +
+			"											and DATE_FORMAT(start_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')            " +
 			"									) e      " + 
 			"								  on e.ref = staging.incident_ref        " + 
 			"			 				LEFT JOIN agent           " + 
@@ -73,6 +75,8 @@ public interface MonthlySDPerfAgentRepository extends CrudRepository<Performance
 			"											h.type_id=1      " + 
 			"											and h.category_id=2      " + 
 			"											and apprv.status_id=4      " + 
+			"											and DATE_FORMAT(start_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')      " +
+			"											and DATE_FORMAT(start_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')            " +
 			"									) e      " + 
 			"								  on e.ref = staging.incident_ref        " + 
 			"			 				LEFT JOIN agent          " + 
@@ -108,6 +112,8 @@ public interface MonthlySDPerfAgentRepository extends CrudRepository<Performance
 			"											h.type_id=1      " + 
 			"											and h.category_id=2      " + 
 			"											and apprv.status_id=4      " + 
+			"											and DATE_FORMAT(start_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')      " +
+			"											and DATE_FORMAT(start_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')            " +
 			"									) e      " + 
 			"								  on e.ref = staging.incident_ref        " + 
 			"			 				LEFT JOIN agent          " + 
@@ -124,8 +130,8 @@ public interface MonthlySDPerfAgentRepository extends CrudRepository<Performance
 			"			 				ON one.agent = three.agent;   ", nativeQuery=true)
 	public List<Object[]> getAgentTicket();
 	
-	@Query(value="SELECT * FROM perf_agent WHERE month=month(curdate())-1 and "+
-			"year(created_dt)=year(curdate()) AND period='monthly' AND category='sd';", nativeQuery=true)
+	@Query(value="SELECT * FROM perf_agent WHERE DATE_FORMAT(created_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')   and "+
+			"DATE_FORMAT(created_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') AND period='monthly' AND category='sd';", nativeQuery=true)
 	public List<PerformanceAgent> getPerformanceThisWeek();
 	
 }

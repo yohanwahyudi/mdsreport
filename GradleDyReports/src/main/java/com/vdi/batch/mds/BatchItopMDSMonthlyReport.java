@@ -85,6 +85,8 @@ public class BatchItopMDSMonthlyReport extends QuartzJobBean {
 				this.currentYearInt = timeTools.getCurrentYear();
 			}
 			
+			logger.info("currentMonth: "+currentMonth+" previousMonth: "+previousMonth+" currentyear: "+currentYearInt);
+			
 			AppConfig appConfig = ctx.getBean(AppConfig.class);
 			String path = appConfig.getMdsReportPath();
 			String fileNameMonthly = getFileNameMonthly();
@@ -346,7 +348,12 @@ public class BatchItopMDSMonthlyReport extends QuartzJobBean {
 		ExceptionTicketHelper helper = ctx.getBean("exceptionTicketHelper", ExceptionTicketHelper.class);
 		//mapObject.put("exceptionLastMonth", helper.getExceptionLastMonth());
 		
-		List<IncidentOpen> open = helper.constructedException(PropertyNames.CONSTANT_REPORT_PERIOD_MONTHLY);
+		List<IncidentOpen> open = new ArrayList<IncidentOpen>();
+		if(currentMonth == 1) {
+			open = helper.constructedException(PropertyNames.CONSTANT_REPORT_PERIOD_MONTHLY_LAST_YEAR);
+		} else {
+			open = helper.constructedException(PropertyNames.CONSTANT_REPORT_PERIOD_MONTHLY);
+		}
 		mapObject.put("exceptionLastMonth", open);
 
 		return mapObject;

@@ -40,6 +40,8 @@ public interface MonthlyURPerfAgentRepository extends CrudRepository<Performance
 			"											h.type_id=2      " + 
 			"											and h.category_id=2      " + 
 			"											and apprv.status_id=4      " + 
+			"											and DATE_FORMAT(start_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')      " +
+			"											and DATE_FORMAT(start_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')            " +
 			"									) e      " + 
 			"								  on e.ref = staging.scalar_urequestref	     " + 
 			"			 	WHERE    " + 
@@ -75,6 +77,8 @@ public interface MonthlyURPerfAgentRepository extends CrudRepository<Performance
 			"											h.type_id=2      " + 
 			"											and h.category_id=2      " + 
 			"											and apprv.status_id=4      " + 
+			"											and DATE_FORMAT(start_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')      " +
+			"											and DATE_FORMAT(start_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')            " +
 			"									) e      " + 
 			"								  on e.ref = staging.scalar_urequestref     " + 
 			"			     WHERE      " + 
@@ -111,6 +115,8 @@ public interface MonthlyURPerfAgentRepository extends CrudRepository<Performance
 			"											h.type_id=2      " + 
 			"											and h.category_id=2      " + 
 			"											and apprv.status_id=4      " + 
+			"											and DATE_FORMAT(start_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')      " +
+			"											and DATE_FORMAT(start_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')            " +
 			"									) e      " + 
 			"								  on e.ref = staging.scalar_urequestref    " + 
 			"			     WHERE        " + 
@@ -141,8 +147,8 @@ public interface MonthlyURPerfAgentRepository extends CrudRepository<Performance
 			"	* " + 
 			"from perf_agent " + 
 			"where "+
-			"year(created_dt)=year(curdate()) "+   
-			"AND month= month(curdate())-1 "+
+			"DATE_FORMAT(created_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') "+   
+			"AND DATE_FORMAT(created_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"AND period='monthly'  "+
 			"AND category='ur' "+
 			";", nativeQuery=true)

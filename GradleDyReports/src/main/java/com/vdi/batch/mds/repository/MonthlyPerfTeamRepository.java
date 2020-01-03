@@ -34,7 +34,9 @@ public interface MonthlyPerfTeamRepository extends CrudRepository<PerformanceTea
 			"											where      " + 
 			"												h.type_id=1      " + 
 			"												and h.category_id=1      " + 
-			"												and apprv.status_id=4      " + 
+			"												and apprv.status_id=4      " +
+			"												and DATE_FORMAT(start_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')      " +
+			"												and DATE_FORMAT(start_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')            " +
 			"										) e      " + 
 			"									  on e.ref = incident.ref     " + 
 			"			 					 WHERE 	     " + 
@@ -62,7 +64,9 @@ public interface MonthlyPerfTeamRepository extends CrudRepository<PerformanceTea
 			"														where      " + 
 			"															h.type_id=1      " + 
 			"															and h.category_id=1      " + 
-			"															and apprv.status_id=4      " + 
+			"															and apprv.status_id=4      " +
+			"															and DATE_FORMAT(start_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')      " +
+			"															and DATE_FORMAT(start_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')            " +
 			"													) e      " + 
 			"												  on e.ref = incident.ref      " + 
 			"			 								WHERE      " + 
@@ -92,7 +96,9 @@ public interface MonthlyPerfTeamRepository extends CrudRepository<PerformanceTea
 			"														where      " + 
 			"															h.type_id=1      " + 
 			"															and h.category_id=1      " + 
-			"															and apprv.status_id=4      " + 
+			"															and apprv.status_id=4      " +
+			"															and DATE_FORMAT(start_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')      " +
+			"															and DATE_FORMAT(start_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')            " +
 			"													) e      " + 
 			"												  on e.ref = incident.ref      " + 
 			"			 			 				   WHERE 		     " + 
@@ -106,8 +112,8 @@ public interface MonthlyPerfTeamRepository extends CrudRepository<PerformanceTea
 	public List<Object[]> getTeamTicketByDivision();
 	
 	@Query(value="select * from perf_team "
-			+ "WHERE  month=month(curdate())-1 "
-			+ "AND year(created_dt)=year(curdate()) "
+			+ "WHERE  DATE_FORMAT(created_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') "
+			+ "AND DATE_FORMAT(created_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "
 			+ "AND period='monthly' AND category='sa';", nativeQuery=true)
 	public List<PerformanceTeam> getPerformanceThisWeek();
 	

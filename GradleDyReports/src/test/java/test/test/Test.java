@@ -97,6 +97,8 @@ public class Test {
 		SanitizeString sanitize = new SanitizeString();
 		System.out.println(sanitize.getSanitizedString("<b>Bold</b>", 2));
 		
+		TimeTools timeTools2 = new TimeTools();
+		
 		
 	}
 

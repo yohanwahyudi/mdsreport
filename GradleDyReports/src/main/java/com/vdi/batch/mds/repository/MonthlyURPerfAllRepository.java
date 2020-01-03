@@ -33,7 +33,9 @@ public interface MonthlyURPerfAllRepository extends CrudRepository<PerformanceOv
 			"										where      " + 
 			"											h.type_id=2      " + 
 			"											and h.category_id=2      " + 
-			"											and apprv.status_id=4      " + 
+			"											and apprv.status_id=4      " +
+			"											and DATE_FORMAT(start_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')      " +
+			"											and DATE_FORMAT(start_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')            " +
 			"									) e      " + 
 			"								  on e.ref = ur.scalar_urequestref       " + 
 			"			 			where DATE_FORMAT(urequest_startdate,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')         " + 
@@ -66,6 +68,8 @@ public interface MonthlyURPerfAllRepository extends CrudRepository<PerformanceOv
 					"											h.type_id=2      " + 
 					"											and h.category_id=2      " + 
 					"											and apprv.status_id=4      " + 
+					"											and DATE_FORMAT(start_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')      " +
+					"											and DATE_FORMAT(start_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')            " +
 					"									) e      " + 
 					"								  on e.ref = ur.scalar_urequestref       " + 
 					"			 			where DATE_FORMAT(urequest_startdate,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')         " + 
@@ -96,7 +100,9 @@ public interface MonthlyURPerfAllRepository extends CrudRepository<PerformanceOv
 			"										where      " + 
 			"											h.type_id=2      " + 
 			"											and h.category_id=2      " + 
-			"											and apprv.status_id=4      " + 
+			"											and apprv.status_id=4      " +
+			"											and DATE_FORMAT(start_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')      " +
+			"											and DATE_FORMAT(start_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')            " +
 			"									) e      " + 
 			"								  on e.ref = ur.scalar_urequestref       " + 
 			"			 			where DATE_FORMAT(urequest_startdate,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')         " + 
@@ -110,13 +116,14 @@ public interface MonthlyURPerfAllRepository extends CrudRepository<PerformanceOv
 	
 	@Query(value="select * from perf_overall "+
 			"WHERE  " +
-				"year(created_dt)=year(curdate()) "+   
-				"AND month(created_dt)= :month "+
+				"DATE_FORMAT(created_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') "+   
+				"AND DATE_FORMAT(created_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 				"AND period='monthly' "+
 				"AND category='ur';", nativeQuery=true)
-	public PerformanceOverall getPerformanceThisMonth(@Param("month") int month);
+	public PerformanceOverall getPerformanceThisMonth( int month);
 	
-	@Query(value="select * from perf_overall WHERE  Year(created_dt) = Year(Curdate()) AND month = month(curdate())-1 "+
+	@Query(value="select * from perf_overall WHERE  " +
+			"DATE_FORMAT(created_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') AND DATE_FORMAT(created_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "+
 			"AND period='monthly' AND category='ur';", nativeQuery=true)
 	public PerformanceOverall getPerformanceThisMonth();
 

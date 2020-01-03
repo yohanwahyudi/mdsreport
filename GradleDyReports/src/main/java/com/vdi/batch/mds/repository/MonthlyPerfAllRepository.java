@@ -35,7 +35,9 @@ public interface MonthlyPerfAllRepository extends CrudRepository<PerformanceOver
 					"					where      " + 
 					"						h.type_id=1      " + 
 					"						and h.category_id=1      " + 
-					"						and apprv.status_id=4      " + 
+					"						and apprv.status_id=4      " +
+					"						and DATE_FORMAT(start_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')      " +
+					"						and DATE_FORMAT(start_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')            " +
 					"				) e      " + 
 					"			  on e.ref = i.ref   " + 
 					"			  " + 
@@ -68,7 +70,9 @@ public interface MonthlyPerfAllRepository extends CrudRepository<PerformanceOver
 					"					where      " + 
 					"						h.type_id=1      " + 
 					"						and h.category_id=1      " + 
-					"						and apprv.status_id=4      " + 
+					"						and apprv.status_id=4      " +
+					"						and DATE_FORMAT(start_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')      " +
+					"						and DATE_FORMAT(start_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')            " +
 					"				) e      " + 
 					"			  on e.ref = i.ref   " + 
 					"			  " + 
@@ -102,6 +106,8 @@ public interface MonthlyPerfAllRepository extends CrudRepository<PerformanceOver
 					"						h.type_id=1      " + 
 					"						and h.category_id=1      " + 
 					"						and apprv.status_id=4      " + 
+					"						and DATE_FORMAT(start_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')      " +
+					"						and DATE_FORMAT(start_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')            " +
 					"				) e      " + 
 					"			  on e.ref = i.ref   " + 
 					"			  " + 
@@ -116,8 +122,8 @@ public interface MonthlyPerfAllRepository extends CrudRepository<PerformanceOver
 	public int getMissedTicketCount();
 	
 	@Query(value="select * from perf_overall "
-			+ "WHERE  month=month(curdate())-1 "
-			+ "AND year(created_dt)=year(curdate()) "
+			+ "WHERE  DATE_FORMAT(created_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01') "
+			+ "AND DATE_FORMAT(created_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "
 			+ "AND period='monthly' AND category='sa';", nativeQuery=true)
 	public PerformanceOverall getPerformanceThisWeek();
 

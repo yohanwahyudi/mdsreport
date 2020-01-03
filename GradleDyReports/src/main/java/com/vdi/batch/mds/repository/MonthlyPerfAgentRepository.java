@@ -38,7 +38,9 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"														where      " + 
 			"															h.type_id=1      " + 
 			"															and h.category_id=1      " + 
-			"															and apprv.status_id=4      " + 
+			"															and apprv.status_id=4      " +
+			"															and DATE_FORMAT(start_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')      " +
+			"															and DATE_FORMAT(start_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')            " +
 			"													) e      " + 
 			"												  on e.ref = incident.ref " + 
 			"			 			        WHERE       " + 
@@ -69,7 +71,9 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"														where      " + 
 			"															h.type_id=1      " + 
 			"															and h.category_id=1      " + 
-			"															and apprv.status_id=4      " + 
+			"															and apprv.status_id=4      " +
+			"															and DATE_FORMAT(start_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')      " +
+			"															and DATE_FORMAT(start_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')            " +
 			"													) e      " + 
 			"												  on e.ref = incident.ref    " + 
 			"			 			                  WHERE       " + 
@@ -103,6 +107,8 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"															h.type_id=1      " + 
 			"															and h.category_id=1      " + 
 			"															and apprv.status_id=4      " + 
+			"															and DATE_FORMAT(start_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')      " +
+			"															and DATE_FORMAT(start_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')            " +
 			"													) e      " + 
 			"												  on e.ref = incident.ref     " + 
 			"			 			                  WHERE       " + 
@@ -136,6 +142,8 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"															h.type_id=1      " + 
 			"															and h.category_id=1      " + 
 			"															and apprv.status_id=4      " + 
+			"															and DATE_FORMAT(start_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')      " +
+			"															and DATE_FORMAT(start_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')            " +
 			"													) e      " + 
 			"												  on e.ref = incident.ref       " + 
 			"			 			                  WHERE  status = 'pending'        " + 
@@ -168,6 +176,8 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 			"															h.type_id=1      " + 
 			"															and h.category_id=1      " + 
 			"															and apprv.status_id=4      " + 
+			"															and DATE_FORMAT(start_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')      " +
+			"															and DATE_FORMAT(start_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01')            " +
 			"													) e      " + 
 			"												  on e.ref = incident.ref       " + 
 			"			 			                  WHERE  status = 'assigned'        " + 
@@ -182,8 +192,8 @@ public interface MonthlyPerfAgentRepository extends CrudRepository<PerformanceAg
 	public List<Object[]> getAgentTicket();
 	
 	@Query(value="SELECT * FROM perf_agent "
-			+ "WHERE month=month(curdate())-1 "
-			+ "AND year(created_dt)=year(curdate()) "
+			+ "WHERE DATE_FORMAT(created_dt,'%Y-%m-01') < DATE_FORMAT(NOW(),'%Y-%m-01')  "
+			+ "AND DATE_FORMAT(created_dt,'%Y-%m-01') >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH),'%Y-%m-01') "
 			+ "AND period='monthly' AND category='sa';", nativeQuery=true)
 	public List<PerformanceAgent> getPerformanceThisWeek();
 	
